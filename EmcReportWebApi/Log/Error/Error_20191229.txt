@@ -1,0 +1,15 @@
+2019-12-29 04:35:17,397 [6] ERROR ErrorLogger - 创建失败
+2019-12-29 05:55:56,070 [9] ERROR ErrorLogger - 创建失败
+2019-12-29 06:06:43,926 [6] ERROR ErrorLogger - 创建失败
+2019-12-29 06:08:54,268 [6] ERROR ErrorLogger - 创建失败
+2019-12-29 06:13:41,382 [6] ERROR ErrorLogger - 创建失败
+2019-12-29 21:31:44,314 [5] ERROR ErrorLogger - 创建失败
+2019-12-29 21:36:16,043 [9] ERROR ErrorLogger - 创建失败
+2019-12-29 21:37:53,963 [9] ERROR ErrorLogger - 创建失败
+2019-12-29 22:00:34,406 [10] ERROR ErrorLogger - 创建失败
+2019-12-29 22:35:13,859 [5] ERROR ErrorLogger - 创建失败
+2019-12-29 22:39:28,716 [9] ERROR ErrorLogger - 创建失败
+2019-12-29 22:41:41,628 [9] ERROR ErrorLogger - 创建失败
+2019-12-29 23:07:00,415 [8] ERROR ErrorLogger - 下载失败:未将对象引用设置到对象的实例。
+System.NullReferenceException: 未将对象引用设置到对象的实例。
+   在 EmcReportWebApi.Controllers.ReportController.<DownloadFiles>d__3.MoveNext() 位置 I:\我的项目\EmcReportWebApi\EmcReportWebApi\Controllers\ReportController.cs:行号 76

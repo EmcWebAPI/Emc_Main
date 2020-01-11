@@ -1,0 +1,11 @@
+2019-12-30 16:10:02,147 [6] INFO  InfoLogger - 创建成功
+2019-12-30 16:13:36,987 [6] INFO  InfoLogger - 创建成功
+2019-12-30 16:18:08,370 [6] INFO  InfoLogger - 创建成功
+2019-12-30 16:33:02,244 [6] INFO  InfoLogger - 创建成功
+2019-12-30 16:40:59,752 [6] INFO  InfoLogger - 创建成功
+2019-12-30 16:49:33,710 [6] INFO  InfoLogger - 创建成功
+2019-12-30 16:53:11,929 [6] INFO  InfoLogger - 创建成功
+2019-12-30 23:08:31,936 [6] INFO  InfoLogger - 创建成功
+2019-12-30 23:11:20,803 [6] INFO  InfoLogger - 创建成功
+2019-12-30 23:14:38,936 [6] INFO  InfoLogger - 创建成功
+2019-12-30 23:17:43,974 [6] INFO  InfoLogger - 创建成功

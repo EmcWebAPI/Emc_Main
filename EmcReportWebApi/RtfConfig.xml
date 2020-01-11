@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <TempType Type="CE">
+    <Table StartIndex="1" Bookmark="bookmark41">
+      <Column>
+        <Title>频率
+（MHz）</Title>
+        <ColumnIndex>1</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>准峰值
+（dBμV）</Title>
+        <ColumnIndex>2</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>电源端口</Title>
+        <ColumnIndex>6</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>裕量
+（dB）</Title>
+        <ColumnIndex>8</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>限值
+（dBμV）</Title>
+        <ColumnIndex>9</ColumnIndex>
+      </Column>
+    </Table>
+    <Picture StartIndex="1" Bookmark="bookmark412">
+      
+    </Picture>
+  </TempType>
+  <TempType Type="RE">
+    <Table StartIndex="2" Bookmark="bookmark42">
+      <Column>
+        <Title>频率
+（MHz）</Title>
+        <ColumnIndex>1</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>准峰值
+（dBμV）</Title>
+        <ColumnIndex>2</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>天线高度
+(cm)</Title>
+        <ColumnIndex>3</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>天线极性</Title>
+        <ColumnIndex>4</ColumnIndex>
+      </Column>
+      <Column>
+        <Title> 转台角度
+(deg)</Title>
+        <ColumnIndex>5</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>裕量
+（dB）</Title>
+        <ColumnIndex>6</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>限值
+（dBμV）</Title>
+        <ColumnIndex>7</ColumnIndex>
+      </Column>
+    </Table>
+  </TempType>
+  <TempType Type="波动">
+    <Table StartIndex="4" Bookmark="bookmark42">
+      <Column>
+        <Title>参数</Title>
+        <ColumnIndex>1</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>实测值</Title>
+        <ColumnIndex>2</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>限值</Title>
+        <ColumnIndex>3</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>单项试验结果</Title>
+        <ColumnIndex>4</ColumnIndex>
+      </Column>
+    </Table>
+  </TempType>
+  <TempType Type="谐波">
+    <Table StartIndex="9" Bookmark="bookmark42">
+      <Column>
+        <Title>次数</Title>
+        <ColumnIndex>1</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>有效值电流（A）</Title>
+        <ColumnIndex>2</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>占限值的百分比</Title>
+        <ColumnIndex>3</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>限值（A）</Title>
+        <ColumnIndex>4</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>单项结果</Title>
+        <ColumnIndex>5</ColumnIndex>
+      </Column>
+    </Table>
+  </TempType>
+</Root>

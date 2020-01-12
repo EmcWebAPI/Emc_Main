@@ -69,8 +69,9 @@ namespace EmcReportWebApi.Common
         /// <param name="list">内容集合</param>
         /// <param name="bookmark">插入内容的位置 用bookmark获取</param>
         /// <param name="mergeColumn">需要合并的列</param>
+        /// <param name="isNeedNumber">是否需要添加序号</param>
         /// <returns></returns>
-        public string InsertListToTable(List<string> list, string bookmark, int mergeColumn)
+        public string InsertListToTable(List<string> list, string bookmark, int mergeColumn,bool isNeedNumber=true)
         {
             if (mergeColumn < 1)
             {
@@ -87,6 +88,7 @@ namespace EmcReportWebApi.Common
             int endRow = 0;
             string mergeContent = "";
             string nextColumnStr = "tempStr";
+            bool isAddRow = false;
 
             foreach (var item in list)
             {
@@ -95,9 +97,12 @@ namespace EmcReportWebApi.Common
                 {
                     return "列和list集合不匹配";
                 }
-
-                table.Rows.Add(ref _missing);
-                rowCount++;
+                if (isAddRow) {
+                    table.Rows.Add(ref _missing);
+                    rowCount++;
+                }
+                isAddRow = true;
+                
                 for (int i = 0; i < arrStr.Length; i++)
                 {
                     if (i == mergeColumn && arrStr[i].Equals(""))
@@ -146,20 +151,21 @@ namespace EmcReportWebApi.Common
                     MergeCell(table, startRow, 1, endRow, 1);
             }
 
-            //table.Select();
-            //rowCount = table.Rows.Count;
-            //for (int i = rowCount; i >= 1; i--)
-            //{
-            //    if (table.Cell(i, mergeColumn + 1).Range.Text.Equals("") || table.Cell(i, mergeColumn + 1).Range.Text.Equals("\r\a"))
-            //    {
-            //        MergeCell(table, i, mergeColumn, i, mergeColumn + 1);
-            //    }
-            //}
+            //写序号
+            if(isNeedNumber)
+                AddTableNumber(table, 1);
+
             SetAutoFitContentForTable(table);
 
             return "保存成功";
         }
 
+        /// <summary>
+        /// 根据书签向word中插入内容
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
         public string InsertContentToWord(string content, string bookmark)
         {
             try
@@ -176,6 +182,26 @@ namespace EmcReportWebApi.Common
             }
             return "插入成功";
         }
+
+        public string InsertImageToWord(List<string> list, string bookmark) {
+            //获取bookmark位置的table
+            Range range = GetBookmarkRank(_currentWord, bookmark);
+            range.Select();
+            foreach (var item in list)
+            {
+                string[] arrStr = item.Split(',');
+                string content = arrStr[0];
+                string fileName = arrStr[1];
+                CreateAndGoToNextParagraph(range, true, true);
+                range.InsertAfter(content);
+                CreateAndGoToNextParagraph(range, true, true);
+                this.AddPicture(fileName, range.Application.ActiveDocument, range);
+
+            }
+            return "创建成功";
+        }
+
+        #region rtf操作
 
         /// <summary>
         /// 插入其他文件的单一表格 保留表格列
@@ -342,6 +368,8 @@ namespace EmcReportWebApi.Common
             }
             return "创建成功";
         }
+
+        #endregion
 
         public string CopyContentToWord(string filePth, string bookmark, bool isCloseTheFile = true)
         {
@@ -847,6 +875,34 @@ namespace EmcReportWebApi.Common
         private void MergeCell(Cell startCell, Cell endCell)
         {
             startCell.Merge(endCell);
+        }
+
+        /// <summary>
+        /// 为table添加序号
+        /// </summary>
+        /// <param name="table">表格</param>
+        /// <param name="columnNumber">添加序号的列</param>
+        private void AddTableNumber(Table table, int columnNumber, bool isTitle = true)
+        {
+            table.Select();
+            table.Cell(1, columnNumber).Select();
+            _wordApp.Selection.SelectColumn();
+            int intCell = 0;
+            foreach (Cell item in _wordApp.Selection.Cells)
+            {
+                if (isTitle && intCell == 0)
+                {
+                    intCell++;
+                    continue;
+                }
+
+                if (!isTitle) {
+                     intCell++;
+                }
+
+                item.Range.Text = (intCell).ToString();
+                intCell++;
+            }
         }
 
         public void KillWordProcess(string fileName)

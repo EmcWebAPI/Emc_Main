@@ -20,6 +20,86 @@ namespace EmcReportWebApi.Controllers
     public class ReportController : ApiController
     {
 
+        
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        [HttpPost]
+        public string UploadFiles()
+        {
+            string result = "上传成功";
+            HttpFileCollection filelist = HttpContext.Current.Request.Files;
+            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
+            if (filelist != null && filelist.Count > 0)
+            {
+                for (int i = 0; i < filelist.Count; i++)
+                {
+                    HttpPostedFile file = filelist[i];
+                    string filename = file.FileName;
+                    string extendName = MyTools.FilterExtendName(filename);
+                    string templateFileName = "upload" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + extendName;
+                    string FilePath = currRoot + "\\Files\\Upload\\";
+                    DirectoryInfo di = new DirectoryInfo(FilePath);
+                    if (!di.Exists) { di.Create(); }
+                    try
+                    {
+                        file.SaveAs(FilePath + templateFileName);
+                        result = string.Format("上传成功{0}", filename);
+                        MyTools.InfoLog.Info(result);
+                        result = templateFileName;
+                    }
+                    catch (Exception ex)
+                    {
+                        MyTools.ErrorLog.Error(result);
+                        result = "上传文件写入失败：" + ex.Message;
+                    }
+                }
+            }
+            else
+            {
+                result = "上传的文件信息不存在！";
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        [HttpPost]
+        public async Task<HttpResponseMessage> DownloadFiles(ReportParams para)
+        {
+            try
+            {
+                string fileName = para.FileName;
+                string currRoot = AppDomain.CurrentDomain.BaseDirectory;
+                string filePath = string.Format(@"{0}\Files\OutPut\{1}", currRoot, fileName);
+                if (!string.IsNullOrWhiteSpace(filePath) && File.Exists(filePath))
+                {
+                    var stream = new FileStream(filePath, FileMode.Open);
+                    HttpResponseMessage resp = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StreamContent(stream)
+                    };
+                    resp.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                    {
+                        FileName = fileName
+                    };
+                    resp.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                    resp.Content.Headers.ContentLength = stream.Length;
+
+                    MyTools.InfoLog.Info("下载成功");//下载记录
+                    return await Task.FromResult(resp);
+                }
+            }
+            catch (Exception ex)
+            {
+                MyTools.ErrorLog.Error("下载失败:" + ex.Message, ex);
+                throw ex;
+            }
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        }
+
         [HttpGet]
         public IEnumerable<string> Get()
         {
@@ -66,82 +146,6 @@ namespace EmcReportWebApi.Controllers
             return result;
         }
 
-        [HttpPost]
-        public string UploadFiles()
-        {
-            string result = "上传成功";
-            HttpFileCollection filelist = HttpContext.Current.Request.Files;
-            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
-            if (filelist != null && filelist.Count > 0)
-            {
-                for (int i = 0; i < filelist.Count; i++)
-                {
-                    HttpPostedFile file = filelist[i];
-                    string filename = file.FileName;
-                    string extendName = MyTools.FilterExtendName(filename);
-                    string templateFileName = "upload" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + extendName;
-                    string FilePath = currRoot + "\\Files\\Upload\\";
-                    DirectoryInfo di = new DirectoryInfo(FilePath);
-                    if (!di.Exists) { di.Create(); }
-                    try
-                    {
-                        file.SaveAs(FilePath + templateFileName);
-                        result = string.Format("上传成功{0}", filename);
-                        MyTools.InfoLog.Info(result);
-                        result = templateFileName;
-                    }
-                    catch (Exception ex)
-                    {
-                        MyTools.ErrorLog.Error(result);
-                        result = "上传文件写入失败：" + ex.Message;
-                    }
-                }
-            }
-            else
-            {
-                result = "上传的文件信息不存在！";
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 下载文件
-        /// </summary>
-        /// <returns></returns>   
-        [HttpPost]
-        public async Task<HttpResponseMessage> DownloadFiles(ReportParams para)
-        {
-            try
-            {
-                string fileName = para.FileName;
-                string currRoot = AppDomain.CurrentDomain.BaseDirectory;
-                string filePath = string.Format(@"{0}\Files\OutPut\{1}", currRoot, fileName);
-                if (!string.IsNullOrWhiteSpace(filePath) && File.Exists(filePath))
-                {
-                    var stream = new FileStream(filePath, FileMode.Open);
-                    HttpResponseMessage resp = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new StreamContent(stream)
-                    };
-                    resp.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-                    {
-                        FileName = fileName
-                    };
-                    resp.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                    resp.Content.Headers.ContentLength = stream.Length;
-
-                    MyTools.InfoLog.Info("下载成功");//下载记录
-                    return await Task.FromResult(resp);
-                }
-            }
-            catch (Exception ex)
-            {
-                MyTools.ErrorLog.Error("下载失败:" + ex.Message, ex);
-                throw ex;
-            }
-            return new HttpResponseMessage(HttpStatusCode.NoContent);
-        }
 
 
         #region 私有方法

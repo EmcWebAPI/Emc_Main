@@ -86,6 +86,7 @@ namespace EmcReportWebApi.Common
             int startRow = 0;
             int endRow = 0;
             string mergeContent = "";
+            string nextColumnStr = "tempStr";
 
             foreach (var item in list)
             {
@@ -99,6 +100,12 @@ namespace EmcReportWebApi.Common
                 rowCount++;
                 for (int i = 0; i < arrStr.Length; i++)
                 {
+                    if (i == mergeColumn && arrStr[i].Equals(""))
+                    {
+                        nextColumnStr = arrStr[i];
+                        endRow = rowCount;
+                    }
+
                     if (i == mergeColumn - 1)
                     {
 
@@ -110,14 +117,19 @@ namespace EmcReportWebApi.Common
                         {
                             if (endRow != 0)
                             {
-                                MergeCell(table, startRow, i + 1, endRow, i + 1);
+                                MergeCell(table, startRow, i + 1, endRow, i + (nextColumnStr.Equals("") ? 2 : 1));
+                                //合并序号列
+                                if (startRow != endRow)
+                                    MergeCell(table, startRow, 1, endRow, 1);
                                 endRow = 0;
+                                nextColumnStr = "tempStr";
                             }
                             mergeContent = arrStr[i];
                             startRow = rowCount;
                         }
                         table.Cell(startRow, i + 1).Range.Text = arrStr[i];
                     }
+
                     else
                     {
                         table.Cell(rowCount, i + 1).Range.Text = arrStr[i];
@@ -125,15 +137,24 @@ namespace EmcReportWebApi.Common
                 }
             }
 
-            table.Select();
-            rowCount = table.Rows.Count;
-            for (int i = rowCount; i >= 1; i--)
+            //判断最后一行是否需要合并
+            if (endRow != 0)
             {
-                if (table.Cell(i, mergeColumn + 1).Range.Text.Equals("")|| table.Cell(i, mergeColumn + 1).Range.Text.Equals("\r\a"))
-                {
-                    MergeCell(table, i, mergeColumn, i, mergeColumn + 1);
-                }
+                MergeCell(table, startRow, mergeColumn, endRow, mergeColumn - 1 + (nextColumnStr.Equals("") ? 2 : 1));
+                //合并序号列
+                if (startRow != endRow)
+                    MergeCell(table, startRow, 1, endRow, 1);
             }
+
+            //table.Select();
+            //rowCount = table.Rows.Count;
+            //for (int i = rowCount; i >= 1; i--)
+            //{
+            //    if (table.Cell(i, mergeColumn + 1).Range.Text.Equals("") || table.Cell(i, mergeColumn + 1).Range.Text.Equals("\r\a"))
+            //    {
+            //        MergeCell(table, i, mergeColumn, i, mergeColumn + 1);
+            //    }
+            //}
             SetAutoFitContentForTable(table);
 
             return "保存成功";

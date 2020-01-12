@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\EmcReportWebApi",
+    "\\EmcReportWebApi\\Common",
+    "\\EmcReportWebApi\\Controllers",
+    "\\EmcReportWebApi\\Log",
+    "\\EmcReportWebApi\\Log\\Error",
+    "\\EmcReportWebApi\\Log\\Info"
+  ],
+  "SelectedNode": "\\EmcReportWebApi\\Controllers\\ReportController.cs",
+  "PreviewInSolutionExplorer": false
+}

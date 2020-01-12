@@ -1,0 +1,4 @@
+2020-01-12 22:42:11,855 [9] ERROR ErrorLogger - EmcReportWebApi.Models.ReportResult`1[System.String]
+2020-01-12 22:43:21,540 [6] ERROR ErrorLogger - EmcReportWebApi.Models.ReportResult`1[System.String]
+2020-01-12 22:44:08,041 [6] ERROR ErrorLogger - EmcReportWebApi.Models.ReportResult`1[System.String]
+2020-01-12 23:03:44,610 [6] ERROR ErrorLogger - 上传失败:上传的文件信息不存在！

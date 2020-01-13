@@ -245,11 +245,19 @@ namespace EmcReportWebApi.Controllers
                 //首页内容 object
                 //受检样品描述 object
                 JObject firstPage = (JObject)mainObj["firstPage"];
-                InsertContentToWord(wordUtil, firstPage);
+                result = InsertContentToWord(wordUtil, firstPage);
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 ////样品构成 list
                 JArray ypgcList = (JArray)mainObj["ypgcList"];
-                InsertListIntoTable(wordUtil, ypgcList, 2, "ypgclist");
+                result = InsertListIntoTable(wordUtil, ypgcList, 2, "ypgclist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 ////样品连接图 图片
                 JArray graphList = (JArray)mainObj["connectionGraph"];
@@ -257,22 +265,35 @@ namespace EmcReportWebApi.Controllers
 
                 ////样品运行模式 list
                 JArray ypyxList = (JArray)mainObj["ypyxList"];
-                InsertListIntoTable(wordUtil, ypyxList, 1, "ypyxlist");
+                result = InsertListIntoTable(wordUtil, ypyxList, 1, "ypyxlist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 ////样品电缆 list
                 JArray ypdlList = (JArray)mainObj["ypdlList"];
-                InsertListIntoTable(wordUtil, ypdlList, 2, "ypdllist");
+                result = InsertListIntoTable(wordUtil, ypdlList, 2, "ypdllist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 //测试设备list
                 JArray cssbList = (JArray)mainObj["cssbList"];
                 result = InsertListIntoTable(wordUtil, cssbList, 1, "cssblist");
-                if (!result.Equals("保存成功")) {
+                if (!result.Equals("保存成功"))
+                {
                     return result;
                 }
 
                 //辅助设备 list
                 JArray fzsbList = (JArray)mainObj["fzsbList"];
-                InsertListIntoTable(wordUtil, fzsbList, 1, "fzsblist");
+                result = InsertListIntoTable(wordUtil, fzsbList, 1, "fzsblist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 //实验数据
                 //JArray experiment = (JArray)mainObj["experiment"];

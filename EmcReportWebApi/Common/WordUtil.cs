@@ -63,6 +63,16 @@ namespace EmcReportWebApi.Common
             range.InsertAfter(content);
             return "插入成功";
         }
+
+        public string InsertContentInBookmark(string fileFullPath, string content, string bookmark, bool isCloseTheFile = true)
+        {
+            Document openWord = OpenWord(fileFullPath);
+            Range range = GetBookmarkRank(openWord, bookmark);
+            range.InsertAfter(content);
+            if (isCloseTheFile)
+                CloseWord(openWord);
+            return "插入成功";
+        }
         /// <summary>
         /// 向table中插入list
         /// </summary>
@@ -71,7 +81,7 @@ namespace EmcReportWebApi.Common
         /// <param name="mergeColumn">需要合并的列</param>
         /// <param name="isNeedNumber">是否需要添加序号</param>
         /// <returns></returns>
-        public string InsertListToTable(List<string> list, string bookmark, int mergeColumn,bool isNeedNumber=true)
+        public string InsertListToTable(List<string> list, string bookmark, int mergeColumn, bool isNeedNumber = true)
         {
             if (mergeColumn < 1)
             {
@@ -97,12 +107,13 @@ namespace EmcReportWebApi.Common
                 {
                     return "列和list集合不匹配";
                 }
-                if (isAddRow) {
+                if (isAddRow)
+                {
                     table.Rows.Add(ref _missing);
                     rowCount++;
                 }
                 isAddRow = true;
-                
+
                 for (int i = 0; i < arrStr.Length; i++)
                 {
                     if (i == mergeColumn && arrStr[i].Equals(""))
@@ -152,7 +163,7 @@ namespace EmcReportWebApi.Common
             }
 
             //写序号
-            if(isNeedNumber)
+            if (isNeedNumber)
                 AddTableNumber(table, 1);
 
             SetAutoFitContentForTable(table);
@@ -183,7 +194,8 @@ namespace EmcReportWebApi.Common
             return "插入成功";
         }
 
-        public string InsertImageToWord(List<string> list, string bookmark) {
+        public string InsertImageToWord(List<string> list, string bookmark)
+        {
             //获取bookmark位置的table
             Range range = GetBookmarkRank(_currentWord, bookmark);
             range.Select();
@@ -195,7 +207,7 @@ namespace EmcReportWebApi.Common
                 CreateAndGoToNextParagraph(range, true, true);
                 range.InsertAfter(content);
                 CreateAndGoToNextParagraph(range, true, true);
-                this.AddPicture(fileName, range.Application.ActiveDocument, range);
+                AddPicture(fileName, range.Application.ActiveDocument, range);
 
             }
             return "创建成功";
@@ -268,14 +280,54 @@ namespace EmcReportWebApi.Common
         /// <returns></returns>
         public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTheFile = true)
         {
-
+            string result = "创建成功";
             try
             {
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
+                result = CopyOtherFileTableForColByTableIndex(_currentWord, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isCloseTheFile);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+            return result;
+        }
+
+        public string CopyOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTemplateFile, bool isCloseTheFile = true)
+        {
+            string result = "创建成功";
+            try
+            {
+                Document templateDoc = OpenWord(templateFullPath);
+                Document rtfDoc = OpenWord(copyFileFullPath, true);
+                result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isCloseTheFile);
+                if (isCloseTemplateFile)
+                    this.CloseWord(templateDoc);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+            return "创建成功";
+        }
+
+
+        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTheFile = true)
+        {
+
+            try
+            {
+                //Document rtfDoc = OpenWord(copyFileFullPath, true);
 
                 int rtfTableCount = rtfDoc.Tables.Count;
 
-                Range wordTable = GetBookmarkRank(_currentWord, wordBookmark);
+                Range wordTable = GetBookmarkRank(templateDoc, wordBookmark);
 
                 for (int i = copyFileTableStartIndex; i <= rtfTableCount; i++)
                 {
@@ -321,6 +373,7 @@ namespace EmcReportWebApi.Common
 
             return "创建成功";
         }
+
 
         /// <summary>
         /// 插入其他文件的图片 从第几个图片开始
@@ -371,7 +424,7 @@ namespace EmcReportWebApi.Common
 
         #endregion
 
-        public string CopyContentToWord(string filePth, string bookmark, bool isCloseTheFile = true)
+        public string CopyOtherFileContentToWord(string filePth, string bookmark, bool isCloseTheFile = true)
         {
             try
             {
@@ -896,8 +949,9 @@ namespace EmcReportWebApi.Common
                     continue;
                 }
 
-                if (!isTitle) {
-                     intCell++;
+                if (!isTitle)
+                {
+                    intCell++;
                 }
 
                 item.Range.Text = (intCell).ToString();
@@ -976,6 +1030,7 @@ namespace EmcReportWebApi.Common
                 _wordApp.Selection.Shading.Texture = WdTextureIndex.wdTextureNone;
                 _wordApp.Selection.Shading.ForegroundPatternColor = WdColor.wdColorAutomatic;
                 _wordApp.Selection.Shading.BackgroundPatternColor = WdColor.wdColorAutomatic;
+                table.Select();
                 _wordApp.Selection.SelectCell();
                 _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
                 _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
@@ -1008,11 +1063,8 @@ namespace EmcReportWebApi.Common
         private void SetAutoFitContentForTable(Table table)
         {
             table.Select();
-            table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitContent);
-            table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitContent);
-            table.Select();
-            table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
-            table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+            _wordApp.Selection.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitContent);
+            _wordApp.Selection.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
         }
 
         private Dictionary<int, string> DicNum(Dictionary<int, string> dic)

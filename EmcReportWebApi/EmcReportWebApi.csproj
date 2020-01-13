@@ -94,7 +94,6 @@
     <Content Include="Log\Info\Logs_20191229.txt" />
     <Content Include="Log\Info\Logs_20191230.txt" />
     <Content Include="RtfConfig.xml" />
-    <Content Include="Files\Html\testhtml.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +115,24 @@
     <Content Include="Files\国医检%28磁%29字QW2018第698号模板改造1.docx" />
     <Content Include="Files\TestListToTable.docx" />
     <Content Include="Files\国医检%28磁%29字QW2018第698号模板改造.docx" />
+    <Content Include="Files\国医检%28磁%29字QW2018第698号.docx" />
+    <Content Include="Files\Upload\Rtf\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />
+    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L.Rtf" />
+    <Content Include="Files\Upload\Rtf\ZC2018-308 裂隙灯显微镜 波动.rtf" />
+    <Content Include="Files\Upload\Rtf\ZC2018-308 裂隙灯显微镜 谐波.rtf" />
+    <Content Include="Files\ExperimentTemplate\传导发射实验.docx" />
+    <Content Include="Files\ExperimentTemplate\在电源供电输入线上的电压暂降、短时中断和电压变化抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\射频场感应的传导骚扰抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\射频电磁场辐射抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\工频磁场抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\新建 Microsoft Word 文档 - 副本.docx" />
+    <Content Include="Files\ExperimentTemplate\新建 Microsoft Word 文档.docx" />
+    <Content Include="Files\ExperimentTemplate\浪涌抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\电外科干扰抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\电快速瞬变脉冲群抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\辐射发射试验.docx" />
+    <Content Include="Files\ExperimentTemplate\静电放电（ESD）抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\高频手术设备干扰抗扰度试验.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -135,7 +152,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Files\Upload\Rtf\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

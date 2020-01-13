@@ -116,6 +116,7 @@
     <Content Include="Files\国医检%28磁%29字QW2018第698号模板改造1.docx" />
     <Content Include="Files\TestListToTable.docx" />
     <Content Include="Files\国医检%28磁%29字QW2018第698号模板改造.docx" />
+    <Content Include="Files\国医检%28磁%29字QW2018第698号.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

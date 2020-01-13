@@ -73,6 +73,7 @@ namespace EmcReportWebApi.Common
                 CloseWord(openWord);
             return "插入成功";
         }
+
         /// <summary>
         /// 向table中插入list
         /// </summary>
@@ -170,6 +171,100 @@ namespace EmcReportWebApi.Common
 
             return "保存成功";
         }
+
+        public string InsertListIntoTableByTitle(Dictionary<string, List<string>> dic, string bookmark, bool isNeedNumber = true)
+        {
+
+            Range range = GetBookmarkRank(_currentWord, bookmark);
+            range.Select();
+            Table table = range.Tables[1];
+            table.Select();
+            table.Rows.Add(ref _missing);
+            int columnCount = 4;
+            int rowCount = 2;
+            //创建模板
+
+            string mergeContent = "tempStr";
+            string mergeContent2 = "tempStr";
+            int startRow1 = 0;
+            int endRow1 = 0;
+            int startRow2 = 0;
+            int endRow2 = 0;
+            int dicFor = 0;
+            foreach (var item in dic)
+            {
+                string title = item.Key;
+                List<string> list = item.Value;
+                if (dicFor != 0)
+                {
+                    table.Rows.Add(ref _missing);
+                    table.Rows.Add(ref _missing);
+                    rowCount = rowCount + 2;
+                }
+                //设置title
+                table.Select();
+                table.Cell(rowCount - 1, 1).Range.Text = title;
+                //添加列头
+                table.Cell(rowCount, 1).Range.Text = "条款";
+                table.Cell(rowCount, 2).Range.Text = "项目";
+                table.Cell(rowCount, 3).Range.Text = "实验结果";
+                table.Cell(rowCount, 4).Range.Text = "备注";
+                MergeCell(table, rowCount - 1, 1, rowCount - 1, columnCount);
+                table.Cell(rowCount - 1, 1).Select();
+                FontBoldLeft();
+
+                foreach (var listItem in list)
+                {
+                    table.Select();
+                    table.Rows.Add(ref _missing);
+                    rowCount++;
+                    string[] arrStr = listItem.Split(',');
+                    for (int i = 0; i < arrStr.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            if (mergeContent == arrStr[i])
+                            {
+                                endRow1 = rowCount;
+                            }
+                            else
+                            {
+                                if (endRow1 != 0)
+                                {
+                                    MergeCell(table, startRow1, i + 1, endRow1, i + 1);
+                                    endRow1 = 0;
+                                }
+                                mergeContent = arrStr[i];
+                                startRow1 = rowCount;
+                            }
+                        }
+                        else if (i == 3)
+                        {
+                            if (mergeContent2 == arrStr[i])
+                            {
+                                endRow2 = rowCount;
+                            }
+                            else
+                            {
+                                if (endRow2 != 0)
+                                {
+                                    MergeCell(table, startRow2, i + 1, endRow2, i + 1);
+                                    endRow2 = 0;
+                                }
+                                mergeContent2 = arrStr[i];
+                                startRow2 = rowCount;
+                            }
+                        }
+
+                        table.Cell(rowCount, i + 1).Range.Text = arrStr[i];
+                    }
+                }
+                dicFor++;
+            }
+            return "保存成功";
+        }
+
+
 
         /// <summary>
         /// 根据书签向word中插入内容
@@ -305,7 +400,7 @@ namespace EmcReportWebApi.Common
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
                 result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isCloseTheFile);
                 if (isCloseTemplateFile)
-                    this.CloseWord(templateDoc);
+                    CloseWord(templateDoc);
             }
             catch (Exception ex)
             {
@@ -374,6 +469,28 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
+        public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isCloseTheFile = true)
+        {
+            string result = "创建失败";
+            try
+            {
+                Document templateDoc = OpenWord(templalteFileFullName);
+                Document copyFileDoc = OpenWord(copyFileFullPath, true);
+                result = CopyOtherFilePictureToWord(templateDoc, copyFileDoc, copyFilePictureStartIndex, workBookmark, isCloseTheFile);
+                if (isCloseTemplateFile)
+                {
+                    CloseWord(templateDoc);
+                }
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            return "创建成功";
+        }
+
 
         /// <summary>
         /// 插入其他文件的图片 从第几个图片开始
@@ -385,10 +502,26 @@ namespace EmcReportWebApi.Common
         /// <returns></returns>
         public string CopyOtherFilePictureToWord(string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTheFile = true)
         {
+            string result = "创建失败";
             try
             {
-                Range bookmarkPic = GetBookmarkRank(_currentWord, workBookmark);
                 Document copyFileDoc = OpenWord(copyFileFullPath, true);
+                result = CopyOtherFilePictureToWord(_currentWord, copyFileDoc, copyFilePictureStartIndex, workBookmark, isCloseTheFile);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            return "创建成功";
+        }
+
+        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Range bookmarkPic = GetBookmarkRank(fileDoc, workBookmark);
                 copyFileDoc.Select();//选中当前文档进行操作
                 int i = 1;
                 foreach (InlineShape shape in copyFileDoc.InlineShapes)
@@ -928,6 +1061,12 @@ namespace EmcReportWebApi.Common
         private void MergeCell(Cell startCell, Cell endCell)
         {
             startCell.Merge(endCell);
+        }
+
+        private void FontBoldLeft()
+        {
+            _wordApp.Selection.Font.Bold = (int)WdConstants.wdToggle;
+            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
         }
 
         /// <summary>

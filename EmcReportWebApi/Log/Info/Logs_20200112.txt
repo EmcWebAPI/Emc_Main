@@ -1,5 +1,0 @@
-2020-01-12 22:37:43,633 [7] INFO  InfoLogger - EmcReportWebApi.Models.ReportResult`1[System.String]
-2020-01-12 22:44:44,166 [6] INFO  InfoLogger - EmcReportWebApi.Models.ReportResult`1[System.String]
-2020-01-12 22:54:20,535 [6] INFO  InfoLogger - 下载成功
-2020-01-12 22:55:36,855 [9] INFO  InfoLogger - 下载成功
-2020-01-12 23:03:33,922 [7] INFO  InfoLogger - EmcReportWebApi.Models.ReportResult`1[System.String]

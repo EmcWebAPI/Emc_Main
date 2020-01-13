@@ -221,6 +221,14 @@ namespace EmcReportWebApi.Controllers
             return imageFullFileName;
         }
 
+        private string GetTemplatePath(string fileName)
+        {
+            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
+            string imageFullFileName = string.Format(@"{0}\Files\ExperimentTemplate\{1}", currRoot, fileName);
+            return imageFullFileName;
+        }
+
+
         #region 生成报表方法
         private string JsonToWord(string jsonStr)
         {
@@ -267,6 +275,12 @@ namespace EmcReportWebApi.Controllers
                 InsertListIntoTable(wordUtil, fzsbList, 1, "fzsblist");
 
                 //实验数据
+                //JArray experiment = (JArray)mainObj["experiment"];
+                //foreach (JObject item in experiment)
+                //{
+                //    if (item["name"].ToString().Equals("传导发射实验"))
+                //        SetConductedEmission(wordUtil, item, "experiment");
+                //}
             }
 
             return "创建成功";
@@ -341,7 +355,60 @@ namespace EmcReportWebApi.Controllers
             return list;
         }
         #endregion
+        #region 实验数据
+        /// <summary>
+        /// 传导发射实验
+        /// </summary>
+        /// <returns></returns>
+        private string SetConductedEmission(WordUtil wordUtil, JObject jObject, string bookmark)
+        {
+            string templateName = jObject["name"].ToString();
+            string templateFullPath = GetTemplatePath(templateName + ".docx");
 
+            foreach (var item in jObject)
+            {
+                if (!item.Key.Equals("sysj") && !item.Key.Equals("name"))
+                    wordUtil.InsertContentInBookmark(templateFullPath, item.Value.ToString(), item.Key, false);
+            }
+
+            JObject sysj = (JObject)jObject["sysj"];
+
+            foreach (var item in sysj)
+            {
+                if (!item.Key.Equals("rtf"))
+                    wordUtil.InsertContentInBookmark(templateFullPath, item.Value.ToString(), item.Key, false);
+            }
+
+
+            //读取rtf文件信息
+            string rtfName = sysj["rtf"].ToString();
+            string rtfFullName = GetRtfPath(rtfName);
+
+            RtfTableInfo rtfTableInfo = MyTools.RtfTableInfos.Where(p => rtfFullName.Contains(p.RtfType)).FirstOrDefault();
+
+            if (rtfTableInfo == null)
+            {
+                throw new Exception("rtf配置文件未找到(" + rtfFullName + ")相关文件信息");
+            }
+
+            int startIndex = rtfTableInfo.StartIndex;
+            Dictionary<int, string> dic = rtfTableInfo.ColumnInfoDic;
+            string rtfbookmark = rtfTableInfo.Bookmark;
+
+            wordUtil.CopyOtherFileTableForColByTableIndex(templateFullPath, rtfFullName, startIndex, dic, rtfbookmark, false, false);
+
+            //RtfPictureInfo rtfPictureInfo = MyTools.RtfPictureInfos.Where(p => rtfFullName.Contains(p.RtfType)).FirstOrDefault();
+            //startIndex = rtfPictureInfo.StartIndex;
+            //bookmark = rtfPictureInfo.Bookmark;
+
+            //wordUtil.CopyOtherFilePictureToWord(rtfFullName, startIndex, bookmark);
+
+            wordUtil.CopyOtherFileContentToWord(templateFullPath, bookmark);
+
+
+            return "设置成功";
+        }
+        #endregion
 
         #region 测试
         private string JsonStrToJObject()
@@ -422,7 +489,7 @@ namespace EmcReportWebApi.Controllers
             using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
             {
 
-                wordUtil.CopyContentToWord(htmlfilePath, "bookmark1");
+                wordUtil.CopyOtherFileContentToWord(htmlfilePath, "bookmark1");
 
                 //获取文件中的table插入到当前文件
                 string rtfFileName = "ZC2018-128  生物安全柜 模式1 CE L.Rtf";

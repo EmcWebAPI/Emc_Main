@@ -96,10 +96,10 @@ namespace EmcReportWebApi.Controllers
         /// <summary>
         /// 下载文件
         /// </summary>
-        [HttpPost]
-        public async Task<HttpResponseMessage> DownloadFiles(ReportParams para)
+        [HttpGet]
+        public async Task<HttpResponseMessage> DownloadFiles(string fileName)
         {
-            string fileName = para.FileName;
+            //string fileName = para.FileName;
             string currRoot = AppDomain.CurrentDomain.BaseDirectory;
             try
             {

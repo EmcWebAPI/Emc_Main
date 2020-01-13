@@ -17,7 +17,7 @@ namespace EmcReportWebApi
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{action}",
-                defaults: new { controller="Report", action="Get2", id = RouteParameter.Optional }
+                defaults: new { controller="Report", action="Get", id = RouteParameter.Optional }
             );
         }
     }

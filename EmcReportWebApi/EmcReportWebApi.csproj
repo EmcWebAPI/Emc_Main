@@ -136,7 +136,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Files\OutPut\output1577433189851.27.docx" />
     <Content Include="Files\实验数据模板.docx" />
     <Content Include="Files\报告模板改造.docx" />
     <Content Include="Files\检测设备产出文档\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />
@@ -152,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Files\OutPut\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

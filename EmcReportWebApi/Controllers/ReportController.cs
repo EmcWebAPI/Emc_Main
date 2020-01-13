@@ -96,13 +96,18 @@ namespace EmcReportWebApi.Controllers
         /// <summary>
         /// 下载文件
         /// </summary>
-        [HttpGet]
-        public async Task<HttpResponseMessage> DownloadFiles(string fileName)
+        [HttpPost]
+        public IHttpActionResult DownloadFiles(ReportParams para)
         {
-            //string fileName = para.FileName;
+            string fileName = para.FileName;
             string currRoot = AppDomain.CurrentDomain.BaseDirectory;
             try
             {
+                var browser = String.Empty;
+                if (HttpContext.Current.Request.UserAgent != null)
+                {
+                    browser = HttpContext.Current.Request.UserAgent.ToUpper();
+                }
                 string extendName = MyTools.FilterExtendName(fileName);
                 string fileFullName = "";
                 //判断上传的文件
@@ -119,31 +124,28 @@ namespace EmcReportWebApi.Controllers
                         fileFullName = GetWordPath(fileName);
                         break;
                 }
-                if (!string.IsNullOrWhiteSpace(fileFullName) && File.Exists(fileFullName))
+                HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+                FileStream fileStream = File.OpenRead(fileFullName);
+                httpResponseMessage.Content = new StreamContent(fileStream);
+                httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                httpResponseMessage.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {
-                    var stream = new FileStream(fileFullName, FileMode.Open);
-                    HttpResponseMessage resp = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new StreamContent(stream)
-                    };
-                    resp.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-                    {
-                        FileName = fileName
-                    };
-                    resp.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                    resp.Content.Headers.ContentLength = stream.Length;
-
-                    MyTools.InfoLog.Info("下载成功");//下载记录
-                    return await Task.FromResult(resp);
-                }
+                    FileName =
+                        browser.Contains("FIREFOX")
+                            ? Path.GetFileName(fileFullName)
+                            : HttpUtility.UrlEncode(Path.GetFileName(fileFullName))
+                    //FileName = HttpUtility.UrlEncode(Path.GetFileName(filePath))
+                };
+                MyTools.InfoLog.Info("下载成功:"+fileName);
+                return ResponseMessage(httpResponseMessage);
             }
             catch (Exception ex)
             {
-                MyTools.ErrorLog.Error("下载失败:" + ex.Message, ex);
+                MyTools.ErrorLog.Error(ex.Message, ex);
                 throw ex;
             }
-            return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
+
         
         [HttpGet]
         public string Get2()

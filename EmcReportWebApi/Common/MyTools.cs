@@ -99,7 +99,7 @@ namespace EmcReportWebApi.Common
         public static string FilterExtendName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('.');
-            string extendName = fileFullName.Substring(index, fileFullName.Length - index);
+            string extendName = fileFullName.Substring(index, fileFullName.Length - index).ToLower();
 
             return extendName;
         }

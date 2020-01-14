@@ -265,12 +265,12 @@ namespace EmcReportWebApi.Controllers
                 //InsertImageToWord(wordUtil, graphList, "connectionGraph");
 
                 //////样品运行模式 list
-                //JArray ypyxList = (JArray)mainObj["ypyxList"];
-                //result = InsertListIntoTable(wordUtil, ypyxList, 1, "ypyxlist");
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                JArray ypyxList = (JArray)mainObj["ypyxList"];
+                result = InsertListIntoTable(wordUtil, ypyxList, 1, "ypyxlist",false);
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 //////样品电缆 list
                 //JArray ypdlList = (JArray)mainObj["ypdlList"];
@@ -301,12 +301,12 @@ namespace EmcReportWebApi.Controllers
                 //result = InsertListIntoTableByTitle(wordUtil, experimentalResult, "experimentalResult");
 
                 //实验数据
-                JArray experiment = (JArray)mainObj["experiment"];
-                foreach (JObject item in experiment)
-                {
-                    if (item["name"].ToString().Equals("传导发射实验"))
-                        SetConductedEmission(wordUtil, item, "experiment");
-                }
+                //JArray experiment = (JArray)mainObj["experiment"];
+                //foreach (JObject item in experiment)
+                //{
+                //    if (item["name"].ToString().Equals("传导发射实验"))
+                //        SetConductedEmission(wordUtil, item, "experiment");
+                //}
             }
 
             return "创建成功";
@@ -322,11 +322,11 @@ namespace EmcReportWebApi.Controllers
             return "保存成功";
         }
 
-        private string InsertListIntoTable(WordUtil wordUtil, JArray array, int mergeColumn, string bookmark)
+        private string InsertListIntoTable(WordUtil wordUtil, JArray array, int mergeColumn, string bookmark, bool isNeedNumber = true)
         {
             List<string> list = JarrayToList(array);
 
-            string result = wordUtil.InsertListToTable(list, bookmark, mergeColumn);
+            string result = wordUtil.InsertListToTable(list, bookmark, mergeColumn, isNeedNumber);
 
             return result;
         }
@@ -417,6 +417,7 @@ namespace EmcReportWebApi.Controllers
             return dic;
         }
         #endregion
+
         #region 实验数据
         /// <summary>
         /// 传导发射实验

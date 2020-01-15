@@ -93,6 +93,7 @@ namespace EmcReportWebApi.Common
             range.Select();
             Table table = range.Tables[1];
             int rowCount = table.Rows.Count;
+            int columnCount = table.Columns.Count;
             //设置合并第二列相邻的相同内容
 
             int startRow = 0;
@@ -134,10 +135,23 @@ namespace EmcReportWebApi.Common
                         {
                             if (endRow != 0)
                             {
+                                //备注
+                                if (startRow != endRow)
+                                {
+                                    string tempText = table.Cell(startRow, columnCount).Range.Text;
+                                    MergeCell(table, startRow, columnCount, endRow, columnCount);
+                                    table.Select();
+                                    table.Cell(startRow, columnCount).Range.Text = tempText;
+                                }
+                                
                                 MergeCell(table, startRow, i + 1, endRow, i + (nextColumnStr.Equals("") ? 2 : 1));
                                 //合并序号列
                                 if (startRow != endRow)
+                                {
                                     MergeCell(table, startRow, 1, endRow, 1);
+
+                                }
+
                                 endRow = 0;
                                 nextColumnStr = "tempStr";
                             }
@@ -655,7 +669,8 @@ namespace EmcReportWebApi.Common
             return "保存成功";
         }
 
-        public string CopyOtherFileContentToWord(string firstFilePath, string secondFilePath, string bookmark, bool isCloseTheFile = true) {
+        public string CopyOtherFileContentToWord(string firstFilePath, string secondFilePath, string bookmark, bool isCloseTheFile = true)
+        {
             try
             {
                 Document htmldoc = OpenWord(firstFilePath);

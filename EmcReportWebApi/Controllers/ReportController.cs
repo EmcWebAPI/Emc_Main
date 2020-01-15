@@ -253,12 +253,12 @@ namespace EmcReportWebApi.Controllers
                 //}
 
                 //////样品构成 list
-                //JArray ypgcList = (JArray)mainObj["ypgcList"];
-                //result = InsertListIntoTable(wordUtil, ypgcList, 2, "ypgclist");
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                JArray ypgcList = (JArray)mainObj["ypgcList"];
+                result = InsertListIntoTable(wordUtil, ypgcList, 2, "ypgclist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 //////样品连接图 图片
                 //JArray graphList = (JArray)mainObj["connectionGraph"];
@@ -301,12 +301,12 @@ namespace EmcReportWebApi.Controllers
                 //result = InsertListIntoTableByTitle(wordUtil, experimentalResult, "experimentalResult");
 
                 //实验数据
-                JArray experiment = (JArray)mainObj["experiment"];
-                foreach (JObject item in experiment)
-                {
-                    if (item["name"].ToString().Equals("传导发射实验"))
-                        SetConductedEmission(wordUtil, item, "experiment");
-                }
+                //JArray experiment = (JArray)mainObj["experiment"];
+                //foreach (JObject item in experiment)
+                //{
+                //    if (item["name"].ToString().Equals("传导发射实验"))
+                //        SetConductedEmission(wordUtil, item, "experiment");
+                //}
             }
 
             return "创建成功";

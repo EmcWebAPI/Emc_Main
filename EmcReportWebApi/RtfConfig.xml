@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Root>
   <TempType Type="CE">
-    <Table StartIndex="1" Bookmark="table">
+    <Table StartIndex="1" Bookmark="sysj">
       <Column>
         <Title>频率
 （MHz）</Title>
@@ -27,7 +27,7 @@
         <ColumnIndex>9</ColumnIndex>
       </Column>
     </Table>
-    <Picture StartIndex="1" Bookmark="image">
+    <Picture StartIndex="1" Bookmark="sysj">
       
     </Picture>
   </TempType>

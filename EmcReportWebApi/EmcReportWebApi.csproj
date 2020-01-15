@@ -125,14 +125,16 @@
     <Content Include="Files\ExperimentTemplate\射频场感应的传导骚扰抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\射频电磁场辐射抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\工频磁场抗扰度试验.docx" />
-    <Content Include="Files\ExperimentTemplate\新建 Microsoft Word 文档 - 副本.docx" />
-    <Content Include="Files\ExperimentTemplate\新建 Microsoft Word 文档.docx" />
     <Content Include="Files\ExperimentTemplate\浪涌抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\电外科干扰抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\电快速瞬变脉冲群抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\辐射发射试验.docx" />
     <Content Include="Files\ExperimentTemplate\静电放电（ESD）抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\高频手术设备干扰抗扰度试验.docx" />
+    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE N.Rtf" />
+    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE N - 副本.Rtf" />
+    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L - 副本.Rtf" />
+    <Content Include="Files\ExperimentTemplate\RTFTemplate.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

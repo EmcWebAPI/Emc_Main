@@ -119,9 +119,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Files\国医检%28磁%29字QW2018第698号模板改造1.docx" />
-    <Content Include="Files\TestListToTable.docx" />
-    <Content Include="Files\国医检%28磁%29字QW2018第698号模板改造.docx" />
     <Content Include="Files\国医检%28磁%29字QW2018第698号.docx" />
     <Content Include="Files\Upload\Rtf\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />
     <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L.Rtf" />
@@ -142,16 +139,9 @@
     <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE N - 副本.Rtf" />
     <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L - 副本.Rtf" />
     <Content Include="Files\ExperimentTemplate\RTFTemplate.docx" />
-    <Content Include="Files\检测设备产出文档\国医检%28磁%29字QW2018第698号%28原始数据%29.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Files\实验数据模板.docx" />
-    <Content Include="Files\报告模板改造.docx" />
-    <Content Include="Files\检测设备产出文档\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />
-    <Content Include="Files\检测设备产出文档\ZC2018-128  生物安全柜 模式1 CE L.Rtf" />
-    <Content Include="Files\检测设备产出文档\ZC2018-308 裂隙灯显微镜 波动.rtf" />
-    <Content Include="Files\检测设备产出文档\ZC2018-308 裂隙灯显微镜 谐波.rtf" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

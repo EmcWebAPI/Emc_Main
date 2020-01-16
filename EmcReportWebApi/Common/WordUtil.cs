@@ -55,22 +55,24 @@ namespace EmcReportWebApi.Common
             _disposed = false;
             _needWrite = true;
         }
-
-
-        public string InsertContentInBookmark(string content, string bookmark)
-        {
-            Range range = GetBookmarkRank(_currentWord, bookmark);
-            range.InsertAfter(content);
-            return "插入成功";
-        }
-
+        
         public string InsertContentInBookmark(string fileFullPath, string content, string bookmark, bool isCloseTheFile = true)
         {
-            Document openWord = OpenWord(fileFullPath);
-            Range range = GetBookmarkRank(openWord, bookmark);
-            range.InsertAfter(content);
-            if (isCloseTheFile)
-                CloseWord(openWord, fileFullPath);
+            try
+            {
+                Document openWord = OpenWord(fileFullPath);
+                Range range = GetBookmarkRank(openWord, bookmark);
+                range.InsertAfter(content);
+                if (isCloseTheFile)
+                    CloseWord(openWord, fileFullPath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
             return "插入成功";
         }
 
@@ -88,100 +90,110 @@ namespace EmcReportWebApi.Common
             {
                 return "合并列不能小于1";
             }
-            //获取bookmark位置的table
-            Range range = GetBookmarkRank(_currentWord, bookmark);
-            range.Select();
-            Table table = range.Tables[1];
-            int rowCount = table.Rows.Count;
-            int columnCount = table.Columns.Count;
-            //设置合并第二列相邻的相同内容
-
-            int startRow = 0;
-            int endRow = 0;
-            string mergeContent = "";
-            string nextColumnStr = "tempStr";
-            bool isAddRow = false;
-
-            foreach (var item in list)
+            try
             {
-                string[] arrStr = item.Split(',');
-                if (table.Columns.Count != arrStr.Length)
-                {
-                    return "列和list集合不匹配";
-                }
-                if (isAddRow)
-                {
-                    table.Rows.Add(ref _missing);
-                    rowCount++;
-                }
-                isAddRow = true;
+                //获取bookmark位置的table
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                range.Select();
+                Table table = range.Tables[1];
+                int rowCount = table.Rows.Count;
+                int columnCount = table.Columns.Count;
+                //设置合并第二列相邻的相同内容
 
-                for (int i = 0; i < arrStr.Length; i++)
+                int startRow = 0;
+                int endRow = 0;
+                string mergeContent = "";
+                string nextColumnStr = "tempStr";
+                bool isAddRow = false;
+
+                foreach (var item in list)
                 {
-                    if (i == mergeColumn && arrStr[i].Equals(""))
+                    string[] arrStr = item.Split(',');
+                    if (table.Columns.Count != arrStr.Length)
                     {
-                        nextColumnStr = arrStr[i];
-                        endRow = rowCount;
+                        return "列和list集合不匹配";
                     }
-
-                    if (i == mergeColumn - 1)
+                    if (isAddRow)
                     {
+                        table.Rows.Add(ref _missing);
+                        rowCount++;
+                    }
+                    isAddRow = true;
 
-                        if (mergeContent == arrStr[i])
+                    for (int i = 0; i < arrStr.Length; i++)
+                    {
+                        if (i == mergeColumn && arrStr[i].Equals(""))
                         {
+                            nextColumnStr = arrStr[i];
                             endRow = rowCount;
                         }
+
+                        if (i == mergeColumn - 1)
+                        {
+
+                            if (mergeContent == arrStr[i])
+                            {
+                                endRow = rowCount;
+                            }
+                            else
+                            {
+                                if (endRow != 0)
+                                {
+                                    //备注
+                                    if (startRow != endRow)
+                                    {
+                                        string tempText = table.Cell(startRow, columnCount).Range.Text;
+                                        MergeCell(table, startRow, columnCount, endRow, columnCount);
+                                        table.Select();
+                                        table.Cell(startRow, columnCount).Range.Text = tempText;
+                                    }
+
+                                    MergeCell(table, startRow, i + 1, endRow, i + (nextColumnStr.Equals("") ? 2 : 1));
+                                    //合并序号列
+                                    if (startRow != endRow)
+                                    {
+                                        MergeCell(table, startRow, 1, endRow, 1);
+
+                                    }
+
+                                    endRow = 0;
+                                    nextColumnStr = "tempStr";
+                                }
+                                mergeContent = arrStr[i];
+                                startRow = rowCount;
+                            }
+                            table.Cell(startRow, i + 1).Range.Text = arrStr[i];
+                        }
+
                         else
                         {
-                            if (endRow != 0)
-                            {
-                                //备注
-                                if (startRow != endRow)
-                                {
-                                    string tempText = table.Cell(startRow, columnCount).Range.Text;
-                                    MergeCell(table, startRow, columnCount, endRow, columnCount);
-                                    table.Select();
-                                    table.Cell(startRow, columnCount).Range.Text = tempText;
-                                }
-
-                                MergeCell(table, startRow, i + 1, endRow, i + (nextColumnStr.Equals("") ? 2 : 1));
-                                //合并序号列
-                                if (startRow != endRow)
-                                {
-                                    MergeCell(table, startRow, 1, endRow, 1);
-
-                                }
-
-                                endRow = 0;
-                                nextColumnStr = "tempStr";
-                            }
-                            mergeContent = arrStr[i];
-                            startRow = rowCount;
+                            table.Cell(rowCount, i + 1).Range.Text = arrStr[i];
                         }
-                        table.Cell(startRow, i + 1).Range.Text = arrStr[i];
-                    }
-
-                    else
-                    {
-                        table.Cell(rowCount, i + 1).Range.Text = arrStr[i];
                     }
                 }
-            }
 
-            //判断最后一行是否需要合并
-            if (endRow != 0)
+                //判断最后一行是否需要合并
+                if (endRow != 0)
+                {
+                    MergeCell(table, startRow, mergeColumn, endRow, mergeColumn - 1 + (nextColumnStr.Equals("") ? 2 : 1));
+                    //合并序号列
+                    if (startRow != endRow)
+                        MergeCell(table, startRow, 1, endRow, 1);
+                }
+
+                //写序号
+                if (isNeedNumber)
+                    AddTableNumber(table, 1);
+
+                SetAutoFitContentForTable(table);
+            }
+            catch (Exception ex)
             {
-                MergeCell(table, startRow, mergeColumn, endRow, mergeColumn - 1 + (nextColumnStr.Equals("") ? 2 : 1));
-                //合并序号列
-                if (startRow != endRow)
-                    MergeCell(table, startRow, 1, endRow, 1);
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
 
-            //写序号
-            if (isNeedNumber)
-                AddTableNumber(table, 1);
-
-            SetAutoFitContentForTable(table);
 
             return "保存成功";
         }
@@ -277,22 +289,7 @@ namespace EmcReportWebApi.Common
             }
             return "保存成功";
         }
-
-        /// <summary>
-        /// 在文档末尾添加分页符
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        public string InsertBreakForPage(string filePath, bool isClose = true)
-        {
-            Document doc = OpenWord(filePath);
-            doc.Content.Select();
-            InsertBreakPage(true);
-            if (isClose)
-                CloseWord(doc, filePath);
-            return "修改成功";
-        }
-
+        
 
         /// <summary>
         /// 根据书签向word中插入内容
@@ -300,7 +297,7 @@ namespace EmcReportWebApi.Common
         /// <param name="content"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string InsertContentToWord(string content, string bookmark)
+        public string InsertContentToWordByBookmark(string content, string bookmark)
         {
             try
             {
@@ -319,57 +316,76 @@ namespace EmcReportWebApi.Common
 
         public string InsertImageToWord(List<string> list, string bookmark)
         {
-            //获取bookmark位置的table
-            Range range = GetBookmarkRank(_currentWord, bookmark);
-            range.Select();
-            foreach (var item in list)
+            try
             {
-                string[] arrStr = item.Split(',');
-                string content = arrStr[0];
-                string fileName = arrStr[1];
-                CreateAndGoToNextParagraph(range, true, true);
-                range.InsertAfter(content);
-                CreateAndGoToNextParagraph(range, true, true);
-                AddPicture(fileName, range.Application.ActiveDocument, range);
+                //获取bookmark位置的table
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                range.Select();
+                foreach (var item in list)
+                {
+                    string[] arrStr = item.Split(',');
+                    string content = arrStr[0];
+                    string fileName = arrStr[1];
+                    CreateAndGoToNextParagraph(range, true, true);
+                    range.InsertAfter(content);
+                    CreateAndGoToNextParagraph(range, true, true);
+                    AddPicture(fileName, range.Application.ActiveDocument, range);
 
+                }
             }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
             return "创建成功";
         }
 
         public string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
         {
-
-            Document doc = OpenWord(fileFullPath);
-            Range range = GetBookmarkRank(doc, bookmark);
-
-            int listCount = list.Count;
-            int rowCount = listCount / 2;
-            int columnCount = 2;
-            if (listCount % 2 != 0)
+            try
             {
-                rowCount++;
-            }
-            if (listCount == 1)
-                columnCount = 1;
-            //创建表格
-            range.Select();
-            Table table = _wordApp.Selection.Tables.Add(range, rowCount, columnCount, ref _missing, ref _missing);
+                Document doc = OpenWord(fileFullPath);
+                Range range = GetBookmarkRank(doc, bookmark);
 
-            for (int i = 0; i < listCount; i++)
-            {
-                string[] arrStr = list[i].Split(',');
-                string fileName = arrStr[0];
-                string content = arrStr[1];
-                table.Select();
-                Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
-                cellRange.Select();
-                //CreateAndGoToNextParagraph(cellRange, true, true);
-                AddPicture(fileName, doc, cellRange);
-                CreateAndGoToNextParagraph(cellRange, true, false);
-                cellRange.InsertAfter(content);
+                int listCount = list.Count;
+                int rowCount = listCount / 2;
+                int columnCount = 2;
+                if (listCount % 2 != 0)
+                {
+                    rowCount++;
+                }
+                if (listCount == 1)
+                    columnCount = 1;
+                //创建表格
+                range.Select();
+                Table table = _wordApp.Selection.Tables.Add(range, rowCount, columnCount, ref _missing, ref _missing);
+
+                for (int i = 0; i < listCount; i++)
+                {
+                    string[] arrStr = list[i].Split(',');
+                    string fileName = arrStr[0];
+                    string content = arrStr[1];
+                    table.Select();
+                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
+                    cellRange.Select();
+                    //CreateAndGoToNextParagraph(cellRange, true, true);
+                    AddPicture(fileName, doc, cellRange);
+                    CreateAndGoToNextParagraph(cellRange, true, false);
+                    cellRange.InsertAfter(content);
+                }
+                if (isCloseTheFile)
+                    CloseWord(doc, fileFullPath);
             }
-            if (isCloseTheFile)
-                CloseWord(doc, fileFullPath);
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
             return "插入图片成功";
         }
 
@@ -538,7 +554,6 @@ namespace EmcReportWebApi.Common
 
         private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isNeedBreak)
         {
-
             try
             {
                 //Document rtfDoc = OpenWord(copyFileFullPath, true);
@@ -692,7 +707,7 @@ namespace EmcReportWebApi.Common
                 Dispose();
                 throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
-            return "创建成功";
+            return "设置成功";
         }
 
         #endregion
@@ -1104,7 +1119,7 @@ namespace EmcReportWebApi.Common
                 _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
             }
         }
-
+        
         //插入图片
         private void AddPicture(string picFileName, Document doc, Range range)
         {

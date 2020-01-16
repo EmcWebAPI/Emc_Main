@@ -162,40 +162,49 @@ namespace EmcReportWebApi.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult CreateReportAndDownLoad()
+        public IHttpActionResult CreateReportAndDownLoad(ReportParams para)
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            MyTools.KillWordProcess();
-            string result = JsonToWord(jsonStr);
-            result = GetWordPath(result);
-            //string result = "";
-            sw.Stop();
-            double time1 = (double)sw.ElapsedMilliseconds / 1000;
-            return DownloadFiles(result);
-        }
-
-        [HttpPost]
-        public string CreateReport(ReportParams para)
-        {
-            string jsonStr = para.JsonStr;
-            string result = "创建成功";
-            Stopwatch sw = new Stopwatch();
-
-            sw.Start();
-            MyTools.KillWordProcess();
             try
             {
-                result = JsonToWord(jsonStr);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                string result = JsonToWord(jsonStr);
+                result = GetWordPath(result);
+                //string result = "";
+                sw.Stop();
+                double time1 = (double)sw.ElapsedMilliseconds / 1000;
+                return DownloadFiles(result);
             }
             catch (Exception ex)
             {
-
+                MyTools.ErrorLog.Error(ex.Message, ex);
                 throw ex;
             }
-            sw.Stop();
-            double time1 = (double)sw.ElapsedMilliseconds / 1000;
-            return "创建成功" + result + ":" + time1.ToString();
+        }
+
+        [HttpPost]
+        public ReportResult<string> CreateReport(ReportParams para)
+        {
+            //string jsonStr = para.JsonStr;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            ReportResult<string> result = new ReportResult<string>();
+            try
+            {
+                string content = JsonToWord(jsonStr);
+                sw.Stop();
+                double time1 = (double)sw.ElapsedMilliseconds / 1000;
+                result= SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
+                MyTools.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
+            }
+            catch (Exception ex)
+            {
+                MyTools.ErrorLog.Error(ex.Message,ex);
+                throw ex;
+            }
+            
+            return result;
         }
 
 
@@ -253,61 +262,62 @@ namespace EmcReportWebApi.Controllers
 
             string middleDir = currRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
             filePath = CreateTemplateMiddle(middleDir,"template", filePath);
+            string result = "保存成功1";
             //生成报告
             using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
             {
-                ////首页内容 object
-                ////受检样品描述 object
-                //JObject firstPage = (JObject)mainObj["firstPage"];
-                //result = InsertContentToWord(wordUtil, firstPage);
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                //首页内容 object
+                //受检样品描述 object
+                JObject firstPage = (JObject)mainObj["firstPage"];
+                result = InsertContentToWord(wordUtil, firstPage);
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
-                ////////样品构成 list
-                //JArray ypgcList = (JArray)mainObj["ypgcList"];
-                //result = InsertListIntoTable(wordUtil, ypgcList, 2, "ypgclist");
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                //样品构成 list
+                JArray ypgcList = (JArray)mainObj["ypgcList"];
+                result = InsertListIntoTable(wordUtil, ypgcList, 2, "ypgclist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
-                //////样品连接图 图片
-                //JArray graphList = (JArray)mainObj["connectionGraph"];
-                //InsertImageToWord(wordUtil, graphList, "connectionGraph");
+                //样品连接图 图片
+                JArray graphList = (JArray)mainObj["connectionGraph"];
+                InsertImageToWord(wordUtil, graphList, "connectionGraph");
 
-                //////样品运行模式 list
-                //JArray ypyxList = (JArray)mainObj["ypyxList"];
-                //result = InsertListIntoTable(wordUtil, ypyxList, 1, "ypyxlist", false);
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                //样品运行模式 list
+                JArray ypyxList = (JArray)mainObj["ypyxList"];
+                result = InsertListIntoTable(wordUtil, ypyxList, 1, "ypyxlist", false);
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
-                //////样品电缆 list
-                //JArray ypdlList = (JArray)mainObj["ypdlList"];
-                //result = InsertListIntoTable(wordUtil, ypdlList, 2, "ypdllist");
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                //样品电缆 list
+                JArray ypdlList = (JArray)mainObj["ypdlList"];
+                result = InsertListIntoTable(wordUtil, ypdlList, 2, "ypdllist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
-                ////测试设备list
-                //JArray cssbList = (JArray)mainObj["cssbList"];
-                //result = InsertListIntoTable(wordUtil, cssbList, 1, "cssblist");
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                //测试设备list
+                JArray cssbList = (JArray)mainObj["cssbList"];
+                result = InsertListIntoTable(wordUtil, cssbList, 1, "cssblist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
-                ////辅助设备 list
-                //JArray fzsbList = (JArray)mainObj["fzsbList"];
-                //result = InsertListIntoTable(wordUtil, fzsbList, 1, "fzsblist");
-                //if (!result.Equals("保存成功"))
-                //{
-                //    return result;
-                //}
+                //辅助设备 list
+                JArray fzsbList = (JArray)mainObj["fzsbList"];
+                result = InsertListIntoTable(wordUtil, fzsbList, 1, "fzsblist");
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
 
                 //实验结果概述
                 //JArray experimentalResult = (JArray)mainObj["experimentalResult"];
@@ -325,7 +335,7 @@ namespace EmcReportWebApi.Controllers
                 }
             }
             //删除中间件文件夹
-            //this.DelectDir(middleDir);
+            this.DelectDir(middleDir);
 
             return outfileName;
         }
@@ -335,7 +345,7 @@ namespace EmcReportWebApi.Controllers
         {
             foreach (var item in jo1)
             {
-                wordUtil.InsertContentToWord(item.Value.ToString(), item.Key);
+                wordUtil.InsertContentToWordByBookmark(item.Value.ToString(), item.Key);
             }
             return "保存成功";
         }
@@ -593,6 +603,7 @@ namespace EmcReportWebApi.Controllers
                         File.Delete(i.FullName);      //删除指定文件
                     }
                 }
+                Directory.Delete(srcPath);
             }
             catch (Exception e)
             {

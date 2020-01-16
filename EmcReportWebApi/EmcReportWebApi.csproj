@@ -90,6 +90,9 @@
     <Content Include="Files\Upload\Image\image2.jpg" />
     <Content Include="Files\Upload\Image\model1.jpg" />
     <Content Include="Files\Upload\Image\model2.jpg" />
+    <Content Include="Files\Upload\Image\re1.jpg" />
+    <Content Include="Files\Upload\Image\re2.jpg" />
+    <Content Include="Files\Upload\Image\reljt.jpg" />
     <Content Include="Global.asax" />
     <Content Include="Log\Error\Error_20191229.txt" />
     <Content Include="Log\Error\Error_20191230.txt" />

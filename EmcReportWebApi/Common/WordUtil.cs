@@ -70,7 +70,7 @@ namespace EmcReportWebApi.Common
             Range range = GetBookmarkRank(openWord, bookmark);
             range.InsertAfter(content);
             if (isCloseTheFile)
-                CloseWord(openWord);
+                CloseWord(openWord, fileFullPath);
             return "插入成功";
         }
 
@@ -278,6 +278,20 @@ namespace EmcReportWebApi.Common
             return "保存成功";
         }
 
+        /// <summary>
+        /// 在文档末尾添加分页符
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public string InsertBreakForPage(string filePath, bool isClose = true)
+        {
+            Document doc = OpenWord(filePath);
+            doc.Content.Select();
+            InsertBreakPage(true);
+            if (isClose)
+                CloseWord(doc, filePath);
+            return "修改成功";
+        }
 
 
         /// <summary>
@@ -355,7 +369,7 @@ namespace EmcReportWebApi.Common
                 cellRange.InsertAfter(content);
             }
             if (isCloseTheFile)
-                CloseWord(doc);
+                CloseWord(doc, fileFullPath);
             return "插入图片成功";
         }
 
@@ -403,7 +417,7 @@ namespace EmcReportWebApi.Common
                 wordTable.Paste();
                 ClearFormatTable(wordTable.Tables[1]);
                 if (isCloseTheFile)
-                    CloseWord(rtfDoc);
+                    CloseWord(rtfDoc, copyFileFullPath);
             }
             catch (Exception ex)
             {
@@ -483,7 +497,10 @@ namespace EmcReportWebApi.Common
             try
             {
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFileTableForColByTableIndex(_currentWord, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isNeedBreak, isCloseTheFile);
+                result = CopyOtherFileTableForColByTableIndex(_currentWord, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isNeedBreak);
+                if (isCloseTheFile)
+                    CloseWord(rtfDoc, copyFileFullPath);
+
             }
             catch (Exception ex)
             {
@@ -502,9 +519,11 @@ namespace EmcReportWebApi.Common
             {
                 Document templateDoc = OpenWord(templateFullPath);
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isNeedBreak, isCloseTheFile);
+                result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isNeedBreak);
                 if (isCloseTemplateFile)
-                    CloseWord(templateDoc);
+                    CloseWord(templateDoc, templateFullPath);
+                if (isCloseTheFile)
+                    CloseWord(rtfDoc, copyFileFullPath);
             }
             catch (Exception ex)
             {
@@ -517,7 +536,7 @@ namespace EmcReportWebApi.Common
         }
 
 
-        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isNeedBreak, bool isCloseTheFile = true)
+        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isNeedBreak)
         {
 
             try
@@ -566,8 +585,6 @@ namespace EmcReportWebApi.Common
                     ClearFormatTable(wordTable.Tables[1]);
                 }
 
-                if (isCloseTheFile)
-                    CloseWord(rtfDoc);
             }
             catch (Exception ex)
             {
@@ -586,11 +603,13 @@ namespace EmcReportWebApi.Common
             {
                 Document templateDoc = OpenWord(templalteFileFullName);
                 Document copyFileDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFilePictureToWord(templateDoc, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak, isCloseTheFile);
+                result = CopyOtherFilePictureToWord(templateDoc, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak);
                 if (isCloseTemplateFile)
                 {
-                    CloseWord(templateDoc);
+                    CloseWord(templateDoc, templalteFileFullName);
                 }
+                if (isCloseTheFile)
+                    CloseWord(copyFileDoc, copyFileFullPath);
             }
             catch (Exception ex)
             {
@@ -616,7 +635,9 @@ namespace EmcReportWebApi.Common
             try
             {
                 Document copyFileDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFilePictureToWord(_currentWord, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak, isCloseTheFile);
+                result = CopyOtherFilePictureToWord(_currentWord, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak);
+                if (isCloseTheFile)
+                    CloseWord(copyFileDoc, copyFileFullPath);
             }
             catch (Exception ex)
             {
@@ -627,7 +648,7 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak)
         {
             try
             {
@@ -660,8 +681,6 @@ namespace EmcReportWebApi.Common
                         i++;
                     }
                 }
-                if (isCloseTheFile)
-                    CloseWord(copyFileDoc);
             }
             catch (Exception ex)
             {
@@ -694,7 +713,7 @@ namespace EmcReportWebApi.Common
                 }
 
                 if (isCloseTheFile)
-                    CloseWord(htmldoc);
+                    CloseWord(htmldoc, filePth);
             }
             catch (Exception ex)
             {
@@ -704,6 +723,47 @@ namespace EmcReportWebApi.Common
             }
 
             return "保存成功";
+        }
+
+        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isCloseTheFile = true)
+        {
+            string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            try
+            {
+                Document htmldoc = OpenWord(filePath);
+                Range rangeContent = htmldoc.Content;
+                rangeContent.Select();
+                InsertBreakPage(true);
+                rangeContent = rangeContent.Sections.Last.Range;
+                CreateAndGoToNextParagraph(rangeContent, false, true);
+                rangeContent.Select();
+
+                _wordApp.Selection.Bookmarks.Add(newBookmark, rangeContent);
+                htmldoc.Content.Copy();
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                range.Select();
+                range.Paste();
+                range.Select();
+                int tableCount = _wordApp.Selection.Tables.Count;
+                if (tableCount > 0)
+                {
+                    foreach (Table table in _wordApp.Selection.Tables)
+                    {
+                        table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+                    }
+                }
+
+                if (isCloseTheFile)
+                    CloseWord(htmldoc, filePath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+            return newBookmark;
         }
 
         public string CopyOtherFileContentToWord(string firstFilePath, string secondFilePath, string bookmark, bool isCloseTheFile = true)
@@ -727,7 +787,7 @@ namespace EmcReportWebApi.Common
                 }
 
                 if (isCloseTheFile)
-                    CloseWord(htmldoc);
+                    CloseWord(htmldoc, firstFilePath);
             }
             catch (Exception ex)
             {

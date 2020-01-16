@@ -596,14 +596,14 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak,bool isPage, bool isCloseTheFile = true)
         {
             string result = "创建失败";
             try
             {
                 Document templateDoc = OpenWord(templalteFileFullName);
                 Document copyFileDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFilePictureToWord(templateDoc, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak);
+                result = CopyOtherFilePictureToWord(templateDoc, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak, isPage);
                 if (isCloseTemplateFile)
                 {
                     CloseWord(templateDoc, templalteFileFullName);
@@ -629,13 +629,13 @@ namespace EmcReportWebApi.Common
         /// <param name="workBookmark">插入文件的书签位置</param>
         /// <param name="isCloseTheFile">是否关闭其他文件</param>
         /// <returns></returns>
-        public string CopyOtherFilePictureToWord(string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyOtherFilePictureToWord(string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
         {
             string result = "创建失败";
             try
             {
                 Document copyFileDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFilePictureToWord(_currentWord, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak);
+                result = CopyOtherFilePictureToWord(_currentWord, copyFileDoc, copyFilePictureStartIndex, workBookmark, isNeedBreak, isPage);
                 if (isCloseTheFile)
                     CloseWord(copyFileDoc, copyFileFullPath);
             }
@@ -648,7 +648,7 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak)
+        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak,bool isPage)
         {
             try
             {
@@ -681,6 +681,10 @@ namespace EmcReportWebApi.Common
                         i++;
                     }
                 }
+                if (isPage) {
+                    InsertBreakPage(false);
+                }
+                    
             }
             catch (Exception ex)
             {
@@ -775,7 +779,7 @@ namespace EmcReportWebApi.Common
                 Document secondFile = OpenWord(secondFilePath);
                 Range range = GetBookmarkRank(secondFile, bookmark);
                 range.Select();
-                range.Paste();
+                range.PasteAndFormat(WdRecoveryType.wdPasteDefault);
                 range.Select();
                 int tableCount = _wordApp.Selection.Tables.Count;
                 if (tableCount > 0)

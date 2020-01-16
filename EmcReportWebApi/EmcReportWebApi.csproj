@@ -162,6 +162,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Files\OutPut\" />
+    <Folder Include="Files\TemplateMiddleware\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

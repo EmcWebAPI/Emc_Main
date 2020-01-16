@@ -143,7 +143,7 @@ namespace EmcReportWebApi.Common
                                     table.Select();
                                     table.Cell(startRow, columnCount).Range.Text = tempText;
                                 }
-                                
+
                                 MergeCell(table, startRow, i + 1, endRow, i + (nextColumnStr.Equals("") ? 2 : 1));
                                 //合并序号列
                                 if (startRow != endRow)
@@ -320,6 +320,43 @@ namespace EmcReportWebApi.Common
 
             }
             return "创建成功";
+        }
+
+        public string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
+        {
+
+            Document doc = OpenWord(fileFullPath);
+            Range range = GetBookmarkRank(doc, bookmark);
+
+            int listCount = list.Count;
+            int rowCount = listCount / 2;
+            int columnCount = 2;
+            if (listCount % 2 != 0)
+            {
+                rowCount++;
+            }
+            if (listCount == 1)
+                columnCount = 1;
+            //创建表格
+            range.Select();
+            Table table = _wordApp.Selection.Tables.Add(range, rowCount, columnCount, ref _missing, ref _missing);
+
+            for (int i = 0; i < listCount; i++)
+            {
+                string[] arrStr = list[i].Split(',');
+                string fileName = arrStr[0];
+                string content = arrStr[1];
+                table.Select();
+                Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
+                cellRange.Select();
+                //CreateAndGoToNextParagraph(cellRange, true, true);
+                AddPicture(fileName, doc, cellRange);
+                CreateAndGoToNextParagraph(cellRange, true, false);
+                cellRange.InsertAfter(content);
+            }
+            if (isCloseTheFile)
+                CloseWord(doc);
+            return "插入图片成功";
         }
 
         #region rtf操作

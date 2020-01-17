@@ -96,10 +96,6 @@
     <Content Include="Files\Upload\Image\re2.jpg" />
     <Content Include="Files\Upload\Image\reljt.jpg" />
     <Content Include="Global.asax" />
-    <Content Include="Log\Error\Error_20191229.txt" />
-    <Content Include="Log\Error\Error_20191230.txt" />
-    <Content Include="Log\Info\Logs_20191229.txt" />
-    <Content Include="Log\Info\Logs_20191230.txt" />
     <Content Include="RtfConfig.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -107,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Common\FunnelSchedulerHelper.cs" />
     <Compile Include="Common\MD5Helper.cs" />
     <Compile Include="Common\MyTools.cs" />
     <Compile Include="Common\WordUtil.cs" />
@@ -156,6 +153,8 @@
     <Folder Include="App_Data\" />
     <Folder Include="Files\OutPut\" />
     <Folder Include="Files\TemplateMiddleware\" />
+    <Folder Include="Log\Error\" />
+    <Folder Include="Log\Info\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

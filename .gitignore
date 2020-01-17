@@ -7,3 +7,6 @@
 /EmcReportWebApi/obj/Debug
 /EmcReportWebApi/Files/OutPut
 /EmcReportWebApi/bin
+/EmcReportWebApi/Properties/PublishProfiles
+/EmcReportWebApi/obj/Release/Package/PackageTmp/Files
+/EmcReportWebApi/obj/Release

@@ -27,72 +27,36 @@ namespace EmcReportWebApi.Controllers
         }
 
         /// <summary>
-        /// 上传文件
+        /// 生成报告
         /// </summary>
+        /// <param name="para">参数</param>
+        /// <returns></returns>
         [HttpPost]
-        public ReportResult<string> UploadFiles()
+        public IHttpActionResult CreateReport(ReportParams para)
         {
+            //string jsonStr = para.JsonStr;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             ReportResult<string> result = new ReportResult<string>();
-            HttpFileCollection filelist = HttpContext.Current.Request.Files;
-            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
-            if (filelist != null && filelist.Count > 0)
+            try
             {
-                for (int i = 0; i < filelist.Count; i++)
-                {
-                    try
-                    {
-                        HttpPostedFile file = filelist[i];
-                        string filename = file.FileName;
-                        if (filename.Equals(""))
-                        {
-                            MyTools.ErrorLog.Error("上传失败:上传的文件信息不存在！");
-                            result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
-                        }
-                        string extendName = MyTools.FilterExtendName(filename);
-                        string filePath = currRoot + "\\Files\\Upload\\";
-                        string forceName = "";
-                        //判断上传的文件
-                        switch (extendName)
-                        {
-                            case ".jpg":
-                            case ".png":
-                                filePath = currRoot + "\\Files\\Upload\\Image\\";
-                                forceName = "image";
-                                break;
-                            case ".rtf":
-                                filePath = currRoot + "\\Files\\Upload\\Rtf\\";
-                                forceName = "rtf";
-                                break;
-                            default:
-                                filePath = currRoot + "\\Files\\Upload\\";
-                                forceName = "upload";
-                                break;
-                        }
-                        string templateFileName = forceName + DateTime.Now.ToString("yyyyMMddHHmmssfff") + extendName;
+                string content = JsonToWord(jsonStr);
+                sw.Stop();
+                double time1 = (double)sw.ElapsedMilliseconds / 1000;
+                result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
+                MyTools.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
 
-                        DirectoryInfo di = new DirectoryInfo(filePath);
-                        if (!di.Exists) { di.Create(); }
-
-                        file.SaveAs(filePath + templateFileName);
-                        MyTools.InfoLog.Info(result);
-                        result = SetReportResult<string>(string.Format("上传成功:{0}", filename), true, templateFileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        MyTools.ErrorLog.Error(ex.Message, ex);
-                        result = SetReportResult<string>(string.Format("上传文件写入失败：{0}", ex.Message), false, "");
-                    }
-                }
             }
-            else
+            catch (Exception ex)
             {
-                MyTools.ErrorLog.Error("上传失败:上传的文件信息不存在！");
-                result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
+                MyTools.ErrorLog.Error(ex.Message, ex);
+                throw ex;
             }
 
-            return result;
+            return Json<ReportResult<string>>(result);
         }
-
+        
         /// <summary>
         /// 下载文件
         /// </summary>
@@ -198,21 +162,7 @@ namespace EmcReportWebApi.Controllers
                 throw ex;
             }
         }
-
-        [HttpGet]
-        public string Get2()
-        {
-            Stopwatch sw = new Stopwatch();
-
-            sw.Start();
-            MyTools.KillWordProcess();
-            string result = JsonToWord(jsonStr);
-            //string result = "";
-            sw.Stop();
-            double time1 = (double)sw.ElapsedMilliseconds / 1000;
-            return result + ":" + time1.ToString();
-        }
-
+        
         [HttpGet]
         public IHttpActionResult CreateReportAndDownLoad(ReportParams para)
         {
@@ -234,31 +184,90 @@ namespace EmcReportWebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// 上传文件
+        /// </summary>
         [HttpPost]
-        public ReportResult<string> CreateReport(ReportParams para)
+        public ReportResult<string> UploadFiles()
         {
-            //string jsonStr = para.JsonStr;
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             ReportResult<string> result = new ReportResult<string>();
-            try
+            HttpFileCollection filelist = HttpContext.Current.Request.Files;
+            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
+            if (filelist != null && filelist.Count > 0)
             {
-                string content = JsonToWord(jsonStr);
-                sw.Stop();
-                double time1 = (double)sw.ElapsedMilliseconds / 1000;
-                result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
-                MyTools.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
+                for (int i = 0; i < filelist.Count; i++)
+                {
+                    try
+                    {
+                        HttpPostedFile file = filelist[i];
+                        string filename = file.FileName;
+                        if (filename.Equals(""))
+                        {
+                            MyTools.ErrorLog.Error("上传失败:上传的文件信息不存在！");
+                            result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
+                        }
+                        string extendName = MyTools.FilterExtendName(filename);
+                        string filePath = currRoot + "\\Files\\Upload\\";
+                        string forceName = "";
+                        //判断上传的文件
+                        switch (extendName)
+                        {
+                            case ".jpg":
+                            case ".png":
+                                filePath = currRoot + "\\Files\\Upload\\Image\\";
+                                forceName = "image";
+                                break;
+                            case ".rtf":
+                                filePath = currRoot + "\\Files\\Upload\\Rtf\\";
+                                forceName = "rtf";
+                                break;
+                            default:
+                                filePath = currRoot + "\\Files\\Upload\\";
+                                forceName = "upload";
+                                break;
+                        }
+                        string templateFileName = forceName + DateTime.Now.ToString("yyyyMMddHHmmssfff") + extendName;
+
+                        DirectoryInfo di = new DirectoryInfo(filePath);
+                        if (!di.Exists) { di.Create(); }
+
+                        file.SaveAs(filePath + templateFileName);
+                        MyTools.InfoLog.Info(result);
+                        result = SetReportResult<string>(string.Format("上传成功:{0}", filename), true, templateFileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MyTools.ErrorLog.Error(ex.Message, ex);
+                        result = SetReportResult<string>(string.Format("上传文件写入失败：{0}", ex.Message), false, "");
+                    }
+                }
             }
-            catch (Exception ex)
+            else
             {
-                MyTools.ErrorLog.Error(ex.Message, ex);
-                throw ex;
+                MyTools.ErrorLog.Error("上传失败:上传的文件信息不存在！");
+                result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
             }
 
             return result;
         }
 
+        /// <summary>
+        /// 测试
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public string Get2()
+        {
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+            MyTools.KillWordProcess();
+            string result = JsonToWord(jsonStr);
+            //string result = "";
+            sw.Stop();
+            double time1 = (double)sw.ElapsedMilliseconds / 1000;
+            return result + ":" + time1.ToString();
+        }
 
 
         #region 私有方法
@@ -477,8 +486,8 @@ namespace EmcReportWebApi.Controllers
 
         //    return result;
         //}
-
-
+        
+        //样品连接图
         private void InsertImageToWord(WordUtil wordUtil, JArray array, string bookmark)
         {
             List<string> list = new List<string>();

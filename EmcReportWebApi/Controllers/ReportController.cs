@@ -146,6 +146,58 @@ namespace EmcReportWebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        [HttpGet]
+        public IHttpActionResult DownloadFilesForGet(string fileName)
+        {
+            //string fileName = para.FileName;
+            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
+            try
+            {
+                var browser = String.Empty;
+                if (HttpContext.Current.Request.UserAgent != null)
+                {
+                    browser = HttpContext.Current.Request.UserAgent.ToUpper();
+                }
+                string extendName = MyTools.FilterExtendName(fileName);
+                string fileFullName = "";
+                //判断上传的文件
+                switch (extendName)
+                {
+                    case ".jpg":
+                    case ".png":
+                        fileFullName = GetImagePath(fileName);
+                        break;
+                    case ".rtf":
+                        fileFullName = GetRtfPath(fileName);
+                        break;
+                    default:
+                        fileFullName = GetWordPath(fileName);
+                        break;
+                }
+                HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+                FileStream fileStream = File.OpenRead(fileFullName);
+                httpResponseMessage.Content = new StreamContent(fileStream);
+                httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                httpResponseMessage.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                {
+                    FileName =
+                        browser.Contains("FIREFOX")
+                            ? Path.GetFileName(fileFullName)
+                            : HttpUtility.UrlEncode(Path.GetFileName(fileFullName))
+                    //FileName = HttpUtility.UrlEncode(Path.GetFileName(filePath))
+                };
+                MyTools.InfoLog.Info("下载成功:" + fileName);
+                return ResponseMessage(httpResponseMessage);
+            }
+            catch (Exception ex)
+            {
+                MyTools.ErrorLog.Error(ex.Message, ex);
+                throw ex;
+            }
+        }
 
         [HttpGet]
         public string Get2()

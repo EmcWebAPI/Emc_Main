@@ -7,5 +7,7 @@
         public string Token { get; set; }
 
         public string JsonStr { get; set; }
+
+        public string ReportId { get; set; }
     }
 }

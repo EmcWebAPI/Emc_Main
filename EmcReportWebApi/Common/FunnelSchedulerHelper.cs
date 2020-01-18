@@ -8,6 +8,50 @@ namespace EmcReportWebApi.Common
 {
     public class SyncHttpHelper
     {
+        //get请求下载文件
+        public static byte[] GetHttpRespponseForFile(string url, string outFilePath, int Timeout)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.ContentType = "text/html;charset=UTF-8";
+            request.UserAgent = null;
+            request.Timeout = Timeout;
+
+            byte[] fileBytes;
+            try
+            {
+                using (WebResponse webRes = request.GetResponse())
+                {
+                    int length = (int)webRes.ContentLength;
+                    HttpWebResponse response = webRes as HttpWebResponse;
+                    Stream stream = response.GetResponseStream();
+
+                    //读取到内存
+                    MemoryStream stmMemory = new MemoryStream();
+                    byte[] buffer = new byte[length];
+                    int i;
+                    //将字节逐个放入到Byte中
+                    while ((i = stream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        stmMemory.Write(buffer, 0, i);
+                    }
+                    fileBytes = stmMemory.ToArray();//文件流Byte，需要文件流可直接return，不需要下面的保存代码
+                    stmMemory.Close();
+
+                    MemoryStream m = new MemoryStream(fileBytes);
+                    FileStream fs = new FileStream(outFilePath, FileMode.OpenOrCreate);
+                    m.WriteTo(fs);
+                    m.Close();
+                    fs.Close();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+            return fileBytes;
+        }
+
         /// Get请求
         /// 字符串
         public static string GetHttpResponse(string url, int Timeout)

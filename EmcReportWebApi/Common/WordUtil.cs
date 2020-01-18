@@ -55,7 +55,39 @@ namespace EmcReportWebApi.Common
             _disposed = false;
             _needWrite = true;
         }
-        
+
+        public string SelecionCheckbox(string bookmark, int controlIndex, bool isCheck = true)
+        {
+            try
+            {
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                range.Select();
+                range = _wordApp.Selection.Cells[1].Range;
+                range.Select();
+
+                int i = 1;
+
+                foreach (InlineShape shape in _wordApp.Selection.InlineShapes)
+                {
+                    if (shape.Type == WdInlineShapeType.wdInlineShapeOLEControlObject)
+                    {
+                        object oleControl = shape.OLEFormat.Object;
+                        Type oleControlType = oleControl.GetType();
+                        //设置复选框选中
+                        if (i == controlIndex)
+                            oleControlType.InvokeMember("Value", System.Reflection.BindingFlags.SetProperty, null, oleControl, new object[] { isCheck.ToString() });
+                        i++;
+                    }
+                }
+
+                return "设置成功";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public string InsertContentInBookmark(string fileFullPath, string content, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -289,7 +321,7 @@ namespace EmcReportWebApi.Common
             }
             return "保存成功";
         }
-        
+
 
         /// <summary>
         /// 根据书签向word中插入内容
@@ -376,6 +408,11 @@ namespace EmcReportWebApi.Common
                     CreateAndGoToNextParagraph(cellRange, true, false);
                     cellRange.InsertAfter(content);
                 }
+                table.Select();
+                //设置table格式
+                _wordApp.Selection.SelectCell();
+                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
                 if (isCloseTheFile)
                     CloseWord(doc, fileFullPath);
             }
@@ -611,7 +648,7 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak,bool isPage, bool isCloseTheFile = true)
+        public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
         {
             string result = "创建失败";
             try
@@ -663,7 +700,7 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak,bool isPage)
+        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isPage)
         {
             try
             {
@@ -696,10 +733,11 @@ namespace EmcReportWebApi.Common
                         i++;
                     }
                 }
-                if (isPage) {
+                if (isPage)
+                {
                     InsertBreakPage(false);
                 }
-                    
+
             }
             catch (Exception ex)
             {
@@ -945,7 +983,7 @@ namespace EmcReportWebApi.Common
             return "替换成功";
         }
 
-        public int ClearWordCodeFormat()
+        private int ClearWordCodeFormat()
         {
             _currentWord.Select();
             ClearCode();
@@ -1119,11 +1157,16 @@ namespace EmcReportWebApi.Common
                 _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
             }
         }
-        
+
         //插入图片
-        private void AddPicture(string picFileName, Document doc, Range range)
+        private InlineShape AddPicture(string picFileName, Document doc, Range range,int width=0,int height=0)
         {
-            doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+            InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+            if (width != 0&&height!=0) {
+                image.Width = width;
+                image.Height = height;
+            }
+            return image;
         }
 
         //获取bookmark的位置

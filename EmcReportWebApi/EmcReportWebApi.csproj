@@ -103,12 +103,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Common\FunnelSchedulerHelper.cs" />
+    <Compile Include="Common\SyncHttpHelper.cs" />
     <Compile Include="Common\MD5Helper.cs" />
     <Compile Include="Common\MyTools.cs" />
     <Compile Include="Common\WordUtil.cs" />
     <Compile Include="Common\ZipFileHelper.cs" />
-    <Compile Include="Common\ZipString.cs" />
+    <Compile Include="Common\ZipStringHelper.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

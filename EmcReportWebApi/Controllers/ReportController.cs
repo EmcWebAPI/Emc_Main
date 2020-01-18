@@ -559,7 +559,7 @@ namespace EmcReportWebApi.Controllers
 
         #region 实验数据
         /// <summary>
-        /// 传导发射实验
+        /// 传导发射实验 辐射发射实验
         /// </summary>
         /// <returns></returns>
         private string SetConductedEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir)
@@ -695,6 +695,7 @@ namespace EmcReportWebApi.Controllers
 
         }
 
+        //删除模板中间件
         public void DelectDir(string srcPath)
         {
             try

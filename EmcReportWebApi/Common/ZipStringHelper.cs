@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EmcReportWebApi.Common
 {
-    public static class ZipString
+    public static class ZipStringHelper
     {
         public static string CompressString(string str)
         {

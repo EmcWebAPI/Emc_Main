@@ -95,6 +95,7 @@
     <Content Include="Files\Upload\Image\re1.jpg" />
     <Content Include="Files\Upload\Image\re2.jpg" />
     <Content Include="Files\Upload\Image\reljt.jpg" />
+    <Content Include="Files\Upload\Rtf\index1.html" />
     <Content Include="Global.asax" />
     <Content Include="RtfConfig.xml">
       <SubType>Designer</SubType>
@@ -103,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Common\FileUtil.cs" />
     <Compile Include="Common\SyncHttpHelper.cs" />
     <Compile Include="Common\MD5Helper.cs" />
     <Compile Include="Common\MyTools.cs" />
@@ -152,6 +154,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Files\OutPut\" />
+    <Folder Include="Files\ReportFiles\" />
     <Folder Include="Files\TemplateMiddleware\" />
     <Folder Include="Log\Error\" />
     <Folder Include="Log\Info\" />

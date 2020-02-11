@@ -88,6 +88,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files\ReportFiles\Test\image1.jpg" />
+    <Content Include="Files\ReportFiles\Test\image2.jpg" />
+    <Content Include="Files\ReportFiles\Test\index1.html" />
+    <Content Include="Files\ReportFiles\Test\model1.jpg" />
+    <Content Include="Files\ReportFiles\Test\model2.jpg" />
+    <Content Include="Files\ReportFiles\Test\re1.jpg" />
+    <Content Include="Files\ReportFiles\Test\re2.jpg" />
+    <Content Include="Files\ReportFiles\Test\reljt.jpg" />
     <Content Include="Files\Upload\Image\image1.jpg" />
     <Content Include="Files\Upload\Image\image2.jpg" />
     <Content Include="Files\Upload\Image\model1.jpg" />
@@ -141,6 +149,14 @@
     <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE N - 副本.Rtf" />
     <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L - 副本.Rtf" />
     <Content Include="Files\ExperimentTemplate\RTFTemplate.docx" />
+    <Content Include="Files\ReportFiles\Test\0505 电磁兼容资料审查表0802.docx" />
+    <Content Include="Files\ReportFiles\Test\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />
+    <Content Include="Files\ReportFiles\Test\ZC2018-128  生物安全柜 模式1 CE L - 副本.Rtf" />
+    <Content Include="Files\ReportFiles\Test\ZC2018-128  生物安全柜 模式1 CE L.Rtf" />
+    <Content Include="Files\ReportFiles\Test\ZC2018-128  生物安全柜 模式1 CE N - 副本.Rtf" />
+    <Content Include="Files\ReportFiles\Test\ZC2018-128  生物安全柜 模式1 CE N.Rtf" />
+    <Content Include="Files\ReportFiles\Test\ZC2018-308 裂隙灯显微镜 波动.rtf" />
+    <Content Include="Files\ReportFiles\Test\ZC2018-308 裂隙灯显微镜 谐波.rtf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -154,7 +170,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Files\OutPut\" />
-    <Folder Include="Files\ReportFiles\" />
     <Folder Include="Files\TemplateMiddleware\" />
     <Folder Include="Log\Error\" />
     <Folder Include="Log\Info\" />

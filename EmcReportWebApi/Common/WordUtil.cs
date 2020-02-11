@@ -56,6 +56,62 @@ namespace EmcReportWebApi.Common
             _needWrite = true;
         }
 
+        public string CopyTableToWord(string otherFilePath, string bookmark, int tableIndex, bool isCloseTheFile)
+        {
+            try
+            {
+                Document otherFile = OpenWord(otherFilePath);
+                otherFile.Tables[tableIndex].Range.Copy();
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                range.Paste();
+                range.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+                if (isCloseTheFile)
+                    CloseWord(otherFile, otherFilePath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            return "创建成功";
+        }
+
+        //public string CopyImageToWord(string otherFilePath, string bookmark, bool isCloseTheFile)
+        //{
+        //    try
+        //    {
+        //        Document otherFile = OpenWord(otherFilePath);
+        //        otherFile.Select();
+
+        //        Range bookmarkPic = GetBookmarkRank(_currentWord, bookmark);
+        //        foreach (Microsoft.Office.Core.Shape shape in otherFile.Shapes)
+        //        {
+        //            //判断类型
+        //            if (shape.Type == MsoShapeType.msoTextBox)
+        //            {
+        //                //利用剪贴板保存数据
+        //                shape.Select(); //选定当前文本框
+        //                                // WordApp.Selection.Copy();//copy当前图片
+
+        //                bookmarkPic.Paste();
+        //                CreateAndGoToNextParagraph(bookmarkPic, true, true);
+        //            }
+        //        }
+
+        //        if (isCloseTheFile)
+        //            CloseWord(otherFile, otherFilePath);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _needWrite = false;
+        //        Dispose();
+        //        throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+        //    }
+
+        //    return "创建成功";
+        //}
+
         public string SelecionCheckbox(string bookmark, int controlIndex, bool isCheck = true)
         {
             try

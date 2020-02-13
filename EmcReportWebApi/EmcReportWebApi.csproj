@@ -157,6 +157,9 @@
     <Content Include="Files\ReportFiles\Test\ZC2018-128  生物安全柜 模式1 CE N.Rtf" />
     <Content Include="Files\ReportFiles\Test\ZC2018-308 裂隙灯显微镜 波动.rtf" />
     <Content Include="Files\ReportFiles\Test\ZC2018-308 裂隙灯显微镜 谐波.rtf" />
+    <Content Include="Files\ExperimentTemplate\电压波动和闪烁.docx" />
+    <Content Include="Files\ExperimentTemplate\谐波失真.docx" />
+    <Content Include="Files\ReportFiles\Test\QT2019-3015.zip" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -56,6 +56,36 @@ namespace EmcReportWebApi.Common
             _needWrite = true;
         }
 
+        public string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark,bool isNeedBreak, bool isCloseTheFile,bool isCloseTemplateFile) {
+            Document htmlDoc = this.OpenWord(htmlFilePath);
+            htmlDoc.Select();
+            htmlDoc.Content.Copy();
+
+            Document templateDoc = this.OpenWord(TemplateFilePath);
+            templateDoc.Select();
+            Range range = this.GetBookmarkRank(templateDoc, bookmark);
+            range.Select();
+            InsertBreakPage(false);
+            range = _wordApp.Selection.Range.Sections.Last.Range;
+            range.PasteAndFormat(WdRecoveryType.wdFormatOriginalFormatting);
+
+            foreach (Table item in range.Tables)
+            {
+                item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+            }
+            //if (isNeedBreak)
+            //{
+            //    InsertBreakPage(false);
+            //}
+            if (isCloseTemplateFile)
+            {
+                CloseWord(templateDoc, TemplateFilePath);
+            }
+            if (isCloseTheFile)
+                CloseWord(htmlDoc, htmlFilePath);
+            return "创建成功";
+        }
+
         public string CopyTableToWord(string otherFilePath, string bookmark, int tableIndex, bool isCloseTheFile)
         {
             try
@@ -703,6 +733,8 @@ namespace EmcReportWebApi.Common
 
             return "创建成功";
         }
+
+        
 
         public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
         {

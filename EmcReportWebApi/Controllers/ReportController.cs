@@ -370,6 +370,7 @@ namespace EmcReportWebApi.Controllers
             }
             //删除中间件文件夹
             DelectDir(middleDir);
+            DelectDir(reportFilesPath);
 
             return outfileName;
         }

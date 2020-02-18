@@ -77,6 +77,39 @@ namespace EmcReportWebApi.Controllers
             return Json<ReportResult<string>>(result);
         }
 
+        [HttpPost]
+        public IHttpActionResult CreateReport2(ReportParams para)
+        {
+            //string jsonStr = para.JsonStr;
+            string reportId = para.ReportId;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            ReportResult<string> result = new ReportResult<string>();
+            try
+            {
+                //获取zip文件 
+                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", _currRoot));
+                string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", _currRoot, "QT2019-3015.zip");
+                //解压zip文件
+                ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
+                
+                //生成报告
+                string content = JsonToWord(para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
+                sw.Stop();
+                double time1 = (double)sw.ElapsedMilliseconds / 1000;
+                result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
+                MyTools.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
+            }
+            catch (Exception ex)
+            {
+                MyTools.ErrorLog.Error(ex.Message, ex);
+                throw ex;
+            }
+
+            return Json<ReportResult<string>>(result);
+        }
+
         /// <summary>
         /// 下载文件
         /// </summary>

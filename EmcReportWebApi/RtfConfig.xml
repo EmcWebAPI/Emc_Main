@@ -73,7 +73,7 @@
     </Picture>
   </TempType>
   <TempType Type="波动">
-    <Table StartIndex="4" Bookmark="bookmark42">
+    <Table StartIndex="4" Bookmark="sysj">
       <Column>
         <Title>参数</Title>
         <ColumnIndex>1</ColumnIndex>
@@ -93,7 +93,7 @@
     </Table>
   </TempType>
   <TempType Type="谐波">
-    <Table StartIndex="9" Bookmark="bookmark42">
+    <Table StartIndex="9" Bookmark="sysj">
       <Column>
         <Title>次数</Title>
         <ColumnIndex>1</ColumnIndex>

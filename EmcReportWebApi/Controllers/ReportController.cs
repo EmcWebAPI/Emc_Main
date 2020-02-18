@@ -358,10 +358,14 @@ namespace EmcReportWebApi.Controllers
                 string newBookmark = "experiment";
                 foreach (JObject item in experiment)
                 {
-                    if (item["name"].ToString().Equals("传导发射实验"))
+                    if (item["name"].ToString().Equals("传导发射实验")|| item["name"].ToString().Equals("传导发射"))
                         newBookmark = SetConductedEmission(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath);
-                    else if (item["name"].ToString().Equals("辐射发射试验"))
+                    else if (item["name"].ToString().Equals("辐射发射试验") || item["name"].ToString().Equals("辐射发射"))
                         newBookmark = SetConductedEmission(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath);
+                    else if (item["name"].ToString().Equals("谐波失真"))
+                        newBookmark = SetConductedEmission(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath);
+                    else if (item["name"].ToString().Equals("电压波动和闪烁"))
+                        newBookmark = SetConductedEmission(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath);
                     else
                     {
                         newBookmark = SetOtherEmission(wordUtil, item, newBookmark, middleDir, reportFilesPath);

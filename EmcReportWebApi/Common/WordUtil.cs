@@ -65,9 +65,17 @@ namespace EmcReportWebApi.Common
             templateDoc.Select();
             Range range = this.GetBookmarkRank(templateDoc, bookmark);
             range.Select();
-            InsertBreakPage(false);
-            range = _wordApp.Selection.Range.Sections.Last.Range;
-            range.PasteAndFormat(WdRecoveryType.wdFormatOriginalFormatting);
+
+            object unite = WdUnits.wdStory;
+            _wordApp.Selection.EndKey(ref unite, ref _missing);
+
+            object breakType = WdBreakType.wdLineBreak;//换行符
+            _wordApp.ActiveWindow.Selection.InsertBreak(breakType);
+
+            range = _wordApp.Selection.Paragraphs.Last.Range;
+            range.Select();
+            CreateAndGoToNextParagraph(range, true, true);
+            range.Paste();
 
             foreach (Table item in range.Tables)
             {

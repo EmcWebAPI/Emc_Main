@@ -50,7 +50,7 @@ namespace EmcReportWebApi.Controllers
                 //获取zip文件 
                 string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", _currRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, DateTime.Now.ToString("yyyyMMddhhmmss"));
-                byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId, reportZipFilesPath,
+                byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + MyTools.GetTimestamp(DateTime.Now), reportZipFilesPath,
                 int.Parse(DateTime.Now.ToString("hhmmss")));
                 if (fileBytes.Length <= 0)
                 {
@@ -78,7 +78,7 @@ namespace EmcReportWebApi.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult CreateReport2(ReportParams para)
+        public IHttpActionResult CreateReportTest(ReportParams para)
         {
             //string jsonStr = para.JsonStr;
             string reportId = para.ReportId;

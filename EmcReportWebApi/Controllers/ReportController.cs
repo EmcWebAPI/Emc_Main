@@ -365,9 +365,7 @@ namespace EmcReportWebApi.Controllers
                 GetTableFromReview(wordUtil, "ypgcList", scbWord, 4, false);
 
                 ////样品连接图 图片 connectionGraph (审查表)
-                // GetImageFomReview(wordUtil, "connectionGraph",scbWord, false);
-                //JArray graphList = (JArray)mainObj["connectionGraph"];
-                //InsertImageToWord(wordUtil, graphList, "connectionGraph");
+                GetImageFomReview(wordUtil, "connectionGraph",scbWord, false);
 
                 ////样品运行模式 list ypyxList (审查表)
                 GetTableFromReview(wordUtil, "ypyxList", scbWord, 6, false);
@@ -440,7 +438,7 @@ namespace EmcReportWebApi.Controllers
         //从审查表中取连接图
         private void GetImageFomReview(WordUtil wordUtil, string bookmark, string scbWordPath, bool isCloseTheFile)
         {
-            //wordUtil.CopyImageToWord(scbWordPath, bookmark, isCloseTheFile);
+            wordUtil.CopyImageToWord(scbWordPath, bookmark, isCloseTheFile);
         }
 
 

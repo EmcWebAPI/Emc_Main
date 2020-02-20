@@ -9,5 +9,7 @@
         public string JsonStr { get; set; }
 
         public string ReportId { get; set; }
+
+        public string ZipFilesUrl { get; set; }
     }
 }

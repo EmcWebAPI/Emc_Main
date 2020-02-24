@@ -160,6 +160,7 @@
     <Content Include="Files\ExperimentTemplate\电压波动和闪烁.docx" />
     <Content Include="Files\ExperimentTemplate\谐波失真.docx" />
     <Content Include="Files\ReportFiles\Test\QT2019-3015.zip" />
+    <Content Include="Document\对应表.xlsx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

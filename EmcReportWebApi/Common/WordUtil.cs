@@ -596,7 +596,13 @@ namespace EmcReportWebApi.Common
             switch (contentList.Count)
             {
                 case 3:
+                case 4:
                     numRows = 2;
+                    numColumns = 2;
+                    break;
+                case 5:
+                case 6:
+                    numRows = 3;
                     numColumns = 2;
                     break;
 

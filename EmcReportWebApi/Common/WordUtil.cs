@@ -119,16 +119,17 @@ namespace EmcReportWebApi.Common
         {
             try
             {
+
                 Document otherFile = OpenWord(otherFilePath);
                 otherFile.Select();
 
                 Range bookmarkPic = GetBookmarkRank(_currentWord, bookmark);
                 ShapeRange shapeRange = otherFile.Shapes.Range(1);
-                shapeRange.ConvertToInlineShape().Select();
+                InlineShape inlineShape = shapeRange.ConvertToInlineShape();
+                inlineShape.Select();
                 _wordApp.Selection.Copy();
-                bookmarkPic.PasteAndFormat(WdRecoveryType.wdFormatOriginalFormatting);
-
-
+                bookmarkPic.Select();
+                _wordApp.Selection.Paste();
                 if (isCloseTheFile)
                     CloseWord(otherFile, otherFilePath);
             }

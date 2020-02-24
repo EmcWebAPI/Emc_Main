@@ -369,7 +369,7 @@ namespace EmcReportWebApi.Controllers
                 GetTableFromReview(wordUtil, "ypgcList", scbWord, 4, false);
 
                 ////样品连接图 图片 connectionGraph (审查表)
-               // GetImageFomReview(wordUtil, "connectionGraph",scbWord, false);
+                GetImageFomReview(wordUtil, "connectionGraph",scbWord, false);
 
                 ////样品运行模式 list ypyxList (审查表)
                 GetTableFromReview(wordUtil, "ypyxList", scbWord, 6, false);

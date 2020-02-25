@@ -74,8 +74,9 @@ namespace EmcReportWebApi.Controllers
             }
             catch (Exception ex)
             {
-                MyTools.ErrorLog.Error(ex.Message, ex);
-                throw ex;
+                MyTools.ErrorLog.Error(ex.Message, ex);//设置错误信息
+                result= SetReportResult<string>(string.Format("报告生成失败"), false, ex.Message);
+                return Json<ReportResult<string>>(result);
             }
 
             return Json<ReportResult<string>>(result);
@@ -365,16 +366,16 @@ namespace EmcReportWebApi.Controllers
                 //受检样品描述 object  sjypms (审查表)
                 GetTableFromReview(wordUtil, "sjypms", scbWord, 3, false);
 
-                ////样品构成 list ypgcList (审查表)
+                //样品构成 list ypgcList (审查表)
                 GetTableFromReview(wordUtil, "ypgcList", scbWord, 4, false);
 
-                ////样品连接图 图片 connectionGraph (审查表)
+                //样品连接图 图片 connectionGraph (审查表)
                 GetImageFomReview(wordUtil, "connectionGraph",scbWord, false);
 
-                ////样品运行模式 list ypyxList (审查表)
+                //样品运行模式 list ypyxList (审查表)
                 GetTableFromReview(wordUtil, "ypyxList", scbWord, 6, false);
 
-                ////样品电缆 list ypdlList (审查表)
+                //样品电缆 list ypdlList (审查表)
                 GetTableFromReview(wordUtil, "ypdlList", scbWord, 7, false);
 
                 //测试设备list cssbList 不动
@@ -385,7 +386,7 @@ namespace EmcReportWebApi.Controllers
                     return result;
                 }
 
-                ////辅助设备 list fzsbList (审查表)
+                //辅助设备 list fzsbList (审查表)
                 GetTableFromReview(wordUtil, "fzsbList", scbWord, 5, true);
 
                 //实验数据
@@ -737,7 +738,6 @@ namespace EmcReportWebApi.Controllers
         private string CreateHtmlFile(string htmlStr, string dirPath)
         {
             string dateStr = DateTime.Now.ToString("yyyyMMddhhmmss");
-            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
             string htmlpath = dirPath + "\\reportHtml" + dateStr + ".html";
             FileStream fs = new FileStream(htmlpath, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);

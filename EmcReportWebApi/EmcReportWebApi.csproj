@@ -161,6 +161,7 @@
     <Content Include="Files\ExperimentTemplate\谐波失真.docx" />
     <Content Include="Files\ReportFiles\Test\QT2019-3015.zip" />
     <Content Include="Document\对应表.xlsx" />
+    <Content Include="Document\buglist.xlsx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

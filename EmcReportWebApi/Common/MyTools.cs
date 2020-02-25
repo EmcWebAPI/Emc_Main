@@ -61,6 +61,8 @@ namespace EmcReportWebApi.Common
                                     select new RtfTableInfo
                                     {
                                         StartIndex = int.Parse(d.Attribute("StartIndex").Value.ToString()),
+                                        MainTitle=d.Attribute("MainTitle").Value.ToString(),
+                                        TitleRow = int.Parse(d.Attribute("TitleRow").Value.ToString()),
                                         RtfType = itemType,
                                         Bookmark = d.Attribute("Bookmark").Value.ToString(),
                                         ColumnInfoDic = (from f in d.Elements()

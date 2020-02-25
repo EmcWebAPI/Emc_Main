@@ -56,14 +56,15 @@ namespace EmcReportWebApi.Common
             _needWrite = true;
         }
 
-        public string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark,bool isNeedBreak, bool isCloseTheFile,bool isCloseTemplateFile) {
-            Document htmlDoc = this.OpenWord(htmlFilePath);
+        public string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark, bool isNeedBreak, bool isCloseTheFile, bool isCloseTemplateFile)
+        {
+            Document htmlDoc = OpenWord(htmlFilePath);
             htmlDoc.Select();
             htmlDoc.Content.Copy();
 
-            Document templateDoc = this.OpenWord(TemplateFilePath);
+            Document templateDoc = OpenWord(TemplateFilePath);
             templateDoc.Select();
-            Range range = this.GetBookmarkRank(templateDoc, bookmark);
+            Range range = GetBookmarkRank(templateDoc, bookmark);
             range.Select();
 
             object unite = WdUnits.wdStory;
@@ -637,13 +638,13 @@ namespace EmcReportWebApi.Common
         /// <param name="wordBookmark">需要插入内容的书签</param>
         /// <param name="isCloseTheFile">是否关闭新打开的文件</param>
         /// <returns></returns>
-        public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak, bool isCloseTheFile = true)
         {
             string result = "创建成功";
             try
             {
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFileTableForColByTableIndex(_currentWord, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isNeedBreak);
+                result = CopyOtherFileTableForColByTableIndex(_currentWord, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
                 if (isCloseTheFile)
                     CloseWord(rtfDoc, copyFileFullPath);
 
@@ -658,14 +659,15 @@ namespace EmcReportWebApi.Common
             return result;
         }
 
-        public string CopyOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+
+        public string CopyOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
         {
             string result = "创建成功";
             try
             {
                 Document templateDoc = OpenWord(templateFullPath);
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, isNeedBreak);
+                result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
                 if (isCloseTemplateFile)
                     CloseWord(templateDoc, templateFullPath);
                 if (isCloseTheFile)
@@ -682,7 +684,7 @@ namespace EmcReportWebApi.Common
         }
 
 
-        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isNeedBreak)
+        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
         {
             try
             {
@@ -694,9 +696,22 @@ namespace EmcReportWebApi.Common
                 wordTable.Select();
                 if (isNeedBreak)
                 {
-                    InsertBreakPage(false);
+                    object unite = WdUnits.wdStory;
+                    _wordApp.Selection.EndKey(ref unite, ref _missing);
+
+                    object breakType = WdBreakType.wdLineBreak;//换行符
+                    _wordApp.ActiveWindow.Selection.InsertBreak(breakType);
+
                     wordTable = _wordApp.Selection.Range.Sections.Last.Range;
                 }
+
+                //判断主表头是否为null
+                string[] mainTitleArray = null;
+                if (!mainTitle.Equals(""))
+                {
+                    mainTitleArray = mainTitle.Split(',');
+                }
+                int m = 0;
 
                 for (int i = copyFileTableStartIndex; i <= rtfTableCount; i++)
                 {
@@ -712,18 +727,23 @@ namespace EmcReportWebApi.Common
                     {
                         if (!copyTableColDic.ContainsKey(j))
                         {
-                            copyTable.Cell(1, j).Delete(ref wdDeleteCellsCol);
+                            copyTable.Cell(titleRow, j).Delete(ref wdDeleteCellsCol);
                         }
                         else
                         {
-                            copyTable.Cell(1, j).Range.Text = copyTableColDic[j];
+                            copyTable.Cell(titleRow, j).Range.Text = copyTableColDic[j];
                         }
+                    }
+                    if (mainTitleArray != null && mainTitleArray[m] != null)
+                    {
+                        copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
+                        m++;
                     }
 
                     copyTable.Select();
                     copyTable.Range.Copy();
-
-                    CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//获取下一个range
+                    if (i != copyFileTableStartIndex)
+                        CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//获取下一个range
                     CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//InsertBR(wordTable, i <= rtfTableCount);//添加回车
                     wordTable.Paste();
 
@@ -741,7 +761,6 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        
 
         public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
         {
@@ -1254,10 +1273,11 @@ namespace EmcReportWebApi.Common
         }
 
         //插入图片
-        private InlineShape AddPicture(string picFileName, Document doc, Range range,int width=0,int height=0)
+        private InlineShape AddPicture(string picFileName, Document doc, Range range, int width = 0, int height = 0)
         {
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
-            if (width != 0&&height!=0) {
+            if (width != 0 && height != 0)
+            {
                 image.Width = width;
                 image.Height = height;
             }

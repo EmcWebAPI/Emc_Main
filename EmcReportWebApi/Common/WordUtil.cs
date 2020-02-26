@@ -739,6 +739,17 @@ namespace EmcReportWebApi.Common
                     CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//InsertBR(wordTable, i <= rtfTableCount);//添加回车
                     wordTable.Paste();
 
+                    //检索table的最后一列 耗时间 找更好的办法
+                    //Table table1 = wordTable.Tables[1];
+                    //table1.Select();
+                    //Cells cells = _wordApp.Selection.Cells;
+                    //foreach (Cell item in cells)
+                    //{
+                    //    if (item.Range.Text.Contains("PASS")) {
+                    //        item.Range.Text = "符合";
+                    //    }
+                    //}
+
                     ClearFormatTable(wordTable.Tables[1]);
                 }
 

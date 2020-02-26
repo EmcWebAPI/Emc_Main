@@ -66,26 +66,18 @@ namespace EmcReportWebApi.Common
             templateDoc.Select();
             Range range = GetBookmarkRank(templateDoc, bookmark);
             range.Select();
+            int tableCount = range.Tables.Count;
 
-            object unite = WdUnits.wdStory;
-            _wordApp.Selection.EndKey(ref unite, ref _missing);
-
-            object breakType = WdBreakType.wdLineBreak;//换行符
-            _wordApp.ActiveWindow.Selection.InsertBreak(breakType);
-
-            range = _wordApp.Selection.Paragraphs.Last.Range;
-            range.Select();
-            CreateAndGoToNextParagraph(range, true, true);
-            range.Paste();
+            Range tableRange = range.Tables[tableCount].Range;
+            
+            CreateAndGoToNextParagraph(tableRange, true, true);
+            CreateAndGoToNextParagraph(tableRange, true, true);
+            tableRange.Paste();
 
             foreach (Table item in range.Tables)
             {
                 item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
             }
-            //if (isNeedBreak)
-            //{
-            //    InsertBreakPage(false);
-            //}
             if (isCloseTemplateFile)
             {
                 CloseWord(templateDoc, TemplateFilePath);

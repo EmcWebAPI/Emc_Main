@@ -396,16 +396,16 @@ namespace EmcReportWebApi.Controllers
                 foreach (JObject item in experiment)
                 {
                     if (item["name"].ToString().Equals("传导发射实验") || item["name"].ToString().Equals("传导发射"))
-                        newBookmark = SetConductedEmission(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath,1);
                     else if (item["name"].ToString().Equals("辐射发射试验") || item["name"].ToString().Equals("辐射发射"))
-                        newBookmark = SetConductedEmission(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath,1);
                     else if (item["name"].ToString().Equals("谐波失真"))
-                        newBookmark = SetHarmonicEmission(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath,2);
                     else if (item["name"].ToString().Equals("电压波动和闪烁"))
-                        newBookmark = SetHarmonicEmission(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath,2);
                     else
                     {
-                        newBookmark = SetOtherEmission(wordUtil, item, newBookmark, middleDir, reportFilesPath);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark,"", middleDir, reportFilesPath,3);
                     }
                 }
             }
@@ -471,12 +471,8 @@ namespace EmcReportWebApi.Controllers
         }
         #endregion
 
-        #region 实验数据
-        /// <summary>
-        /// 传导发射实验 辐射发射实验
-        /// </summary>
-        /// <returns></returns>
-        private string SetConductedEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath)
+
+        private string SetEmissionCommon(WordUtil wordUtil, JObject jObject, string bookmark,  string rtfType, string middleDir, string reportFilesPath,int funType)
         {
             string templateName = jObject["name"].ToString();
             string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
@@ -489,17 +485,41 @@ namespace EmcReportWebApi.Controllers
             }
 
             JArray sysj = (JArray)jObject["sysj"];
+
             RtfTableInfo rtfTableInfo = MyTools.RtfTableInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
-
-            int startIndex = rtfTableInfo.StartIndex;
-            int titleRow = rtfTableInfo.TitleRow;
-            string mainTitle = rtfTableInfo.MainTitle;
-            Dictionary<int, string> dic = rtfTableInfo.ColumnInfoDic;
-            string rtfbookmark = rtfTableInfo.Bookmark;
-
             RtfPictureInfo rtfPictureInfo = MyTools.RtfPictureInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
-            int imageStartIndex = rtfPictureInfo.StartIndex;
-            string imageBookmark = rtfPictureInfo.Bookmark;
+
+            int startIndex = 0;
+            int titleRow = 0;
+            string mainTitle = "";
+            Dictionary<int, string> dic = new Dictionary<int, string>();
+            string rtfbookmark = "";
+            int imageStartIndex = 0;
+            string imageBookmark = "";
+
+            switch (funType) {
+                case 1:
+                    startIndex = rtfTableInfo.StartIndex;
+                    titleRow = rtfTableInfo.TitleRow;
+                    mainTitle = rtfTableInfo.MainTitle;
+                    dic = rtfTableInfo.ColumnInfoDic;
+                    rtfbookmark = rtfTableInfo.Bookmark;
+
+                    imageStartIndex = rtfPictureInfo.StartIndex;
+                    imageBookmark = rtfPictureInfo.Bookmark;
+
+                    break;
+                case 2:
+                    startIndex = rtfTableInfo.StartIndex;
+                    titleRow = rtfTableInfo.TitleRow;
+                    mainTitle = rtfTableInfo.MainTitle;
+                    dic = rtfTableInfo.ColumnInfoDic;
+                    rtfbookmark = rtfTableInfo.Bookmark;
+                    break;
+                default:
+                    break;
+
+            }
 
 
             int i = 0;
@@ -531,21 +551,54 @@ namespace EmcReportWebApi.Controllers
 
                 wordUtil.CreateTableToWord(sysjTemplateFilePath, contentList, "sysj", false, i != 0);
 
-                JArray rtf = (JArray)item["rtf"];
-                int rtfCount = rtf.Count;
-                int j = 0;
 
-                foreach (JObject rtfObj in (JArray)item["rtf"])
-                {
-                    //需要画表格和插入rtf内容
-                    wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
+                switch (funType) {
+                    case 1:
+                        JArray rtf = (JArray)item["rtf"];
+                        int rtfCount = rtf.Count;
+                        int j = 0;
+                        foreach (JObject rtfObj in (JArray)item["rtf"])
+                        {
+                            //需要画表格和插入rtf内容
+                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
 
-                    wordUtil.CopyOtherFilePictureToWord(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), imageStartIndex, imageBookmark, false, true, j == rtfCount - 1);
-                    j++;
+                            wordUtil.CopyOtherFilePictureToWord(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), imageStartIndex, imageBookmark, false, true, j == rtfCount - 1);
+                            j++;
+                        }
+                        break;
+                    case 2:
+                        JArray rtf1 = (JArray)item["rtf"];
+                        int rtfCount1 = rtf1.Count;
+                        int k = 0;
+
+                        foreach (JObject rtfObj in (JArray)item["rtf"])
+                        {
+                            //需要画表格和插入rtf内容
+                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
+                            k++;
+                        }
+                        break;
+                    default:
+                        JArray html = (JArray)item["html"];
+                        int htmlCount = html.Count;
+                        int m = 0;
+
+                        foreach (JObject rtfObj in html)
+                        {
+                            //生成html并将内容插入到模板中
+                            string htmlstr = (string)rtfObj["table"];
+                            string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
+                            wordUtil.CopyHtmlContentToTemplate(htmlfullname, sysjTemplateFilePath, "sysj", true, true, false);
+                            m++;
+                        }
+                        break;
                 }
+
+               
 
                 //在最后添加分页符
                 //wordUtil.InsertBreakForPage(sysjTemplateFilePath, false);
+
                 i++;
             }
 
@@ -574,194 +627,9 @@ namespace EmcReportWebApi.Controllers
 
 
             return result;
+
         }
-
-        /// <summary>
-        /// 谐波失真实验
-        /// </summary>
-        private string SetHarmonicEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath)
-        {
-            string templateName = jObject["name"].ToString();
-            string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
-            string sysjTemplateFilePath = CreateTemplateMiddle(middleDir, "sysj", GetTemplatePath("RTFTemplate.docx"));
-
-            foreach (var item in jObject)
-            {
-                if (!item.Key.Equals("sysj") && !item.Key.Equals("name") && !item.Key.Equals("syljt") && !item.Key.Equals("sybzt"))
-                    wordUtil.InsertContentInBookmark(templateFullPath, item.Value.ToString(), item.Key, false);
-            }
-
-            JArray sysj = (JArray)jObject["sysj"];
-            RtfTableInfo rtfTableInfo = MyTools.RtfTableInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
-
-            int startIndex = rtfTableInfo.StartIndex;
-            int titleRow = rtfTableInfo.TitleRow;
-            Dictionary<int, string> dic = rtfTableInfo.ColumnInfoDic;
-            string rtfbookmark = rtfTableInfo.Bookmark;
-            string mainTitle = rtfTableInfo.MainTitle;
-
-            int i = 0;
-            foreach (JObject item in sysj)
-            {
-                //插入实验数据信息 (画表格)
-
-                List<string> contentList = new List<string>();
-                if (item["sygdy"] != null)
-                    contentList.Add("试验供电电源：" + item["sygdy"].ToString());
-                if (item["syplfw"] != null)
-                    contentList.Add("试验频率范围：" + item["syplfw"].ToString());
-                if (item["ypyxms"] != null)
-                    contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
-                if (item["mccfpl"] != null)
-                    contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());
-                if (item["sycxsj"] != null)
-                    contentList.Add("试验持续时间（s）：" + item["sycxsj"].ToString());
-                if (item["cfpl"] != null)
-                    contentList.Add("重复频率（s）：" + item["cfpl"].ToString());
-                if (item["cs"] != null)
-                    contentList.Add("次数（次）：" + item["cs"].ToString());
-                if (item["sycfcs"] != null)
-                    contentList.Add("试验重复次数（次）：" + item["sycfcs"].ToString());
-                if (item["sysjjg"] != null)
-                    contentList.Add("试验时间间隔（s）：" + item["sysjjg"].ToString());
-                if (item["sypl"] != null)
-                    contentList.Add("试验频率（Hz）：" + item["sypl"].ToString());
-
-                wordUtil.CreateTableToWord(sysjTemplateFilePath, contentList, "sysj", false, i != 0);
-
-                JArray rtf = (JArray)item["rtf"];
-                int rtfCount = rtf.Count;
-                int j = 0;
-
-                foreach (JObject rtfObj in (JArray)item["rtf"])
-                {
-                    //需要画表格和插入rtf内容
-                    wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, j == rtfCount - 1);
-                    j++;
-                }
-
-                //在最后添加分页符
-                //wordUtil.InsertBreakForPage(sysjTemplateFilePath, false);
-                i++;
-            }
-
-            wordUtil.CopyOtherFileContentToWord(sysjTemplateFilePath, templateFullPath, "sysj", true);
-
-            //插入图片
-            JArray syljt = (JArray)jObject["syljt"];
-            List<string> list = new List<string>();
-
-            foreach (JObject item in syljt)
-            {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
-            }
-
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
-
-            JArray sybzt = (JArray)jObject["sybzt"];
-            list = new List<string>();
-            foreach (JObject item in sybzt)
-            {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
-            }
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
-
-            string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
-
-
-            return result;
-        }
-
-        /// <summary>
-        /// 其他带有html的实验
-        /// </summary>
-        /// <returns></returns>
-        private string SetOtherEmission(WordUtil wordUtil, JObject jObject, string bookmark, string middleDir, string reportFilesPath)
-        {
-            string templateName = jObject["name"].ToString();
-            string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
-            string sysjTemplateFilePath = CreateTemplateMiddle(middleDir, "sysj", GetTemplatePath("RTFTemplate.docx"));
-
-            foreach (var item in jObject)
-            {
-                if (!item.Key.Equals("sysj") && !item.Key.Equals("name") && !item.Key.Equals("syljt") && !item.Key.Equals("sybzt"))
-                    wordUtil.InsertContentInBookmark(templateFullPath, item.Value.ToString(), item.Key, false);
-            }
-
-            JArray sysj = (JArray)jObject["sysj"];
-
-            int i = 0;
-            foreach (var item in sysj)
-            {
-                List<string> contentList = new List<string>();
-                if (item["sygdy"] != null)
-                    contentList.Add("试验供电电源：" + item["sygdy"].ToString());
-                if (item["syplfw"] != null)
-                    contentList.Add("试验频率范围：" + item["syplfw"].ToString());
-                if (item["ypyxms"] != null)
-                    contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
-                if (item["mccfpl"] != null)
-                    contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());
-                if (item["sycxsj"] != null)
-                    contentList.Add("试验持续时间（s）：" + item["sycxsj"].ToString());
-                if (item["cfpl"] != null)
-                    contentList.Add("重复频率（s）：" + item["cfpl"].ToString());
-                if (item["cs"] != null)
-                    contentList.Add("次数（次）：" + item["cs"].ToString());
-                if (item["sycfcs"] != null)
-                    contentList.Add("试验重复次数（次）：" + item["sycfcs"].ToString());
-                if (item["sysjjg"] != null)
-                    contentList.Add("试验时间间隔（s）：" + item["sysjjg"].ToString());
-                if (item["sypl"] != null)
-                    contentList.Add("试验频率（Hz）：" + item["sypl"].ToString());
-
-                wordUtil.CreateTableToWord(sysjTemplateFilePath, contentList, "sysj", false, i != 0);
-
-                JArray html = (JArray)item["html"];
-                int htmlCount = html.Count;
-                int j = 0;
-
-                foreach (JObject rtfObj in html)
-                {
-                    //生成html并将内容插入到模板中
-                    string htmlstr = (string)rtfObj["table"];
-                    string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
-                    wordUtil.CopyHtmlContentToTemplate(htmlfullname, sysjTemplateFilePath, "sysj", true, true, false);
-                    j++;
-                }
-
-                //在最后添加分页符
-                //wordUtil.InsertBreakForPage(sysjTemplateFilePath, false);
-                i++;
-            }
-
-            wordUtil.CopyOtherFileContentToWord(sysjTemplateFilePath, templateFullPath, "sysj", true);
-
-            //插入图片
-            JArray syljt = (JArray)jObject["syljt"];
-            List<string> list = new List<string>();
-
-            foreach (JObject item in syljt)
-            {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
-            }
-
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
-
-            JArray sybzt = (JArray)jObject["sybzt"];
-            list = new List<string>();
-            foreach (JObject item in sybzt)
-            {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
-            }
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
-
-            string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
-
-
-            return result;
-        }
-        #endregion
+        
 
         /// <summary>
         /// 创建模板中间件

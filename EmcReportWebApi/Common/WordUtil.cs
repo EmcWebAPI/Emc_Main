@@ -580,10 +580,15 @@ namespace EmcReportWebApi.Common
             table.Select();
             if (isNeedBreak)
             {
-                InsertBreakPage(false);
+                //InsertBreakPage(true);
+                object unite = WdUnits.wdStory;
+                _wordApp.Selection.EndKey(ref unite, ref _missing);
+                object breakPage = WdBreakType.wdSectionBreakNextPage;//分页符
+                _wordApp.Selection.InsertBreak(breakPage);
+                
                 table = _wordApp.Selection.Range.Sections.Last.Range;
-                CreateAndGoToNextParagraph(table, true, true);
-                CreateAndGoToNextParagraph(table, true, true);
+                //CreateAndGoToNextParagraph(table, true, true);
+                //CreateAndGoToNextParagraph(table, true, true);
             }
             int numRows = 0;
             int numColumns = 0;

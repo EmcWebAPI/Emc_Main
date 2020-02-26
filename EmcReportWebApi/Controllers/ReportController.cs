@@ -66,7 +66,7 @@ namespace EmcReportWebApi.Controllers
                 //解压zip文件
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
-                string content = JsonToWord(para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
+                string content = JsonToWord(reportId.Equals("")? "QW2018-698":reportId, para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
@@ -101,7 +101,7 @@ namespace EmcReportWebApi.Controllers
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
 
                 //生成报告
-                string content = JsonToWord(para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
+                string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId,para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
@@ -239,7 +239,7 @@ namespace EmcReportWebApi.Controllers
             //解压zip文件
             ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
 
-            string result = JsonToWord(jsonStr1, reportFilesPath);
+            string result = JsonToWord("QT2019-3015", jsonStr1, reportFilesPath);
             //string result = "";
             sw.Stop();
             double time1 = (double)sw.ElapsedMilliseconds / 1000;
@@ -269,7 +269,7 @@ namespace EmcReportWebApi.Controllers
             else
             {
                 //生成报告
-                result = JsonToWord(jsonStr, reportFilesPath);
+                result = JsonToWord("QT2019-3015", jsonStr, reportFilesPath);
             }
 
             //string result = "";
@@ -338,7 +338,7 @@ namespace EmcReportWebApi.Controllers
         }
 
         #region 生成报表方法
-        private string JsonToWord(string jsonStr, string reportFilesPath)
+        private string JsonToWord(string reportId,string jsonStr, string reportFilesPath)
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
@@ -359,6 +359,14 @@ namespace EmcReportWebApi.Controllers
                 //首页内容 object
                 JObject firstPage = (JObject)mainObj["firstPage"];
                 result = InsertContentToWord(wordUtil, firstPage);
+                //报告编号
+                string[] reportArray= reportId.Split('-');
+                string reportStr = "国医检(磁)字QW2018第698号";
+                if (reportArray.Length >= 2) {
+                    reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
+                }
+                wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
+
                 if (!result.Equals("保存成功"))
                 {
                     return result;

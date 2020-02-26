@@ -76,7 +76,7 @@ namespace EmcReportWebApi.Controllers
             catch (Exception ex)
             {
                 MyTools.ErrorLog.Error(ex.Message, ex);//设置错误信息
-                result = SetReportResult<string>(string.Format("报告生成失败"), false, ex.Message);
+                result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0}",reportId), false, ex.Message);
                 return Json<ReportResult<string>>(result);
             }
 

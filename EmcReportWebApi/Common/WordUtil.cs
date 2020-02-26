@@ -66,26 +66,18 @@ namespace EmcReportWebApi.Common
             templateDoc.Select();
             Range range = GetBookmarkRank(templateDoc, bookmark);
             range.Select();
+            int tableCount = range.Tables.Count;
 
-            object unite = WdUnits.wdStory;
-            _wordApp.Selection.EndKey(ref unite, ref _missing);
-
-            object breakType = WdBreakType.wdLineBreak;//换行符
-            _wordApp.ActiveWindow.Selection.InsertBreak(breakType);
-
-            range = _wordApp.Selection.Paragraphs.Last.Range;
-            range.Select();
-            CreateAndGoToNextParagraph(range, true, true);
-            range.Paste();
+            Range tableRange = range.Tables[tableCount].Range;
+            
+            CreateAndGoToNextParagraph(tableRange, true, true);
+            CreateAndGoToNextParagraph(tableRange, true, true);
+            tableRange.Paste();
 
             foreach (Table item in range.Tables)
             {
                 item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
             }
-            //if (isNeedBreak)
-            //{
-            //    InsertBreakPage(false);
-            //}
             if (isCloseTemplateFile)
             {
                 CloseWord(templateDoc, TemplateFilePath);
@@ -588,10 +580,15 @@ namespace EmcReportWebApi.Common
             table.Select();
             if (isNeedBreak)
             {
-                InsertBreakPage(false);
+                //InsertBreakPage(true);
+                object unite = WdUnits.wdStory;
+                _wordApp.Selection.EndKey(ref unite, ref _missing);
+                object breakPage = WdBreakType.wdSectionBreakNextPage;//分页符
+                _wordApp.Selection.InsertBreak(breakPage);
+                
                 table = _wordApp.Selection.Range.Sections.Last.Range;
-                CreateAndGoToNextParagraph(table, true, true);
-                CreateAndGoToNextParagraph(table, true, true);
+                //CreateAndGoToNextParagraph(table, true, true);
+                //CreateAndGoToNextParagraph(table, true, true);
             }
             int numRows = 0;
             int numColumns = 0;
@@ -746,6 +743,17 @@ namespace EmcReportWebApi.Common
                         CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//获取下一个range
                     CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//InsertBR(wordTable, i <= rtfTableCount);//添加回车
                     wordTable.Paste();
+
+                    //检索table的最后一列 耗时间 找更好的办法
+                    //Table table1 = wordTable.Tables[1];
+                    //table1.Select();
+                    //Cells cells = _wordApp.Selection.Cells;
+                    //foreach (Cell item in cells)
+                    //{
+                    //    if (item.Range.Text.Contains("PASS")) {
+                    //        item.Range.Text = "符合";
+                    //    }
+                    //}
 
                     ClearFormatTable(wordTable.Tables[1]);
                 }

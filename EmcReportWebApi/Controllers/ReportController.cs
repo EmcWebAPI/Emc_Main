@@ -84,7 +84,7 @@ namespace EmcReportWebApi.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult CreateReportTest(ReportParams para)
+        public IHttpActionResult CreateReportTest1(ReportParams para)
         {
             //string jsonStr = para.JsonStr;
             string reportId = para.ReportId;

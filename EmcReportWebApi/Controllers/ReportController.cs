@@ -39,6 +39,8 @@ namespace EmcReportWebApi.Controllers
         [HttpPost]
         public IHttpActionResult CreateReport(ReportParams para)
         {
+            //保存参数用作排查bug
+            SaveParams(para);
             //string jsonStr = para.JsonStr;
             string reportId = para.ReportId;
             Stopwatch sw = new Stopwatch();
@@ -86,6 +88,8 @@ namespace EmcReportWebApi.Controllers
         [HttpPost]
         public IHttpActionResult CreateReportTest1(ReportParams para)
         {
+            //保存参数用作排查bug
+            SaveParams(para);
             //string jsonStr = para.JsonStr;
             string reportId = para.ReportId;
             Stopwatch sw = new Stopwatch();
@@ -845,7 +849,7 @@ namespace EmcReportWebApi.Controllers
 
         private string CreateHtmlFile(string htmlStr, string dirPath)
         {
-            string dateStr = DateTime.Now.ToString("yyyyMMddhhmmss");
+            string dateStr = DateTime.Now.ToString("yyyyMMddHHmmss");
             string htmlpath = dirPath + "\\reportHtml" + dateStr + ".html";
             FileStream fs = new FileStream(htmlpath, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
@@ -855,6 +859,22 @@ namespace EmcReportWebApi.Controllers
             fs.Close();
             fs.Dispose();
             return htmlpath;
+        }
+
+        private void SaveParams(ReportParams para) {
+            string dateStr = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string txtPath = string.Format("{0}Log\\Params\\{1}.txt", _currRoot, dateStr);
+            if (!System.IO.File.Exists(txtPath))
+            {
+                //没有则创建这个文件
+                FileStream fs1 = new FileStream(txtPath, FileMode.Create, FileAccess.Write);//创建写入文件      
+                StreamWriter sw = new StreamWriter(fs1);
+                sw.WriteLine("ReportId:"+para.ReportId);
+                sw.WriteLine("ZipFilesUrl:" + para.ZipFilesUrl);
+                sw.WriteLine("JsonStr:" + para.JsonStr);
+                sw.Close();
+                fs1.Close();
+            }
         }
         #endregion
         #endregion

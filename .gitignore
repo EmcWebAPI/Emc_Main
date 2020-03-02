@@ -3,7 +3,6 @@
 ################################################################################
 
 /.vs
-/EmcReportWebApi/Log
 /EmcReportWebApi/obj/Debug
 /EmcReportWebApi/Files/OutPut
 /EmcReportWebApi/bin

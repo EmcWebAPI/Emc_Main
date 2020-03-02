@@ -162,7 +162,7 @@
     <Content Include="Files\ReportFiles\Test\QT2019-3015.zip" />
     <Content Include="Document\对应表.xlsx" />
     <Content Include="Document\生成报告接口文档.docx" />
-	<Content Include="Document\buglist.xlsx" />
+    <Content Include="Document\buglist.xlsx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -179,6 +179,7 @@
     <Folder Include="Files\TemplateMiddleware\" />
     <Folder Include="Log\Error\" />
     <Folder Include="Log\Info\" />
+    <Folder Include="Log\Params\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

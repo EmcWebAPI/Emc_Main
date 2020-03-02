@@ -646,13 +646,13 @@ namespace EmcReportWebApi.Common
         /// <param name="wordBookmark">需要插入内容的书签</param>
         /// <param name="isCloseTheFile">是否关闭新打开的文件</param>
         /// <returns></returns>
-        public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex,int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak, bool isCloseTheFile = true)
         {
             string result = "创建成功";
             try
             {
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFileTableForColByTableIndex(_currentWord, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
+                result = CopyOtherFileTableForColByTableIndex(_currentWord, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
                 if (isCloseTheFile)
                     CloseWord(rtfDoc, copyFileFullPath);
 
@@ -668,14 +668,14 @@ namespace EmcReportWebApi.Common
         }
 
 
-        public string CopyOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
         {
             string result = "创建成功";
             try
             {
                 Document templateDoc = OpenWord(templateFullPath);
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
+                result = CopyOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
                 if (isCloseTemplateFile)
                     CloseWord(templateDoc, templateFullPath);
                 if (isCloseTheFile)
@@ -692,7 +692,7 @@ namespace EmcReportWebApi.Common
         }
 
 
-        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
+        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex,int copyFileTableEndIndex,  Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
         {
             try
             {
@@ -721,7 +721,9 @@ namespace EmcReportWebApi.Common
                 }
                 int m = 0;
 
-                for (int i = copyFileTableStartIndex; i <= rtfTableCount; i++)
+                int forCount = copyFileTableEndIndex == 0 ? rtfTableCount : copyFileTableEndIndex;
+
+                for (int i = copyFileTableStartIndex; i <= forCount; i++)
                 {
                     Table copyTable = rtfDoc.Tables[i];
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Root>
   <TempType Type="CE">
-    <Table StartIndex="1" Bookmark="sysj" TitleRow ="1" MainTitle="">
+    <Table StartIndex="1" EndIndex="0" Bookmark="sysj" TitleRow ="1" MainTitle="">
       <Column>
         <Title>频率
 （MHz）</Title>
@@ -32,7 +32,7 @@
     </Picture>
   </TempType>
   <TempType Type="RE">
-    <Table StartIndex="2" Bookmark="sysj" TitleRow ="1" MainTitle="">
+    <Table StartIndex="2" EndIndex="0" Bookmark="sysj" TitleRow ="1" MainTitle="">
       <Column>
         <Title>频率
 （MHz）</Title>
@@ -73,7 +73,7 @@
     </Picture>
   </TempType>
   <TempType Type="波动">
-    <Table StartIndex="4" Bookmark="sysj" TitleRow ="1" MainTitle=""> 
+    <Table StartIndex="4" EndIndex="4" Bookmark="sysj" TitleRow ="1" MainTitle=""> 
       <Column>
         <Title>参数</Title>
         <ColumnIndex>1</ColumnIndex>
@@ -93,7 +93,7 @@
     </Table>
   </TempType>
   <TempType Type="谐波">
-    <Table StartIndex="9" Bookmark="sysj" TitleRow ="2" MainTitle ="谐波电流平均值结果,最大谐波电流结果,最大谐波电压结果">
+    <Table StartIndex="9" EndIndex="0" Bookmark="sysj" TitleRow ="2" MainTitle ="谐波电流平均值结果,最大谐波电流结果,最大谐波电压结果">
       <Column>
         <Title>次数</Title>
         <ColumnIndex>1</ColumnIndex>

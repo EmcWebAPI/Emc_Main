@@ -6,6 +6,8 @@ namespace EmcReportWebApi.Models
     {
         public int StartIndex { get; set; }
 
+        public int EndIndex { get; set; }
+
         public string RtfType { get; set; }
 
         public string Bookmark { get; set; }

@@ -601,8 +601,8 @@ namespace EmcReportWebApi.Common
                 //CreateAndGoToNextParagraph(table, true, true);
                 //CreateAndGoToNextParagraph(table, true, true);
             }
-            int numRows = 0;
-            int numColumns = 0;
+            int numRows = 1;
+            int numColumns = 2;
             switch (contentList.Count)
             {
                 case 3:
@@ -959,9 +959,9 @@ namespace EmcReportWebApi.Common
             try
             {
                 Document htmldoc = OpenWord(firstFilePath);
-                htmldoc.Content.Copy();
                 Document secondFile = OpenWord(secondFilePath);
                 Range range = GetBookmarkRank(secondFile, bookmark);
+                htmldoc.Content.Copy();
                 range.Select();
                 range.PasteAndFormat(WdRecoveryType.wdPasteDefault);
                 range.Select();

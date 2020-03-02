@@ -66,7 +66,7 @@ namespace EmcReportWebApi.Controllers
                 //解压zip文件
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
-                string content = JsonToWord(reportId.Equals("")? "QW2018-698":reportId, para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
+                string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
@@ -76,7 +76,7 @@ namespace EmcReportWebApi.Controllers
             catch (Exception ex)
             {
                 MyTools.ErrorLog.Error(ex.Message, ex);//设置错误信息
-                result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0}",reportId), false, ex.Message);
+                result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0}", reportId), false, ex.Message);
                 return Json<ReportResult<string>>(result);
             }
 
@@ -101,7 +101,7 @@ namespace EmcReportWebApi.Controllers
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
 
                 //生成报告
-                string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId,para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
+                string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
@@ -338,7 +338,7 @@ namespace EmcReportWebApi.Controllers
         }
 
         #region 生成报表方法
-        private string JsonToWord(string reportId,string jsonStr, string reportFilesPath)
+        private string JsonToWord(string reportId, string jsonStr, string reportFilesPath)
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
@@ -360,9 +360,10 @@ namespace EmcReportWebApi.Controllers
                 JObject firstPage = (JObject)mainObj["firstPage"];
                 result = InsertContentToWord(wordUtil, firstPage);
                 //报告编号
-                string[] reportArray= reportId.Split('-');
+                string[] reportArray = reportId.Split('-');
                 string reportStr = "国医检(磁)字QW2018第698号";
-                if (reportArray.Length >= 2) {
+                if (reportArray.Length >= 2)
+                {
                     reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
                 }
                 wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
@@ -404,17 +405,17 @@ namespace EmcReportWebApi.Controllers
                 foreach (JObject item in experiment)
                 {
                     if (item["name"].ToString().Equals("传导发射实验") || item["name"].ToString().Equals("传导发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath,1);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath, 1);
                     else if (item["name"].ToString().Equals("辐射发射试验") || item["name"].ToString().Equals("辐射发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath,1);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath, 1);
                     else if (item["name"].ToString().Equals("谐波失真"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath,2);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath, 2);
                     else if (item["name"].ToString().Equals("电压波动和闪烁"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath,2);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath, 2);
+                    //else if (item["name"].ToString().Equals("电快速瞬变脉冲群"))
+                    //    newBookmark = SetPulseEmission(wordUtil, item, newBookmark, "", middleDir, reportFilesPath);
                     else
-                    {
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark,"", middleDir, reportFilesPath,3);
-                    }
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, 3);
                 }
             }
             //删除中间件文件夹
@@ -477,10 +478,13 @@ namespace EmcReportWebApi.Controllers
 
             return list;
         }
-        #endregion
 
-
-        private string SetEmissionCommon(WordUtil wordUtil, JObject jObject, string bookmark,  string rtfType, string middleDir, string reportFilesPath,int funType)
+        /// <summary>
+        /// 实验数据
+        /// </summary>
+        /// <param name="funType">1.传导发射实验,辐射发射实验 2.谐波失真 3.其他html表单实验</param>
+        /// <returns>新建的书签供下个实验使用</returns>
+        private string SetEmissionCommon(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, int funType)
         {
             string templateName = jObject["name"].ToString();
             string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
@@ -505,7 +509,8 @@ namespace EmcReportWebApi.Controllers
             int imageStartIndex = 0;
             string imageBookmark = "";
 
-            switch (funType) {
+            switch (funType)
+            {
                 case 1:
                     startIndex = rtfTableInfo.StartIndex;
                     titleRow = rtfTableInfo.TitleRow;
@@ -529,38 +534,37 @@ namespace EmcReportWebApi.Controllers
 
             }
 
-
             int i = 0;
             foreach (JObject item in sysj)
             {
                 //插入实验数据信息 (画表格)
 
                 List<string> contentList = new List<string>();
-                if (item["sygdy"] != null)
+                if (item["sygdy"] != null && !item["sygdy"].ToString().Equals(""))
                     contentList.Add("试验供电电源：" + item["sygdy"].ToString());
-                if (item["syplfw"] != null)
+                if (item["syplfw"] != null && !item["syplfw"].ToString().Equals(""))
                     contentList.Add("试验频率范围：" + item["syplfw"].ToString());
-                if (item["ypyxms"] != null)
+                if (item["ypyxms"] != null && !item["syplfw"].ToString().Equals(""))
                     contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
-                if (item["mccfpl"] != null)
+                if (item["mccfpl"] != null && !item["mccfpl"].ToString().Equals(""))
                     contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());
-                if (item["sycxsj"] != null)
+                if (item["sycxsj"] != null && !item["sycxsj"].ToString().Equals(""))
                     contentList.Add("试验持续时间（s）：" + item["sycxsj"].ToString());
-                if (item["cfpl"] != null)
+                if (item["cfpl"] != null && !item["cfpl"].ToString().Equals(""))
                     contentList.Add("重复频率（s）：" + item["cfpl"].ToString());
-                if (item["cs"] != null)
+                if (item["cs"] != null && !item["cs"].ToString().Equals(""))
                     contentList.Add("次数（次）：" + item["cs"].ToString());
-                if (item["sycfcs"] != null)
+                if (item["sycfcs"] != null && !item["sycfcs"].ToString().Equals(""))
                     contentList.Add("试验重复次数（次）：" + item["sycfcs"].ToString());
-                if (item["sysjjg"] != null)
+                if (item["sysjjg"] != null && !item["sysjjg"].ToString().Equals(""))
                     contentList.Add("试验时间间隔（s）：" + item["sysjjg"].ToString());
-                if (item["sypl"] != null)
+                if (item["sypl"] != null && !item["sypl"].ToString().Equals(""))
                     contentList.Add("试验频率（Hz）：" + item["sypl"].ToString());
 
                 wordUtil.CreateTableToWord(sysjTemplateFilePath, contentList, "sysj", false, i != 0);
-
-
-                switch (funType) {
+                
+                switch (funType)
+                {
                     case 1:
                         JArray rtf = (JArray)item["rtf"];
                         int rtfCount = rtf.Count;
@@ -602,11 +606,6 @@ namespace EmcReportWebApi.Controllers
                         break;
                 }
 
-               
-
-                //在最后添加分页符
-                //wordUtil.InsertBreakForPage(sysjTemplateFilePath, false);
-
                 i++;
             }
 
@@ -633,11 +632,145 @@ namespace EmcReportWebApi.Controllers
 
             string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
 
-
             return result;
 
         }
-        
+
+        //电快速瞬变脉冲群
+        private string SetPulseEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath)
+        {
+            string templateName = jObject["name"].ToString();
+            string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
+            string sysjTemplateFilePath = CreateTemplateMiddle(middleDir, "sysj", GetTemplatePath("RTFTemplate.docx"));
+
+            foreach (var item in jObject)
+            {
+                if (!item.Key.Equals("sysj") && !item.Key.Equals("name") && !item.Key.Equals("syljt") && !item.Key.Equals("sybzt"))
+                    wordUtil.InsertContentInBookmark(templateFullPath, item.Value.ToString(), item.Key, false);
+            }
+
+            JArray sysj = (JArray)jObject["sysj"];
+
+            //交、直流电源线
+            int i = 0;
+            foreach (JObject item in sysj)
+            {
+                if (item["sysjTitle"] != null && item["sysjTitle"].ToString().Equals("交、直流电源线"))
+                {
+                    //插入实验数据信息 (画表格)
+                    List<string> contentList = new List<string>();
+                    if (item["sygdy"] != null && !item["sygdy"].ToString().Equals(""))
+                        contentList.Add("试验供电电源：" + item["sygdy"].ToString());
+                    if (item["syplfw"] != null && !item["syplfw"].ToString().Equals(""))
+                        contentList.Add("试验频率范围：" + item["syplfw"].ToString());
+                    if (item["ypyxms"] != null && !item["syplfw"].ToString().Equals(""))
+                        contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
+                    if (item["mccfpl"] != null && !item["mccfpl"].ToString().Equals(""))
+                        contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());
+                    if (item["sycxsj"] != null && !item["sycxsj"].ToString().Equals(""))
+                        contentList.Add("试验持续时间（s）：" + item["sycxsj"].ToString());
+                    if (item["cfpl"] != null && !item["cfpl"].ToString().Equals(""))
+                        contentList.Add("重复频率（s）：" + item["cfpl"].ToString());
+                    if (item["cs"] != null && !item["cs"].ToString().Equals(""))
+                        contentList.Add("次数（次）：" + item["cs"].ToString());
+                    if (item["sycfcs"] != null && !item["sycfcs"].ToString().Equals(""))
+                        contentList.Add("试验重复次数（次）：" + item["sycfcs"].ToString());
+                    if (item["sysjjg"] != null && !item["sysjjg"].ToString().Equals(""))
+                        contentList.Add("试验时间间隔（s）：" + item["sysjjg"].ToString());
+                    if (item["sypl"] != null && !item["sypl"].ToString().Equals(""))
+                        contentList.Add("试验频率（Hz）：" + item["sypl"].ToString());
+
+
+                    wordUtil.CreateTableToWord(sysjTemplateFilePath, contentList, "sysj", false, i != 0);
+
+                    JArray html = (JArray)item["html"];
+                    int htmlCount = html.Count;
+                    int m = 0;
+
+                    foreach (JObject rtfObj in html)
+                    {
+                        //生成html并将内容插入到模板中
+                        string htmlstr = (string)rtfObj["table"];
+                        string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
+                        wordUtil.CopyHtmlContentToTemplate(htmlfullname, sysjTemplateFilePath, "sysj", true, true, false);
+                        m++;
+                    }
+                }
+            }
+            wordUtil.CopyOtherFileContentToWord(sysjTemplateFilePath, templateFullPath, "sysj1", true);
+
+            //信号电缆和互连电缆
+            int j = 0;
+            foreach (JObject item in sysj)
+            {
+                if (item["sysjTitle"] != null && item["sysjTitle"].ToString().Equals("信号电缆和互连电缆"))
+                {
+                    //插入实验数据信息 (画表格)
+                    List<string> contentList = new List<string>();
+                    if (item["sygdy"] != null && !item["sygdy"].ToString().Equals(""))
+                        contentList.Add("试验供电电源：" + item["sygdy"].ToString());
+                    if (item["syplfw"] != null && !item["syplfw"].ToString().Equals(""))
+                        contentList.Add("试验频率范围：" + item["syplfw"].ToString());
+                    if (item["ypyxms"] != null && !item["syplfw"].ToString().Equals(""))
+                        contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
+                    if (item["mccfpl"] != null && !item["mccfpl"].ToString().Equals(""))
+                        contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());
+                    if (item["sycxsj"] != null && !item["sycxsj"].ToString().Equals(""))
+                        contentList.Add("试验持续时间（s）：" + item["sycxsj"].ToString());
+                    if (item["cfpl"] != null && !item["cfpl"].ToString().Equals(""))
+                        contentList.Add("重复频率（s）：" + item["cfpl"].ToString());
+                    if (item["cs"] != null && !item["cs"].ToString().Equals(""))
+                        contentList.Add("次数（次）：" + item["cs"].ToString());
+                    if (item["sycfcs"] != null && !item["sycfcs"].ToString().Equals(""))
+                        contentList.Add("试验重复次数（次）：" + item["sycfcs"].ToString());
+                    if (item["sysjjg"] != null && !item["sysjjg"].ToString().Equals(""))
+                        contentList.Add("试验时间间隔（s）：" + item["sysjjg"].ToString());
+                    if (item["sypl"] != null && !item["sypl"].ToString().Equals(""))
+                        contentList.Add("试验频率（Hz）：" + item["sypl"].ToString());
+
+
+                    wordUtil.CreateTableToWord(sysjTemplateFilePath, contentList, "sysj", false, j != 0);
+
+                    JArray html = (JArray)item["html"];
+                    int htmlCount = html.Count;
+                    int m = 0;
+
+                    foreach (JObject rtfObj in html)
+                    {
+                        //生成html并将内容插入到模板中
+                        string htmlstr = (string)rtfObj["table"];
+                        string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
+                        wordUtil.CopyHtmlContentToTemplate(htmlfullname, sysjTemplateFilePath, "sysj", true, true, false);
+                        m++;
+                    }
+                }
+            }
+            wordUtil.CopyOtherFileContentToWord(sysjTemplateFilePath, templateFullPath, "sysj2", true);
+
+            //插入图片
+            JArray syljt = (JArray)jObject["syljt"];
+            List<string> list = new List<string>();
+
+            foreach (JObject item in syljt)
+            {
+                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+            }
+
+            wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
+
+            JArray sybzt = (JArray)jObject["sybzt"];
+            list = new List<string>();
+            foreach (JObject item in sybzt)
+            {
+                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+            }
+            wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
+
+            string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
+
+            return result;
+        }
+        #endregion
 
         /// <summary>
         /// 创建模板中间件

@@ -92,8 +92,8 @@ namespace EmcReportWebApi.Common
             try
             {
                 Document otherFile = OpenWord(otherFilePath);
-                otherFile.Tables[tableIndex].Range.Copy();
                 Range range = GetBookmarkRank(_currentWord, bookmark);
+                otherFile.Tables[tableIndex].Range.Copy();
                 range.Paste();
                 range.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
                 if (isCloseTheFile)
@@ -121,8 +121,7 @@ namespace EmcReportWebApi.Common
                 InlineShape inlineShape = shapeRange.ConvertToInlineShape();
                 inlineShape.Select();
                 _wordApp.Selection.Copy();
-                bookmarkPic.Select();
-                _wordApp.Selection.Paste();
+                bookmarkPic.Paste();
                 if (isCloseTheFile)
                     CloseWord(otherFile, otherFilePath);
             }
@@ -474,7 +473,13 @@ namespace EmcReportWebApi.Common
                 //创建表格
                 range.Select();
                 Table table = _wordApp.Selection.Tables.Add(range, rowCount, columnCount, ref _missing, ref _missing);
+                float tableWidth = 0f;
+                foreach (Column item in table.Columns)
+                {
+                    tableWidth += item.Width;
+                }
 
+                
                 for (int i = 0; i < listCount; i++)
                 {
                     string[] arrStr = list[i].Split(',');
@@ -483,8 +488,14 @@ namespace EmcReportWebApi.Common
                     table.Select();
                     Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
                     cellRange.Select();
-                    //CreateAndGoToNextParagraph(cellRange, true, true);
-                    AddPicture(fileName, doc, cellRange);
+                    
+                    if (columnCount == 1)
+                    {
+                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - (float)56, tableWidth - (float)112);
+                    }
+                    else {
+                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - (float)28, tableWidth / 2 - (float)56);
+                    }
                     CreateAndGoToNextParagraph(cellRange, true, false);
                     cellRange.InsertAfter(content);
                 }
@@ -736,12 +747,11 @@ namespace EmcReportWebApi.Common
                         copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
                         m++;
                     }
-
-                    copyTable.Select();
-                    copyTable.Range.Copy();
+                    
                     if (i != copyFileTableStartIndex)
                         CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//获取下一个range
                     CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//InsertBR(wordTable, i <= rtfTableCount);//添加回车
+                    copyTable.Range.Copy();
                     wordTable.Paste();
 
                     //检索table的最后一列 耗时间 找更好的办法
@@ -918,9 +928,8 @@ namespace EmcReportWebApi.Common
                 rangeContent.Select();
 
                 _wordApp.Selection.Bookmarks.Add(newBookmark, rangeContent);
-                htmldoc.Content.Copy();
                 Range range = GetBookmarkRank(_currentWord, bookmark);
-                range.Select();
+                htmldoc.Content.Copy();
                 range.Paste();
                 range.Select();
                 int tableCount = _wordApp.Selection.Tables.Count;
@@ -1281,7 +1290,7 @@ namespace EmcReportWebApi.Common
         }
 
         //插入图片
-        private InlineShape AddPicture(string picFileName, Document doc, Range range, int width = 0, int height = 0)
+        private InlineShape AddPicture(string picFileName, Document doc, Range range, float width = 0, float height = 0)
         {
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
             if (width != 0 && height != 0)

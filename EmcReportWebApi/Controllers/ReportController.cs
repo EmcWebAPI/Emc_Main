@@ -372,6 +372,8 @@ namespace EmcReportWebApi.Controllers
                 }
                 wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
 
+                //设置页眉
+
                 if (!result.Equals("保存成功"))
                 {
                     return result;
@@ -421,6 +423,17 @@ namespace EmcReportWebApi.Controllers
                     else
                         newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, 3);
                 }
+                //替换页眉内容
+                int pageCount = wordUtil.GetDocumnetPageCount()-1;//获取文件页数(首页不算)
+
+                Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
+                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
+                valuePairs.Add("{reportId}", reportStr);
+                valuePairs.Add("{page}", pageCount.ToString());
+                replaceDic.Add(3, valuePairs);//替换页眉
+
+                wordUtil.ReplaceWritten(replaceDic);
+
             }
             //删除中间件文件夹
             DelectDir(middleDir);
@@ -569,7 +582,7 @@ namespace EmcReportWebApi.Controllers
                     contentList.Add("试验频率（Hz）：" + item["sypl"].ToString());
 
                 wordUtil.CreateTableToWord(sysjTemplateFilePath, contentList, "sysj", false, i != 0);
-                
+
                 switch (funType)
                 {
                     case 1:
@@ -579,7 +592,7 @@ namespace EmcReportWebApi.Controllers
                         foreach (JObject rtfObj in (JArray)item["rtf"])
                         {
                             //需要画表格和插入rtf内容
-                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex,dic, rtfbookmark, titleRow, mainTitle, false, true, false);
+                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
 
                             wordUtil.CopyOtherFilePictureToWord(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), imageStartIndex, imageBookmark, false, true, j == rtfCount - 1);
                             j++;
@@ -593,7 +606,7 @@ namespace EmcReportWebApi.Controllers
                         foreach (JObject rtfObj in (JArray)item["rtf"])
                         {
                             //需要画表格和插入rtf内容
-                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex,dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
+                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
                             k++;
                         }
                         break;
@@ -864,7 +877,8 @@ namespace EmcReportWebApi.Controllers
             return htmlpath;
         }
 
-        private void SaveParams(ReportParams para) {
+        private void SaveParams(ReportParams para)
+        {
             string dateStr = DateTime.Now.ToString("yyyyMMddHHmmss");
             string txtPath = string.Format("{0}Log\\Params\\{1}.txt", _currRoot, dateStr);
             if (!System.IO.File.Exists(txtPath))
@@ -872,7 +886,7 @@ namespace EmcReportWebApi.Controllers
                 //没有则创建这个文件
                 FileStream fs1 = new FileStream(txtPath, FileMode.Create, FileAccess.Write);//创建写入文件      
                 StreamWriter sw = new StreamWriter(fs1);
-                sw.WriteLine("ReportId:"+para.ReportId);
+                sw.WriteLine("ReportId:" + para.ReportId);
                 sw.WriteLine("ZipFilesUrl:" + para.ZipFilesUrl);
                 sw.WriteLine("JsonStr:" + para.JsonStr);
                 sw.Close();

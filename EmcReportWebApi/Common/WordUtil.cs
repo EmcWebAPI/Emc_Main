@@ -30,8 +30,7 @@ namespace EmcReportWebApi.Common
         {
             NewApp();
         }
-
-
+        
         /// <summary>
         /// 打开现有文件操作
         /// </summary>
@@ -54,6 +53,10 @@ namespace EmcReportWebApi.Common
 
             _disposed = false;
             _needWrite = true;
+        }
+
+        public int GetDocumnetPageCount() {
+            return _currentWord.ComputeStatistics(WdStatistic.wdStatisticPages, ref _missing);
         }
 
         public string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark, bool isNeedBreak, bool isCloseTheFile, bool isCloseTemplateFile)
@@ -400,8 +403,7 @@ namespace EmcReportWebApi.Common
             }
             return "保存成功";
         }
-
-
+        
         /// <summary>
         /// 根据书签向word中插入内容
         /// </summary>
@@ -424,7 +426,7 @@ namespace EmcReportWebApi.Common
             }
             return "插入成功";
         }
-
+        
         public string InsertImageToWord(List<string> list, string bookmark)
         {
             try
@@ -491,7 +493,7 @@ namespace EmcReportWebApi.Common
                     
                     if (columnCount == 1)
                     {
-                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - (float)56, tableWidth - (float)112);
+                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - (float)56, tableWidth - (float)260);
                     }
                     else {
                         InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - (float)28, tableWidth / 2 - (float)56);

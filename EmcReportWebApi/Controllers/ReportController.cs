@@ -686,7 +686,10 @@ namespace EmcReportWebApi.Controllers
         //电快速瞬变脉冲群 电压暂降和短时中断
         private string SetPulseEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath)
           {
+
             string templateName = jObject["name"].ToString();
+            if (templateName.Contains("电压暂降") || templateName.Contains("短时中断"))
+                templateName = "电压暂降和短时中断";
             string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
             string sysjTemplateFilePath = CreateTemplateMiddle(middleDir, "sysj", GetTemplatePath("RTFTemplate.docx"));
 

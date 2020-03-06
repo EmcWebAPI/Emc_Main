@@ -135,7 +135,7 @@
     <Content Include="Files\Upload\Rtf\ZC2018-308 裂隙灯显微镜 波动.rtf" />
     <Content Include="Files\Upload\Rtf\ZC2018-308 裂隙灯显微镜 谐波.rtf" />
     <Content Include="Files\ExperimentTemplate\传导发射实验.docx" />
-    <Content Include="Files\ExperimentTemplate\在电源供电输入线上的电压暂降、短时中断和电压变化抗扰度试验.docx" />
+    <Content Include="Files\ExperimentTemplate\电压暂降和短时中断.docx" />
     <Content Include="Files\ExperimentTemplate\射频场感应的传导骚扰.docx" />
     <Content Include="Files\ExperimentTemplate\射频电磁场辐射.docx" />
     <Content Include="Files\ExperimentTemplate\工频磁场抗扰度试验.docx" />

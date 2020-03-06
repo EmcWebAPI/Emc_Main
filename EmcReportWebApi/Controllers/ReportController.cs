@@ -595,26 +595,41 @@ namespace EmcReportWebApi.Controllers
                         JArray rtf = (JArray)item["rtf"];
                         int rtfCount = rtf.Count;
                         int j = 0;
-                        foreach (JObject rtfObj in (JArray)item["rtf"])
+                        try
                         {
-                            //需要画表格和插入rtf内容
-                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
+                            foreach (JObject rtfObj in (JArray)item["rtf"])
+                            {
+                                //需要画表格和插入rtf内容
+                                wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
 
-                            wordUtil.CopyOtherFilePictureToWord(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), imageStartIndex, imageBookmark, false, true, j == rtfCount - 1);
-                            j++;
+                                wordUtil.CopyOtherFilePictureToWord(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), imageStartIndex, imageBookmark, false, true, j == rtfCount - 1);
+                                j++;
+                            }
                         }
+                        catch (Exception)
+                        {
+                            throw new Exception(string.Format("实验:{0}rtf文件内容不正确",templateName));
+                        }
+                        
                         break;
                     case 2:
                         JArray rtf1 = (JArray)item["rtf"];
                         int rtfCount1 = rtf1.Count;
                         int k = 0;
-
-                        foreach (JObject rtfObj in (JArray)item["rtf"])
+                        try
                         {
-                            //需要画表格和插入rtf内容
-                            wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
-                            k++;
+                            foreach (JObject rtfObj in (JArray)item["rtf"])
+                            {
+                                //需要画表格和插入rtf内容
+                                wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
+                                k++;
+                            }
                         }
+                        catch (Exception)
+                        {
+                            throw new Exception(string.Format("实验:{0}rtf文件内容不正确", templateName));
+                        }
+                       
                         break;
                     default:
                         JArray html = (JArray)item["html"];
@@ -637,24 +652,30 @@ namespace EmcReportWebApi.Controllers
 
             wordUtil.CopyOtherFileContentToWord(sysjTemplateFilePath, templateFullPath, "sysj", true);
 
-            //插入图片
-            JArray syljt = (JArray)jObject["syljt"];
             List<string> list = new List<string>();
 
-            foreach (JObject item in syljt)
-            {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+            //插入图片
+            if (jObject["syljt"] != null && !jObject["syljt"].ToString().Equals("")) {
+                JArray syljt = (JArray)jObject["syljt"];
+                
+                foreach (JObject item in syljt)
+                {
+                    list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+                }
+
+                wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
             }
 
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
-
-            JArray sybzt = (JArray)jObject["sybzt"];
-            list = new List<string>();
-            foreach (JObject item in sybzt)
+            if (jObject["sybzt"] != null && !jObject["sybzt"].ToString().Equals(""))
             {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+                JArray sybzt = (JArray)jObject["sybzt"];
+                list = new List<string>();
+                foreach (JObject item in sybzt)
+                {
+                    list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+                }
+                wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
             }
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
 
             string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
 
@@ -777,24 +798,31 @@ namespace EmcReportWebApi.Controllers
             }
             wordUtil.CopyOtherFileContentToWord(sysjTemplateFilePath, templateFullPath, "sysj2", true);
 
-            //插入图片
-            JArray syljt = (JArray)jObject["syljt"];
             List<string> list = new List<string>();
 
-            foreach (JObject item in syljt)
+            //插入图片
+            if (jObject["syljt"] != null && !jObject["syljt"].ToString().Equals(""))
             {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+                JArray syljt = (JArray)jObject["syljt"];
+
+                foreach (JObject item in syljt)
+                {
+                    list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+                }
+
+                wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
             }
 
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
-
-            JArray sybzt = (JArray)jObject["sybzt"];
-            list = new List<string>();
-            foreach (JObject item in sybzt)
+            if (jObject["sybzt"] != null && !jObject["sybzt"].ToString().Equals(""))
             {
-                list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+                JArray sybzt = (JArray)jObject["sybzt"];
+                list = new List<string>();
+                foreach (JObject item in sybzt)
+                {
+                    list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
+                }
+                wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
             }
-            wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
 
             string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
 

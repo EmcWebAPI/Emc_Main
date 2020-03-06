@@ -687,7 +687,8 @@ namespace EmcReportWebApi.Common
             {
                 _needWrite = false;
                 Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                //throw new Exception("rtf文件内容不正确");
+               throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
 
             return "创建成功";

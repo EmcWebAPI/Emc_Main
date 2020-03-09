@@ -928,7 +928,7 @@ namespace EmcReportWebApi.Common
                 if (isNewBookmark) {
                     Range rangeContent = htmldoc.Content;
                     rangeContent.Select();
-                    InsertBreakPage(true);
+                    //InsertBreakPage(true);
                     rangeContent = rangeContent.Sections.Last.Range;
                     CreateAndGoToNextParagraph(rangeContent, false, true);
                     rangeContent.Select();

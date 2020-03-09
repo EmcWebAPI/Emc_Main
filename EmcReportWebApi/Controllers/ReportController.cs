@@ -78,7 +78,7 @@ namespace EmcReportWebApi.Controllers
             catch (Exception ex)
             {
                 MyTools.ErrorLog.Error(ex.Message, ex);//设置错误信息
-                result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0}", reportId), false, ex.Message);
+                result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0},错误信息:{1}", reportId, ex.Message), false, "");
                 return Json<ReportResult<string>>(result);
             }
 
@@ -570,7 +570,7 @@ namespace EmcReportWebApi.Controllers
                     contentList.Add("试验供电电源：" + item["sygdy"].ToString());
                 if (item["syplfw"] != null && !item["syplfw"].ToString().Equals(""))
                     contentList.Add("试验频率范围：" + item["syplfw"].ToString());
-                if (item["ypyxms"] != null && !item["syplfw"].ToString().Equals(""))
+                if (item["ypyxms"] != null && !item["ypyxms"].ToString().Equals(""))
                     contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
                 if (item["mccfpl"] != null && !item["mccfpl"].ToString().Equals(""))
                     contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());
@@ -715,7 +715,7 @@ namespace EmcReportWebApi.Controllers
                         contentList.Add("试验供电电源：" + item["sygdy"].ToString());
                     if (item["syplfw"] != null && !item["syplfw"].ToString().Equals(""))
                         contentList.Add("试验频率范围：" + item["syplfw"].ToString());
-                    if (item["ypyxms"] != null && !item["syplfw"].ToString().Equals(""))
+                    if (item["ypyxms"] != null && !item["ypyxms"].ToString().Equals(""))
                         contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
                     if (item["mccfpl"] != null && !item["mccfpl"].ToString().Equals(""))
                         contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());
@@ -765,7 +765,7 @@ namespace EmcReportWebApi.Controllers
                         contentList.Add("试验供电电源：" + item["sygdy"].ToString());
                     if (item["syplfw"] != null && !item["syplfw"].ToString().Equals(""))
                         contentList.Add("试验频率范围：" + item["syplfw"].ToString());
-                    if (item["ypyxms"] != null && !item["syplfw"].ToString().Equals(""))
+                    if (item["ypyxms"] != null && !item["ypyxms"].ToString().Equals(""))
                         contentList.Add("样品运行模式：" + item["ypyxms"].ToString());
                     if (item["mccfpl"] != null && !item["mccfpl"].ToString().Equals(""))
                         contentList.Add("脉冲重复频率（kHz）：" + item["mccfpl"].ToString());

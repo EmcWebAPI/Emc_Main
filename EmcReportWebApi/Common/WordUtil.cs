@@ -919,20 +919,21 @@ namespace EmcReportWebApi.Common
             return "保存成功";
         }
 
-        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isCloseTheFile = true)
+        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark,bool isNewBookmark, bool isCloseTheFile = true)
         {
             string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddhhmmss");
             try
             {
                 Document htmldoc = OpenWord(filePath);
-                Range rangeContent = htmldoc.Content;
-                rangeContent.Select();
-                InsertBreakPage(true);
-                rangeContent = rangeContent.Sections.Last.Range;
-                CreateAndGoToNextParagraph(rangeContent, false, true);
-                rangeContent.Select();
-
-                _wordApp.Selection.Bookmarks.Add(newBookmark, rangeContent);
+                if (isNewBookmark) {
+                    Range rangeContent = htmldoc.Content;
+                    rangeContent.Select();
+                    InsertBreakPage(true);
+                    rangeContent = rangeContent.Sections.Last.Range;
+                    CreateAndGoToNextParagraph(rangeContent, false, true);
+                    rangeContent.Select();
+                    _wordApp.Selection.Bookmarks.Add(newBookmark, rangeContent);
+                }
                 Range range = GetBookmarkRank(_currentWord, bookmark);
                 htmldoc.Content.Copy();
                 range.Paste();

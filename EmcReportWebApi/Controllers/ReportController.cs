@@ -407,6 +407,9 @@ namespace EmcReportWebApi.Controllers
 
                 //实验数据
                 JArray experiment = (JArray)mainObj["experiment"];
+
+                int experimentCount = experiment.Count;
+                int k = 1;
                 string newBookmark = "experiment";
                 foreach (JObject item in experiment)
                 {
@@ -417,25 +420,26 @@ namespace EmcReportWebApi.Controllers
                     }
 
                     if (item["name"].ToString().Equals("传导发射实验") || item["name"].ToString().Equals("传导发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath, 1);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath, 1,k!=experimentCount);
                     else if (item["name"].ToString().Equals("辐射发射试验") || item["name"].ToString().Equals("辐射发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath, 1);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath, 1, k != experimentCount);
                     else if (item["name"].ToString().Equals("谐波失真"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath, 2);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath, 2, k != experimentCount);
                     else if (item["name"].ToString().Equals("电压波动和闪烁"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath, 2);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath, 2, k != experimentCount);
                     else if (item["name"].ToString().Equals("电快速瞬变脉冲群") || item["name"].ToString().Equals("电压暂降和短时中断") || item["name"].ToString().Contains("电压暂降"))
-                        newBookmark = SetPulseEmission(wordUtil, item, newBookmark, "", middleDir, reportFilesPath);
+                        newBookmark = SetPulseEmission(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, k != experimentCount);
                     else
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, 3);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, 3, k != experimentCount);
+                    k++;
                 }
                 //替换页眉内容
                 int pageCount = wordUtil.GetDocumnetPageCount()-1;//获取文件页数(首页不算)
 
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
                 Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("{reportId}", reportStr);
-                valuePairs.Add("{page}", pageCount.ToString());
+                valuePairs.Add("reportId", reportStr);
+                valuePairs.Add("page", pageCount.ToString());
                 replaceDic.Add(3, valuePairs);//替换页眉
 
                 wordUtil.ReplaceWritten(replaceDic);
@@ -507,7 +511,7 @@ namespace EmcReportWebApi.Controllers
         /// </summary>
         /// <param name="funType">1.传导发射实验,辐射发射实验 2.谐波失真 3.其他html表单实验</param>
         /// <returns>新建的书签供下个实验使用</returns>
-        private string SetEmissionCommon(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, int funType)
+        private string SetEmissionCommon(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, int funType,bool isNewBookmark)
         {
             string templateName = jObject["name"].ToString();
             string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
@@ -677,14 +681,14 @@ namespace EmcReportWebApi.Controllers
                 wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
             }
 
-            string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
+            string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark, isNewBookmark);
 
             return result;
 
         }
 
         //电快速瞬变脉冲群 电压暂降和短时中断
-        private string SetPulseEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath)
+        private string SetPulseEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath,bool isNewBookmark)
           {
 
             string templateName = jObject["name"].ToString();
@@ -827,7 +831,7 @@ namespace EmcReportWebApi.Controllers
                 wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
             }
 
-            string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark);
+            string result = wordUtil.CopyOtherFileContentToWordReturnBookmark(templateFullPath, bookmark, isNewBookmark);
 
             return result;
         }

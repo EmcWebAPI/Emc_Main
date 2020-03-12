@@ -30,7 +30,7 @@ namespace EmcReportWebApi.Common
         {
             NewApp();
         }
-        
+
         /// <summary>
         /// 打开现有文件操作
         /// </summary>
@@ -55,7 +55,8 @@ namespace EmcReportWebApi.Common
             _needWrite = true;
         }
 
-        public int GetDocumnetPageCount() {
+        public int GetDocumnetPageCount()
+        {
             return _currentWord.ComputeStatistics(WdStatistic.wdStatisticPages, ref _missing);
         }
 
@@ -72,7 +73,7 @@ namespace EmcReportWebApi.Common
             int tableCount = range.Tables.Count;
 
             Range tableRange = range.Tables[tableCount].Range;
-            
+
             CreateAndGoToNextParagraph(tableRange, true, true);
             CreateAndGoToNextParagraph(tableRange, true, true);
             tableRange.Paste();
@@ -403,7 +404,7 @@ namespace EmcReportWebApi.Common
             }
             return "保存成功";
         }
-        
+
         /// <summary>
         /// 根据书签向word中插入内容
         /// </summary>
@@ -426,7 +427,7 @@ namespace EmcReportWebApi.Common
             }
             return "插入成功";
         }
-        
+
         public string InsertImageToWord(List<string> list, string bookmark)
         {
             try
@@ -481,7 +482,7 @@ namespace EmcReportWebApi.Common
                     tableWidth += item.Width;
                 }
 
-                
+
                 for (int i = 0; i < listCount; i++)
                 {
                     string[] arrStr = list[i].Split(',');
@@ -490,13 +491,17 @@ namespace EmcReportWebApi.Common
                     table.Select();
                     Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
                     cellRange.Select();
-                    
-                    if (columnCount == 1)
+
+                    if (!fileName.Equals(""))
                     {
-                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - (float)56, tableWidth - (float)260);
-                    }
-                    else {
-                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - (float)28, tableWidth / 2 - (float)56);
+                        if (columnCount == 1)
+                        {
+                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 260);
+                        }
+                        else
+                        {
+                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - 28, tableWidth / 2 - 56);
+                        }
                     }
                     CreateAndGoToNextParagraph(cellRange, true, false);
                     cellRange.InsertAfter(content);
@@ -598,7 +603,7 @@ namespace EmcReportWebApi.Common
                 _wordApp.Selection.EndKey(ref unite, ref _missing);
                 object breakPage = WdBreakType.wdSectionBreakNextPage;//分页符
                 _wordApp.Selection.InsertBreak(breakPage);
-                
+
                 table = _wordApp.Selection.Range.Sections.Last.Range;
                 //CreateAndGoToNextParagraph(table, true, true);
                 //CreateAndGoToNextParagraph(table, true, true);
@@ -648,7 +653,7 @@ namespace EmcReportWebApi.Common
         /// <param name="wordBookmark">需要插入内容的书签</param>
         /// <param name="isCloseTheFile">是否关闭新打开的文件</param>
         /// <returns></returns>
-        public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex,int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak, bool isCloseTheFile = true)
         {
             string result = "创建成功";
             try
@@ -688,14 +693,14 @@ namespace EmcReportWebApi.Common
                 _needWrite = false;
                 Dispose();
                 //throw new Exception("rtf文件内容不正确");
-               throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
 
             return "创建成功";
         }
 
 
-        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex,int copyFileTableEndIndex,  Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
+        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
         {
             try
             {
@@ -752,7 +757,7 @@ namespace EmcReportWebApi.Common
                         copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
                         m++;
                     }
-                    
+
                     if (i != copyFileTableStartIndex)
                         CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//获取下一个range
                     CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//InsertBR(wordTable, i <= rtfTableCount);//添加回车
@@ -919,13 +924,14 @@ namespace EmcReportWebApi.Common
             return "保存成功";
         }
 
-        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark,bool isNewBookmark, bool isCloseTheFile = true)
+        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
         {
             string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddhhmmss");
             try
             {
                 Document htmldoc = OpenWord(filePath);
-                if (isNewBookmark) {
+                if (isNewBookmark)
+                {
                     Range rangeContent = htmldoc.Content;
                     rangeContent.Select();
                     //InsertBreakPage(true);

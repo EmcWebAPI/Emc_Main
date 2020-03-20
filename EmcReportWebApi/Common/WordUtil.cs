@@ -444,7 +444,6 @@ namespace EmcReportWebApi.Common
                     range.InsertAfter(content);
                     CreateAndGoToNextParagraph(range, true, true);
                     AddPicture(fileName, range.Application.ActiveDocument, range);
-
                 }
             }
             catch (Exception ex)

@@ -121,13 +121,27 @@ namespace EmcReportWebApi.Common
                 otherFile.Select();
 
                 Range bookmarkPic = GetBookmarkRank(_currentWord, bookmark);
-                ShapeRange shapeRange = otherFile.Shapes.Range(1);
-                InlineShape inlineShape = shapeRange.ConvertToInlineShape();
-                inlineShape.Select();
-                _wordApp.Selection.Copy();
-                bookmarkPic.Paste();
-                if (isCloseTheFile)
-                    CloseWord(otherFile, otherFilePath);
+                
+                try
+                {
+                    ShapeRange shapeRange = otherFile.Shapes.Range(1);
+                    InlineShape inlineShape = shapeRange.ConvertToInlineShape();
+                    inlineShape.Select();
+                    _wordApp.Selection.Copy();
+                }
+                catch (Exception)
+                {
+                    Shape shape = otherFile.Shapes[1];
+                    Frame inlineShape = shape.ConvertToFrame();
+                    inlineShape.Select();
+                    _wordApp.Selection.Copy();
+                }
+                finally {
+                    bookmarkPic.Paste();
+                    if (isCloseTheFile)
+                        CloseWord(otherFile, otherFilePath);
+                }
+              
             }
             catch (Exception ex)
             {

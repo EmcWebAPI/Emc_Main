@@ -1,0 +1,248 @@
+[
+	{
+		"itemId": "1",
+		"idxNo": "8",
+		"itemContent": "自动复位装置的选择",
+		"itemPath": "1|",
+		"list": [
+			{
+				"itemId": "2",
+				"stdName": "GB9706.1-2007",
+				"stdItmNo": "49",
+				"itemPath": "1|2|",
+				"list": [
+					{
+						"itemId": "3",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "如果使用自动复位热断路器和过电流释放器,自动复位能保证安全.",
+						"itemPath": "1|2|3|",
+						"reference": "1",
+						"list": []
+					}
+				]
+			}
+		]
+	},
+	{
+		"itemId": "4",
+		"idxNo": "9",
+		"itemContent": "电源中断后的复位",
+		"itemPath": "4|",
+		"list": [
+			{
+				"itemId": "5",
+				"stdName": "GB9706.1-2007",
+				"stdItmNo": "49",
+				"itemPath": "4|5|",
+				"list": [
+					{
+						"itemId": "6",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "设备应设计成当电源供电中断后又恢复时,除预定功能中断外,不会发生安全方面危险.",
+						"itemPath": "4|5|6|",
+						"reference": "2",
+						"list": []
+					}
+				]
+			}
+		]
+	},
+	{
+		"itemId": "7",
+		"idxNo": "10",
+		"itemContent": "指示器",
+		"itemPath": "7|",
+		"list": [
+			{
+				"itemId": "8",
+				"stdName": "GB9706.1-2007",
+				"stdItmNo": "57",
+				"itemPath": "7|8|",
+				"list": [
+					{
+						"itemId": "9",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "除非对位于正常操作位置的操作者另有显而易见的指标,否则应安装指示灯,用于:\n----- 指示设备已通电.",
+						"itemPath": "7|8|9|",
+						"reference": "3",
+						"list": []
+					},
+					{
+						"itemId": "10",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "----设备装有不发光的电热器如会产生安全方面危险时,指示电热器已工作.",
+						"itemPath": "7|8|10|",
+						"reference": "4",
+						"list": []
+					},
+					{
+						"itemId": "11",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "----当输出电路意外的或长时间的工作可能引起安全方面危险时,指示处于输出状态.",
+						"itemPath": "7|8|11|",
+						"reference": "5",
+						"list": []
+					},
+					{
+						"itemId": "12",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "指示充电装置工作状态.",
+						"itemPath": "7|8|12|",
+						"reference": "6",
+						"list": []
+					}
+				]
+			}
+		]
+	},
+	{
+		"itemId": "13",
+		"idxNo": "7",
+		"itemContent": "连续漏电流和患者辅助电流(正常工作温度下)",
+		"itemPath": "13|",
+		"list": [
+			{
+				"itemId": "14",
+				"stdName": "GB9706.1-2007",
+				"stdItmNo": "19",
+				"itemPath": "13|14|",
+				"list": [
+					{
+						"itemId": "15",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "患者漏电流",
+						"itemPath": "13|14|15|",
+						"reference": "7",
+						"list": [
+							{
+								"itemId": "16",
+								"stdName": "GB9706.1-2007",
+								"itemContent": "直流",
+								"itemPath": "13|14|15|16|",
+								"reference": "7",
+								"list": [
+									{
+										"itemId": "17",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "正常状态下≤0.01mA",
+										"itemPath": "13|14|15|16|17|",
+										"reference": "7",
+										"list": []
+									},
+									{
+										"itemId": "18",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "单一故障状态下≤0.05mA",
+										"itemPath": "13|14|15|16|18|",
+										"reference": "8",
+										"list": []
+									}
+								]
+							},
+							{
+								"itemId": "19",
+								"stdName": "GB9706.1-2007",
+								"itemContent": "交流",
+								"itemPath": "13|14|15|19|",
+								"reference": "9",
+								"list": [
+									{
+										"itemId": "20",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "正常状态下≤0.1mA",
+										"itemPath": "13|14|15|19|20|",
+										"reference": "9",
+										"list": []
+									},
+									{
+										"itemId": "21",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "单一故障状态下≤0.5mA",
+										"itemPath": "13|14|15|19|21|",
+										"reference": "10",
+										"list": []
+									}
+								]
+							},
+							{
+								"itemId": "22",
+								"stdName": "GB9706.1-2007",
+								"itemContent": "应用部分加压状态≤5mA",
+								"itemPath": "13|14|15|22|",
+								"reference": "11",
+								"list": []
+							},
+							{
+								"itemId": "23",
+								"stdName": "GB9706.1-2007",
+								"itemContent": "信号输入/出部分加压状态≤{$1}mA",
+								"itemPath": "13|14|15|23|",
+								"reference": "12",
+								"list": []
+							}
+						]
+					},
+					{
+						"itemId": "24",
+						"stdName": "GB9706.1-2007",
+						"itemContent": "患者辅助电流\n单位: mA",
+						"itemPath": "13|14|24|",
+						"reference": "13",
+						"list": [
+							{
+								"itemId": "25",
+								"stdName": "GB9706.1-2007",
+								"itemContent": "直流",
+								"itemPath": "13|14|24|25|",
+								"reference": "13",
+								"list": [
+									{
+										"itemId": "26",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "正常状态下≤0.01mA",
+										"itemPath": "13|14|24|25|26|",
+										"reference": "13",
+										"list": []
+									},
+									{
+										"itemId": "27",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "单一故障状态下≤0.05mA",
+										"itemPath": "13|14|24|25|27|",
+										"reference": "14",
+										"list": []
+									}
+								]
+							},
+							{
+								"itemId": "28",
+								"stdName": "GB9706.1-2007",
+								"itemContent": "交流",
+								"itemPath": "13|14|24|28|",
+								"reference": "15",
+								"list": [
+									{
+										"itemId": "29",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "正常状态下≤0.1mA",
+										"itemPath": "13|14|24|28|29|",
+										"reference": "15",
+										"list": []
+									},
+									{
+										"itemId": "30",
+										"stdName": "GB9706.1-2007",
+										"itemContent": "单一故障状态下≤0.5mA",
+										"itemPath": "13|14|24|28|30|",
+										"reference": "16",
+										"list": []
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

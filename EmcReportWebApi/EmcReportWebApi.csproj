@@ -129,7 +129,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Files\国医检%28磁%29字QW2018第698号.docx" />
+    <Content Include="Files\报告模板.docx" />
     <Content Include="Files\Upload\Rtf\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />
     <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L.Rtf" />
     <Content Include="Files\Upload\Rtf\ZC2018-308 裂隙灯显微镜 波动.rtf" />
@@ -163,6 +163,8 @@
     <Content Include="Document\对应表.xlsx" />
     <Content Include="Document\生成报告接口文档.docx" />
     <Content Include="Document\buglist.xlsx" />
+    <Content Include="Files\标准模板.docx" />
+    <Content Include="Files\ReportFiles\Test\testResult.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

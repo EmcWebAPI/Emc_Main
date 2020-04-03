@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Interop.Word;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -53,6 +54,192 @@ namespace EmcReportWebApi.Common
 
             _disposed = false;
             _needWrite = true;
+        }
+
+        public int TableSplit(JArray array, string bookmark)
+        {
+            try
+            {
+                Range tableRange = GetBookmarkRank(_currentWord, bookmark);
+
+                Table table = tableRange.Tables[1];
+
+                for (int i = array.Count - 1; i >= 0; i--)
+                {
+                    TableSplit((JObject)array[i], i + 1, table);
+                }
+
+                table.Cell(1, 1).Select();
+                _wordApp.Selection.Rows.HeadingFormat = -1;
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+        }
+
+
+        public int TableSplit(JObject jObject, int xuhao, Table table)
+        {
+
+            table.Cell(1, 1).Select();
+            _wordApp.Selection.InsertRowsBelow(1);
+
+            // Row newRow = table.Rows[2];
+
+            //序号
+            table.Cell(2, 1).Range.Text = jObject["idxNo"].ToString();
+
+            //检验项目
+            table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
+
+            JArray firstItems = (JArray)jObject["list"];
+
+            if (firstItems.Count != 0)
+            {
+                int firstItemsCount = firstItems.Count;
+                //标准条款
+                Cell cell3 = table.Cell(2, 3);
+                cell3.Split(firstItemsCount, 1);
+                for (int i = 0; i < firstItemsCount; i++)
+                {
+                    table.Cell(2 + i, 3).Range.Text = firstItems[i]["stdItmNo"].ToString();
+                }
+
+
+                //标准要求
+                Cell cell4 = table.Cell(2, 4);
+                Cell cell5 = table.Cell(2, 5);
+                cell4.Split(firstItemsCount, 1);
+                cell5.Split(firstItemsCount, 1);
+
+                Dictionary<JObject, string> cellCol4Dic = new Dictionary<JObject, string>();
+                for (int i = 0; i < firstItemsCount; i++)
+                {
+                    Cell tempCell = table.Cell(2 + i, 4);
+                    JObject firstItem = (JObject)firstItems[i];
+                    tempCell.Range.Text = firstItem["stdName"].ToString();
+                    cellCol4Dic.Add(firstItem, (2 + i).ToString() + "," + 4.ToString());
+
+                }
+
+
+                Dictionary<JObject, string> cellCol5Dic = new Dictionary<JObject, string>();
+                int incr = 0;
+
+                //第4列
+                foreach (var item in cellCol4Dic)
+                {
+                    JObject j = item.Key;
+                    string c = item.Value;
+                    int cRow = int.Parse(c.Split(',')[0]) + incr;
+                    int cCol = int.Parse(c.Split(',')[1]);
+
+                    JArray secondItems = (JArray)j["list"];
+                    int secondItemsCount = secondItems.Count;
+                    if (secondItemsCount > 0)
+                    {
+                        if (secondItemsCount != 1)
+                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);//检验结果
+                        table.Cell(cRow, cCol).Split(secondItemsCount, 2);
+
+                        if (secondItemsCount != 1)
+                            table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
+                        //table.Cell(cRow, cCol).SetWidth(51f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
+                        table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
+                        table.Cell(cRow, cCol).PreferredWidth = 51f;
+
+                        for (int i = 0; i < secondItemsCount; i++)
+                        {
+                            Cell tempCell = table.Cell(cRow + i, cCol + 1);
+                            JObject secondItem = (JObject)secondItems[i];
+                            tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
+                            cellCol5Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
+                        }
+                        incr = incr + secondItemsCount - 1;
+                    }
+                }
+
+                Dictionary<JObject, string> cellCol6Dic = new Dictionary<JObject, string>();
+
+                incr = 0;
+                //第5列
+                foreach (var item in cellCol5Dic)
+                {
+                    JObject j = item.Key;
+                    string c = item.Value;
+                    int cRow = int.Parse(c.Split(',')[0]) + incr;
+                    int cCol = int.Parse(c.Split(',')[1]);
+
+                    JArray secondItems = (JArray)j["list"];
+                    int secondItemsCount = secondItems.Count;
+                    if (secondItemsCount > 0)
+                    {
+                        if (secondItemsCount != 1)
+                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
+                        table.Cell(cRow, cCol).Split(secondItemsCount, 2);
+
+                        if (secondItemsCount != 1)
+                            table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
+                        //table.Cell(cRow, cCol).SetWidth(60f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
+                        table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
+                        table.Cell(cRow, cCol).PreferredWidth = 60f;
+
+                        for (int i = 0; i < secondItemsCount; i++)
+                        {
+                            Cell tempCell = table.Cell(cRow + i, cCol + 1);
+                            JObject secondItem = (JObject)secondItems[i];
+                            tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
+                            cellCol6Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
+                        }
+                        incr = incr + secondItemsCount - 1;
+                    }
+                }
+
+                ////第6列
+                Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
+                incr = 0;
+                //第5列
+                foreach (var item in cellCol6Dic)
+                {
+                    JObject j = item.Key;
+                    string c = item.Value;
+                    int cRow = int.Parse(c.Split(',')[0]) + incr;
+                    int cCol = int.Parse(c.Split(',')[1]);
+
+                    JArray secondItems = (JArray)j["list"];
+                    int secondItemsCount = secondItems.Count;
+                    if (secondItemsCount > 0)
+                    {
+                        if (secondItemsCount != 1)
+                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
+                        table.Cell(cRow, cCol).Split(secondItemsCount, 2);
+
+                        if (secondItemsCount != 1)
+                            table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
+                       // table.Cell(cRow, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
+
+                        table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
+                        table.Cell(cRow, cCol).PreferredWidth = 40f;
+
+
+                        for (int i = 0; i < secondItemsCount; i++)
+                        {
+                            Cell tempCell = table.Cell(cRow + i, cCol + 1);
+                            JObject secondItem = (JObject)secondItems[i];
+                            tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
+                            cellCol7Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
+                        }
+                        incr = incr + secondItemsCount - 1;
+                    }
+                }
+            }
+
+            return 1;
         }
 
         public int GetDocumnetPageCount()
@@ -121,7 +308,7 @@ namespace EmcReportWebApi.Common
                 otherFile.Select();
 
                 Range bookmarkPic = GetBookmarkRank(_currentWord, bookmark);
-                
+
                 try
                 {
                     ShapeRange shapeRange = otherFile.Shapes.Range(1);
@@ -136,12 +323,13 @@ namespace EmcReportWebApi.Common
                     inlineShape.Select();
                     _wordApp.Selection.Copy();
                 }
-                finally {
+                finally
+                {
                     bookmarkPic.Paste();
                     if (isCloseTheFile)
                         CloseWord(otherFile, otherFilePath);
                 }
-              
+
             }
             catch (Exception ex)
             {

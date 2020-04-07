@@ -631,7 +631,7 @@ namespace EmcReportWebApi.Common
             }
             return "插入成功";
         }
-
+        //样品连接图
         public string InsertImageToWord(List<string> list, string bookmark)
         {
             try

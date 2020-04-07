@@ -617,7 +617,9 @@ namespace EmcReportWebApi.Common
         {
             try
             {
-                Range range = GetBookmarkRank(_currentWord, bookmark);
+                Range range = GetBookmarkRankFirstPage(_currentWord, bookmark);
+                if (range == null)
+                    return "未找到书签:" + bookmark;
                 range.Select();
                 range.Text = content;
             }
@@ -697,11 +699,11 @@ namespace EmcReportWebApi.Common
                     {
                         if (columnCount == 1)
                         {
-                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 260);
+                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 280);
                         }
                         else
                         {
-                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - 28, tableWidth / 2 - 56);
+                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - 33, tableWidth / 2 - 66);
                         }
                     }
                     CreateAndGoToNextParagraph(cellRange, true, false);
@@ -1135,7 +1137,7 @@ namespace EmcReportWebApi.Common
                 {
                     Range rangeContent = htmldoc.Content;
                     rangeContent.Select();
-                    //InsertBreakPage(true);
+                    InsertBreakPage(true);
                     rangeContent = rangeContent.Sections.Last.Range;
                     CreateAndGoToNextParagraph(rangeContent, false, true);
                     rangeContent.Select();
@@ -1297,6 +1299,25 @@ namespace EmcReportWebApi.Common
             }
 
             return fileFullNamelist.Count;
+        }
+
+        public string FormatCurrentWord(int intbackspace) {
+            string array ="Line 2";
+
+            object obj = (object)array;
+            intbackspace = intbackspace-1;
+            _currentWord.Content.Select();
+            object unite = WdUnits.wdSection;
+            _wordApp.Selection.Expand(unite);
+            _currentWord.Shapes.Range(obj).Select();
+             unite = WdUnits.wdLine;
+            _wordApp.Selection.MoveUp(ref unite, 1);
+            for (int i = 1; i <= intbackspace; i++)
+            {
+                _wordApp.Selection.TypeBackspace();
+            }
+
+            return "修改成功";
         }
 
         public string ReplaceWritten(Dictionary<int, Dictionary<string, string>> replaceDic, int replaceType = 2)
@@ -1523,6 +1544,18 @@ namespace EmcReportWebApi.Common
                 bookmarkRank = word.Bookmarks.get_Item(ref bk).Range;
             else
                 throw new Exception(string.Format("未找到书签:{0}", bookmark));
+
+            return bookmarkRank;
+        }
+
+        private Range GetBookmarkRankFirstPage(Document word, string bookmark)
+        {
+            object bk = bookmark;
+            Range bookmarkRank = null;
+            if (word.Bookmarks.Exists(bookmark))
+                bookmarkRank = word.Bookmarks.get_Item(ref bk).Range;
+            //else
+            //    throw new Exception(string.Format("未找到书签:{0}", bookmark));
 
             return bookmarkRank;
         }

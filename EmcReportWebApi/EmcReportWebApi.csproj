@@ -165,6 +165,7 @@
     <Content Include="Document\buglist.xlsx" />
     <Content Include="Files\标准模板.docx" />
     <Content Include="Files\ReportFiles\Test\testResult.json" />
+    <Content Include="Files\ExperimentTemplate\传导发射.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

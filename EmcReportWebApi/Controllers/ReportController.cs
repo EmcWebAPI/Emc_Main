@@ -414,6 +414,8 @@ namespace EmcReportWebApi.Controllers
                         newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, 3, k != experimentCount);
                     k++;
                 }
+                wordUtil.FormatCurrentWord(k);
+
                 //替换页眉内容
                 int pageCount = wordUtil.GetDocumnetPageCount()-1;//获取文件页数(首页不算)
 
@@ -424,6 +426,8 @@ namespace EmcReportWebApi.Controllers
                 replaceDic.Add(3, valuePairs);//替换页眉
 
                 wordUtil.ReplaceWritten(replaceDic);
+
+               
 
             }
             //删除中间件文件夹

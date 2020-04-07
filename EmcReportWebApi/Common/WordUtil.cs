@@ -1310,13 +1310,12 @@ namespace EmcReportWebApi.Common
             object unite = WdUnits.wdSection;
             _wordApp.Selection.Expand(unite);
             _currentWord.Shapes.Range(obj).Select();
-             unite = WdUnits.wdLine;
+             unite = WdUnits.wdParagraph;
             _wordApp.Selection.MoveUp(ref unite, 1);
             for (int i = 1; i <= intbackspace; i++)
             {
                 _wordApp.Selection.TypeBackspace();
             }
-
             return "修改成功";
         }
 

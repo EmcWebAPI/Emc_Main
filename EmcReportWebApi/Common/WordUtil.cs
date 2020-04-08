@@ -660,6 +660,59 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
+        //样品图片
+        public string InsertImageToWord2(List<string> list, string bookmark)
+        {
+            try
+            {
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+
+                int listCount = list.Count;
+                //创建表格
+                range.Select();
+                Table table = _wordApp.Selection.Tables.Add(range, listCount, 1, ref _missing, ref _missing);
+                float tableWidth = 0f;
+                foreach (Column item in table.Columns)
+                {
+                    tableWidth += item.Width;
+                }
+
+                string frontStr = "№";
+
+                for (int i = 0; i < listCount; i++)
+                {
+                    string[] arrStr = list[i].Split(',');
+                    string fileName = arrStr[0];
+                    string content = arrStr[1];
+                    table.Select();
+                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
+                    cellRange.Select();
+
+                    if (!fileName.Equals(""))
+                    {
+                        InlineShape image = AddPicture(fileName, _currentWord, cellRange, tableWidth - 56, tableWidth - 280);
+                    }
+                    string templateStr = frontStr + (i + 1).ToString();
+                    CreateAndGoToNextParagraph(cellRange, true, false);
+                    cellRange.InsertAfter(templateStr + content);
+                }
+                table.Select();
+                //设置table格式
+                table.Borders.Enable = (int)WdLineStyle.wdLineStyleSingle;
+                _wordApp.Selection.SelectCell();
+                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+            return "创建成功";
+        }
+
         public string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -1319,11 +1372,11 @@ namespace EmcReportWebApi.Common
                 _wordApp.Selection.TypeBackspace();
             }
 
-            _currentWord.Shapes.Range(obj).Select();
-            unite = WdUnits.wdLine;
-            _wordApp.Selection.MoveUp(ref unite, 1);
-            unite = WdUnits.wdCharacter;
-            _wordApp.Selection.Delete(unite, 1);
+            //_currentWord.Shapes.Range(obj).Select();
+            //unite = WdUnits.wdLine;
+            //_wordApp.Selection.MoveUp(ref unite, 1);
+            //unite = WdUnits.wdCharacter;
+            //_wordApp.Selection.Delete(unite, 1);
             return "修改成功";
         }
 

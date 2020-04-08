@@ -1309,13 +1309,21 @@ namespace EmcReportWebApi.Common
             _currentWord.Content.Select();
             object unite = WdUnits.wdSection;
             _wordApp.Selection.Expand(unite);
-            _currentWord.Shapes.Range(obj).Select();
-             unite = WdUnits.wdParagraph;
+            Range range=  GetBookmarkRank(_currentWord, "experimentEnd");
+            //_currentWord.Shapes.Range(obj).Select();
+            range.Select();
+            unite = WdUnits.wdParagraph;
             _wordApp.Selection.MoveUp(ref unite, 1);
             for (int i = 1; i <= intbackspace; i++)
             {
                 _wordApp.Selection.TypeBackspace();
             }
+
+            _currentWord.Shapes.Range(obj).Select();
+            unite = WdUnits.wdLine;
+            _wordApp.Selection.MoveUp(ref unite, 1);
+            unite = WdUnits.wdCharacter;
+            _wordApp.Selection.Delete(unite, 1);
             return "修改成功";
         }
 

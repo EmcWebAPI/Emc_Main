@@ -609,57 +609,65 @@ namespace EmcReportWebApi.Controllers
                 switch (funType)
                 {
                     case 1:
-                        JArray rtf = (JArray)item["rtf"];
-                        int rtfCount = rtf.Count;
-                        int j = 0;
-                        try
+                        if (item["rtf"] != null && !item["rtf"].Equals(""))
                         {
-                            foreach (JObject rtfObj in (JArray)item["rtf"])
+                            JArray rtf = (JArray)item["rtf"];
+                            int rtfCount = rtf.Count;
+                            int j = 0;
+                            try
                             {
-                                //需要画表格和插入rtf内容
-                                wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
+                                foreach (JObject rtfObj in (JArray)item["rtf"])
+                                {
+                                    //需要画表格和插入rtf内容
+                                    wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
 
-                                wordUtil.CopyOtherFilePictureToWord(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), imageStartIndex, imageBookmark, false, true, j == rtfCount - 1);
-                                j++;
+                                    wordUtil.CopyOtherFilePictureToWord(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), imageStartIndex, imageBookmark, false, true, j == rtfCount - 1);
+                                    j++;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                throw new Exception(string.Format("实验:{0}rtf文件内容不正确", templateName));
                             }
                         }
-                        catch (Exception)
-                        {
-                            throw new Exception(string.Format("实验:{0}rtf文件内容不正确",templateName));
-                        }
-                        
                         break;
                     case 2:
-                        JArray rtf1 = (JArray)item["rtf"];
-                        int rtfCount1 = rtf1.Count;
-                        int k = 0;
-                        try
-                        {
-                            foreach (JObject rtfObj in (JArray)item["rtf"])
+                        if (item["rtf"] != null && !item["rtf"].Equals("")) {
+                            JArray rtf1 = (JArray)item["rtf"];
+                            int rtfCount1 = rtf1.Count;
+                            int k = 0;
+                            try
                             {
-                                //需要画表格和插入rtf内容
-                                wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
-                                k++;
+                                foreach (JObject rtfObj in (JArray)item["rtf"])
+                                {
+                                    //需要画表格和插入rtf内容
+                                    wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
+                                    k++;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                throw new Exception(string.Format("实验:{0}rtf文件内容不正确", templateName));
                             }
                         }
-                        catch (Exception)
-                        {
-                            throw new Exception(string.Format("实验:{0}rtf文件内容不正确", templateName));
-                        }
+                        
                        
                         break;
                     default:
-                        JArray html = (JArray)item["html"];
-                        int htmlCount = html.Count;
-                        int m = 0;
-
-                        foreach (JObject rtfObj in html)
+                        if (item["html"] != null && !item["html"].Equals(""))
                         {
-                            //生成html并将内容插入到模板中
-                            string htmlstr = (string)rtfObj["table"];
-                            string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
-                            wordUtil.CopyHtmlContentToTemplate(htmlfullname, sysjTemplateFilePath, "sysj", true, true, false);
-                            m++;
+                            JArray html = (JArray)item["html"];
+                            int htmlCount = html.Count;
+                            int m = 0;
+
+                            foreach (JObject rtfObj in html)
+                            {
+                                //生成html并将内容插入到模板中
+                                string htmlstr = (string)rtfObj["table"];
+                                string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
+                                wordUtil.CopyHtmlContentToTemplate(htmlfullname, sysjTemplateFilePath, "sysj", true, true, false);
+                                m++;
+                            }
                         }
                         break;
                 }

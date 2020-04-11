@@ -20,6 +20,11 @@ namespace EmcReportWebApi.Common
         public static log4net.ILog ErrorLog = log4net.LogManager.GetLogger("ErrorLogger");
         public static log4net.ILog InfoLog = log4net.LogManager.GetLogger("InfoLogger");
 
+        /// <summary>
+        /// 当前程序路径
+        /// </summary>
+        public static string CurrRoot = AppDomain.CurrentDomain.BaseDirectory;
+
         public static List<RtfTableInfo> RtfTableInfos = GetRtfTableInfo();
         public static List<RtfPictureInfo> RtfPictureInfos = GetRtfPictueInfo();
 
@@ -98,14 +103,5 @@ namespace EmcReportWebApi.Common
 
             return data;
         }
-
-        public static string FilterExtendName(string fileFullName)
-        {
-            int index = fileFullName.LastIndexOf('.');
-            string extendName = fileFullName.Substring(index, fileFullName.Length - index).ToLower();
-
-            return extendName;
-        }
-        
     }
 }

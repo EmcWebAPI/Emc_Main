@@ -28,6 +28,43 @@ namespace EmcReportWebApi.Common
         public static List<RtfTableInfo> RtfTableInfos = GetRtfTableInfo();
         public static List<RtfPictureInfo> RtfPictureInfos = GetRtfPictueInfo();
 
+        private static Queue<ReportParams> Queue = new Queue<ReportParams>();
+
+        public static void QueueAdd(ReportParams p)
+        {
+            Queue.Enqueue(p);
+        }
+
+        public static ReportParams QueueGetFirstAndRemove()
+        {
+            return Queue.Dequeue();
+        }
+
+        public static bool QueueIsGet(ReportParams p)
+        {
+            bool resule = false;
+            resule = Queue.Contains(p);
+            return resule;
+        }
+
+        public static bool IsQueueHaveElement()
+        {
+            if (Queue.Count <= 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public static int GetQueueCount()
+        {
+            return Queue.Count;
+        }
+
+
         /// <summary>
         /// 获取时间戳
         /// </summary>

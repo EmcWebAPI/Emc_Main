@@ -112,6 +112,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Business\Implement\ReportImpl.cs" />
+    <Compile Include="Business\IReport.cs" />
     <Compile Include="Common\FileUtil.cs" />
     <Compile Include="Common\SyncHttpHelper.cs" />
     <Compile Include="Common\MD5Helper.cs" />

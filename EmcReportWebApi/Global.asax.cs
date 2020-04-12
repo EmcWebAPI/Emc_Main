@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmcReportWebApi.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,6 +16,8 @@ namespace EmcReportWebApi
             log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo(Server.MapPath("~/Web.config")));
             
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            AutoFacConfig.InitAutoFac();
+
         }
     }
 }

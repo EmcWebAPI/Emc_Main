@@ -6,23 +6,22 @@ using System.Web;
 
 namespace EmcReportWebApi.Business
 {
-    public interface IReport
+    public interface IReportStandard
     {
         /// <summary>
         /// 创建报告
         /// </summary>
         /// <param name="para">参数</param>
         /// <returns></returns>
-        ReportResult<string> CreateReport(ReportParams para);
+        ReportResult<string> CreateReportStandard(ReportParams para);
 
         /// <summary>
-        /// 报告json转成word
+        /// 生成标准报告方法
         /// </summary>
         /// <param name="reportId"></param>
         /// <param name="jsonStr"></param>
         /// <param name="reportFilesPath"></param>
         /// <returns></returns>
-        string JsonToWord(string reportId, string jsonStr, string reportFilesPath);
-        
+        string JsonToWordStandard(string reportId, string jsonStr, string reportFilesPath);
     }
 }

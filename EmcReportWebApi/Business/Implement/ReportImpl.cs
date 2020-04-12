@@ -12,15 +12,14 @@ using System.Web;
 
 namespace EmcReportWebApi.Business.Implement
 {
-    public class ReportImpl:IReport
+    public class ReportImpl: ReportBase,IReport
     {
         /// <summary>
         /// 生成报告公共方法
         /// </summary>
         /// <param name="para"></param>
-        /// <param name="reportType">1.报告 2.标准报告</param>
         /// <returns></returns>
-        public ReportResult<string> CreateReportCommon(ReportParams para, int reportType)
+        public ReportResult<string> CreateReport(ReportParams para)
         {
             //计时
             Stopwatch sw = new Stopwatch();
@@ -50,7 +49,7 @@ namespace EmcReportWebApi.Business.Implement
                 //解压zip文件
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
-                string content = reportType == 1 ? JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath) : JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
+                string content =JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
@@ -186,95 +185,8 @@ namespace EmcReportWebApi.Business.Implement
 
             return outfileName;
         }
-        public string JsonToWordStandard(string reportId, string jsonStr, string reportFilesPath)
-        {
-            //解析json字符串
-            JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("report2{0}.docx", MyTools.GetTimestamp(DateTime.Now));//输出文件名称
-            string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", MyTools.CurrRoot, outfileName);//输出文件路径
-            string filePath = string.Format(@"{0}\Files\{1}", MyTools.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
-
-            string middleDir = MyTools.CurrRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
-            filePath = CreateTemplateMiddle(middleDir, "template", filePath);
-            string result = "保存成功1";
-            //生成报告
-            using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
-            {
-                //首页内容 object
-                JObject firstPage = (JObject)mainObj["firstPage"];
-                result = InsertContentToWord(wordUtil, firstPage);
-
-                if (!result.Equals("保存成功"))
-                {
-                    return result;
-                }
-                //报告编号
-                string[] reportArray = reportId.Split('-');
-                string reportStr = "国医检(磁)字QW2018第698号";
-                if (reportArray.Length >= 2)
-                {
-                    reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
-                }
-                wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
-
-                //标准内容
-
-                JArray standardArray = (JArray)mainObj["standard"];
-
-                wordUtil.TableSplit(standardArray, "standard");
-
-
-                //替换页眉内容
-                int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
-
-                Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("reportId", reportStr);
-                valuePairs.Add("page", pageCount.ToString());
-                replaceDic.Add(3, valuePairs);//替换页眉
-
-                wordUtil.ReplaceWritten(replaceDic);
-
-            }
-            //删除中间件文件夹
-            DelectDir(middleDir);
-            DelectDir(reportFilesPath);
-
-            return outfileName;
-        }
 
         #region 生成报表方法
-        //设置首页内容
-        private string InsertContentToWord(WordUtil wordUtil, JObject jo1)
-        {
-            foreach (var item in jo1)
-            {
-                string key = item.Key.ToString();
-                string value = item.Value.ToString();
-                if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
-                {
-                    value = CheckFirstPage(value);
-                }
-                wordUtil.InsertContentToWordByBookmark(value, key);
-            }
-            return "保存成功";
-        }
-        //首页内容特殊处理
-        public string CheckFirstPage(string itemValue)
-        {
-            int fontCount = 38;
-            int valueCount = System.Text.Encoding.Default.GetBytes(itemValue).Length;
-            if (fontCount > valueCount)
-            {
-                int spaceCount = (fontCount - valueCount) / 2;
-                for (int i = 0; i < spaceCount; i++)
-                {
-                    itemValue = " " + itemValue + " ";
-                }
-            }
-
-            return itemValue;
-        }
 
         //测试工具
         private string InsertListIntoTable(WordUtil wordUtil, JArray array, int mergeColumn, string bookmark, bool isNeedNumber = true)
@@ -664,118 +576,5 @@ namespace EmcReportWebApi.Business.Implement
             return wordUtil.InsertImageToWord2(list, "yptp");
         }
         #endregion
-
-        /// <summary>
-        /// 创建模板中间件
-        /// </summary>
-        private string CreateTemplateMiddle(string dir, string template, string filePath)
-        {
-
-            string dateStr = DateTime.Now.ToString("yyyyMMddhhmmss");
-            string fileName = template + dateStr + ".docx";
-            DirectoryInfo di = new DirectoryInfo(dir);
-            if (!di.Exists) { di.Create(); }
-
-            string htmlpath = dir + "\\" + fileName;
-            FileInfo file = new FileInfo(filePath);
-            if (File.Exists(filePath))
-            {
-                file.CopyTo(htmlpath);
-                return htmlpath;
-            }
-            else
-            {
-                return "模板不存在";
-            }
-
-        }
-
-        /// <summary>
-        /// 删除模板中间件
-        /// </summary>
-        public void DelectDir(string srcPath)
-        {
-            try
-            {
-                DirectoryInfo dir = new DirectoryInfo(srcPath);
-                FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
-                foreach (FileSystemInfo i in fileinfo)
-                {
-                    if (i is DirectoryInfo)            //判断是否文件夹
-                    {
-                        DirectoryInfo subdir = new DirectoryInfo(i.FullName);
-                        subdir.Delete(true);          //删除子目录和文件
-                    }
-                    else
-                    {
-                        //如果 使用了 streamreader 在删除前 必须先关闭流 ，否则无法删除 sr.close();
-                        File.Delete(i.FullName);      //删除指定文件
-                    }
-                }
-                Directory.Delete(srcPath);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// html字符串转word
-        /// </summary>
-
-        private string CreateHtmlFile(string htmlStr, string dirPath)
-        {
-            string dateStr = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string htmlpath = dirPath + "\\reportHtml" + dateStr + ".html";
-            FileStream fs = new FileStream(htmlpath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
-            sw.Write(htmlStr);
-            sw.Close();
-            sw.Dispose();
-            fs.Close();
-            fs.Dispose();
-            return htmlpath;
-        }
-        /// <summary>
-        /// 保存参数文件
-        /// </summary>
-        private void SaveParams(ReportParams para)
-        {
-            string dateStr = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string txtPath = string.Format("{0}Log\\Params\\{1}.txt", MyTools.CurrRoot, dateStr);
-            if (!System.IO.File.Exists(txtPath))
-            {
-                //没有则创建这个文件
-                FileStream fs1 = new FileStream(txtPath, FileMode.Create, FileAccess.Write);//创建写入文件      
-                StreamWriter sw = new StreamWriter(fs1);
-                sw.WriteLine("ReportId:" + para.ReportId);
-                sw.WriteLine("ZipFilesUrl:" + para.ZipFilesUrl);
-                sw.WriteLine("JsonStr:" + para.JsonStr);
-                sw.Close();
-                fs1.Close();
-            }
-        }
-
-        /// <summary>
-        /// 返回结果参数
-        /// </summary>
-        private ReportResult<T> SetReportResult<T>(string message, bool submitResult, T content)
-        {
-            Type type = content.GetType();
-            ReportResult<T> reportResult = new ReportResult<T>();
-            reportResult.Message = message;
-            reportResult.SumbitResult = submitResult;
-            reportResult.Content = content;
-            return reportResult;
-        }
-
-        /// <summary>
-        /// 获取模板路径
-        /// </summary>
-        private string GetTemplatePath(string fileName)
-        {
-            return string.Format(@"{0}\Files\ExperimentTemplate\{1}", MyTools.CurrRoot, fileName);
-        }
     }
 }

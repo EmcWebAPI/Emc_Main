@@ -20,6 +20,17 @@ namespace EmcReportWebApi.Controllers
 {
     public class ReportController : ApiController
     {
+
+        private IReport _report;
+        private IReportStandard _reportStandard;
+
+        public ReportController(IReport report, IReportStandard reportStandard)
+        {
+            _report = report;
+            _reportStandard = reportStandard;
+        }
+
+
         /// <summary>
         /// 默认输出
         /// </summary>
@@ -39,7 +50,7 @@ namespace EmcReportWebApi.Controllers
         public IHttpActionResult CreateReport(ReportParams para)
         {
             IReport report = new ReportImpl();
-            ReportResult<string> result = report.CreateReportCommon(para, 1);
+            ReportResult<string> result = _report.CreateReport(para);
             return Json<ReportResult<string>>(result);
         }
 
@@ -52,7 +63,7 @@ namespace EmcReportWebApi.Controllers
         public IHttpActionResult CreateStandardReport(ReportParams para)
         {
             IReport report = new ReportImpl();
-            ReportResult<string> result = report.CreateReportCommon(para, 2);
+            ReportResult<string> result = _reportStandard.CreateReportStandard(para);
             return Json<ReportResult<string>>(result);
         }
 

@@ -1523,6 +1523,7 @@ namespace EmcReportWebApi.Common
           );
         }
 
+        //拓展名
         public object FilterExtendName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('.');
@@ -1547,6 +1548,7 @@ namespace EmcReportWebApi.Common
             return resultFormat;
         }
 
+        //获取文件名
         public string FilterFileName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('\\');
@@ -1568,6 +1570,7 @@ namespace EmcReportWebApi.Common
                         );
         }
 
+        //插入分页符
         private void InsertBreakPage(bool isPage)
         {
             object unite = WdUnits.wdStory;
@@ -1763,22 +1766,26 @@ namespace EmcReportWebApi.Common
             }
         }
 
+        //table合并单元格
         private void MergeCell(Table table, int startRow, int startColumn, int endRow, int endColumn)
         {
             MergeCell(table.Cell(startRow, startColumn), table.Cell(endRow, endColumn));
         }
 
+        //重写table合并单元格
         private void MergeCell(Cell startCell, Cell endCell)
         {
             startCell.Merge(endCell);
         }
 
+        //文字加粗居左
         private void FontBoldLeft()
         {
             _wordApp.Selection.Font.Bold = (int)WdConstants.wdToggle;
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
         }
 
+        //设置table格式
         private void SetTabelFormat(Table table)
         {
             table.Select();
@@ -1814,6 +1821,7 @@ namespace EmcReportWebApi.Common
             }
         }
 
+        //结束word文件进程
         public void KillWordProcess(string fileName)
         {
             Process myProcess = new Process();

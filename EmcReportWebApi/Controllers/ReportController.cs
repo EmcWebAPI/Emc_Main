@@ -49,7 +49,6 @@ namespace EmcReportWebApi.Controllers
         [HttpPost]
         public IHttpActionResult CreateReport(ReportParams para)
         {
-            IReport report = new ReportImpl();
             ReportResult<string> result = _report.CreateReport(para);
             return Json<ReportResult<string>>(result);
         }
@@ -62,7 +61,6 @@ namespace EmcReportWebApi.Controllers
         [HttpPost]
         public IHttpActionResult CreateStandardReport(ReportParams para)
         {
-            IReport report = new ReportImpl();
             ReportResult<string> result = _reportStandard.CreateReportStandard(para);
             return Json<ReportResult<string>>(result);
         }

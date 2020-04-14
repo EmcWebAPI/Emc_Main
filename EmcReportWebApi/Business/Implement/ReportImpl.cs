@@ -21,12 +21,19 @@ namespace EmcReportWebApi.Business.Implement
         /// <returns></returns>
         public ReportResult<string> CreateReport(ReportParams para)
         {
+            ReportResult<string> result = new ReportResult<string>();
+            int count = MyTools.ReportQueue.Count;
+            if (count > 4)
+            {
+                return SetReportResult<string>("服务器繁忙,请稍后再试", false, "");
+            }
+            Guid guid = Guid.NewGuid();
+            MyTools.ReportQueue.Add(guid);
             //计时
             Stopwatch sw = new Stopwatch();
             sw.Start();
             //保存参数用作排查bug
             SaveParams(para);
-            ReportResult<string> result = new ReportResult<string>();
             try
             {
                 string reportId = para.ReportId;
@@ -49,7 +56,7 @@ namespace EmcReportWebApi.Business.Implement
                 //解压zip文件
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
-                string content =JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
+                string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
@@ -61,6 +68,10 @@ namespace EmcReportWebApi.Business.Implement
                 MyTools.ErrorLog.Error(ex.Message, ex);//设置错误信息
                 result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.ReportId, ex.Message), false, "");
                 return result;
+            }
+            finally
+            {
+                MyTools.ReportQueue.Remove(guid);
             }
             return result;
         }

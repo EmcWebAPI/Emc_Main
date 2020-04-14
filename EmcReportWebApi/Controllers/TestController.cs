@@ -37,12 +37,21 @@ namespace EmcReportWebApi.Controllers
         [HttpPost]
         public IHttpActionResult CreateReportTest1(ReportParams para)
         {
+            ReportResult<string> result = new ReportResult<string>();
+            int count = MyTools.ReportQueue.Count;
+            if (count > 4)
+            {
+                result.Message = "服务器繁忙,请稍后再试";
+                result.SumbitResult = false;
+                return Json<ReportResult<string>>(result);
+            }
+            Guid guid = Guid.NewGuid();
+            MyTools.ReportQueue.Add(guid);
             //string jsonStr = para.JsonStr;
             string reportId = para.ReportId;
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            ReportResult<string> result = new ReportResult<string>();
             try
             {
                 //获取zip文件 
@@ -64,6 +73,10 @@ namespace EmcReportWebApi.Controllers
             {
                 MyTools.ErrorLog.Error(ex.Message, ex);
                 throw ex;
+            }
+            finally
+            {
+                MyTools.ReportQueue.Remove(guid);
             }
 
             return Json<ReportResult<string>>(result);

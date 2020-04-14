@@ -30,6 +30,8 @@ namespace EmcReportWebApi.Common
 
         private static Queue<ReportParams> Queue = new Queue<ReportParams>();
 
+        public static List<Guid> ReportQueue = new List<Guid>();
+            
         public static void QueueAdd(ReportParams p)
         {
             Queue.Enqueue(p);

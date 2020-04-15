@@ -56,6 +56,12 @@ namespace EmcReportWebApi.Common
             _needWrite = true;
         }
 
+        /// <summary>
+        /// 表格拆分
+        /// </summary>
+        /// <param name="array">拆分数组</param>
+        /// <param name="bookmark">书签</param>
+        /// <returns></returns>
         public int TableSplit(JArray array, string bookmark)
         {
             try
@@ -82,7 +88,13 @@ namespace EmcReportWebApi.Common
 
         }
 
-
+        /// <summary>
+        /// 表格拆分
+        /// </summary>
+        /// <param name="jObject">拆分对象</param>
+        /// <param name="xuhao">序号</param>
+        /// <param name="table">需拆分表格</param>
+        /// <returns></returns>
         public int TableSplit(JObject jObject, int xuhao, Table table)
         {
 

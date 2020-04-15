@@ -69,7 +69,7 @@ namespace EmcReportWebApi.Controllers
         /// 下载文件
         /// </summary>
         [HttpPost]
-        public IHttpActionResult DownloadFiles(ReportParams para)
+        public IHttpActionResult DownloadFiles(FileParams para)
         {
             try
             {

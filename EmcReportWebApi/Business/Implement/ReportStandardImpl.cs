@@ -105,7 +105,13 @@ namespace EmcReportWebApi.Business.Implement
                 JArray standardArray = (JArray)mainObj["standard"];
 
                 wordUtil.TableSplit(standardArray, "standard");
-
+                
+                //样品图片
+                if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
+                {
+                    JArray yptp = (JArray)mainObj["yptp"];
+                    InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
+                }
 
                 //替换页眉内容
                 int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
@@ -141,6 +147,17 @@ namespace EmcReportWebApi.Business.Implement
 
 
             return result;
+        }
+
+        //照片和说明
+        private string InsertImageToWordYptp(WordUtil wordUtil, JArray array, string reportFilesPath)
+        {
+            List<string> list = new List<string>();
+            foreach (JObject item in array)
+            {
+                list.Add(reportFilesPath + "\\" + item["fileName"].ToString() + "," + item["content"].ToString());
+            }
+            return wordUtil.InsertPhotoToWord(list, "photo");
         }
     }
 }

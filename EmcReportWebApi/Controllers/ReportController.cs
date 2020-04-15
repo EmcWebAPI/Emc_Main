@@ -83,7 +83,7 @@ namespace EmcReportWebApi.Controllers
                 {
                     browser = HttpContext.Current.Request.UserAgent.ToUpper();
                 }
-                string fileFullName = string.Format(@"{0}\Files\OutPut\{1}", MyTools.CurrRoot, fileName);
+                string fileFullName = string.Format(@"{0}Files\OutPut\{1}", MyTools.CurrRoot, fileName);
                 if (!FileUtil.FileExists(fileFullName))
                 {
                     throw new Exception(string.Format("文件{0},不存在", fileName));

@@ -38,7 +38,7 @@ namespace EmcReportWebApi.Business.Implement
             {
                 string reportId = para.ReportId;
                 //获取zip文件 
-                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", MyTools.CurrRoot));
+                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}Files\\ReportFiles", MyTools.CurrRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, DateTime.Now.ToString("yyyyMMddhhmmss"));
                 string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + MyTools.GetTimestamp(DateTime.Now);
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
@@ -81,9 +81,9 @@ namespace EmcReportWebApi.Business.Implement
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
             string outfileName = string.Format("report{0}.docx", MyTools.GetTimestamp(DateTime.Now));//输出文件名称
-            string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", MyTools.CurrRoot, outfileName);//输出文件路径
-            string filePath = string.Format(@"{0}\Files\{1}", MyTools.CurrRoot, ConfigurationManager.AppSettings["TemplateName"].ToString());//模板文件
-            string middleDir = MyTools.CurrRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            string outfilePth = string.Format(@"{0}Files\OutPut\{1}", MyTools.CurrRoot, outfileName);//输出文件路径
+            string filePath = string.Format(@"{0}Files\{1}", MyTools.CurrRoot, ConfigurationManager.AppSettings["TemplateName"].ToString());//模板文件
+            string middleDir = MyTools.CurrRoot + "Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             string result = "保存成功1";
             //生成报告

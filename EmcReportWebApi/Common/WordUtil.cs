@@ -205,6 +205,65 @@ namespace EmcReportWebApi.Common
             return cellCol7Dic;
         }
 
+        /// <summary>
+        /// 照片和说明
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        public string InsertPhotoToWord(List<string> list, string bookmark)
+        {
+            try
+            {
+                int listCount = list.Count;
+                if (listCount == 0) {
+                    return "没有照片";
+                }
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                Table table = range.Tables[1];
+                float tableWidth = 0f;
+                foreach (Column item in table.Columns)
+                {
+                    tableWidth += item.Width;
+                }
+                table.Cell(1, 1).Select();
+
+                int rowIndex = 1;
+                string frontStr = "№";
+
+                for (int i = 0; i < listCount; i++)
+                {
+                    _wordApp.Selection.InsertRowsBelow(1);
+                    rowIndex = rowIndex + i + 1;
+                    Cell currentCell = table.Cell(rowIndex, 1);
+                    currentCell.SetHeight(288.603f, WdRowHeightRule.wdRowHeightAtLeast);
+                    string[] arrStr = list[i].Split(',');
+                    string fileName = arrStr[0];
+                    string content = arrStr[1];
+                    if (!fileName.Equals(""))
+                    {
+                        InlineShape image = AddPicture(fileName, _currentWord, currentCell.Range, tableWidth - 56, tableWidth - 280);
+                    }
+                    string templateStr = frontStr + (i + 1).ToString();
+                    CreateAndGoToNextParagraph(currentCell.Range, true, false);
+                    currentCell.Range.InsertAfter(templateStr + content);
+                }
+                table.Select();
+                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                table.Cell(1, 1).Select();
+                _wordApp.Selection.Rows.HeadingFormat = -1;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+            return "创建成功";
+        }
+
         #endregion
 
         #region emc报告业务相关 

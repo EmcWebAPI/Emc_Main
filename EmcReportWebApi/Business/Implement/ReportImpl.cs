@@ -584,7 +584,7 @@ namespace EmcReportWebApi.Business.Implement
             {
                 list.Add(reportFilesPath + "\\" + item["fileName"].ToString() + "," + item["content"].ToString());
             }
-            return wordUtil.InsertImageToWord2(list, "yptp");
+            return wordUtil.InsertImageToWordSample(list, "yptp");
         }
         #endregion
     }

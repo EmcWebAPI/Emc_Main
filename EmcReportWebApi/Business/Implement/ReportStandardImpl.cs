@@ -6,15 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
-using System.Web;
 
 namespace EmcReportWebApi.Business.Implement
 {
-    public class ReportStandardImpl:ReportBase,IReportStandard
+    public class ReportStandardImpl : ReportBase, IReportStandard
     {
         /// <summary>
-        /// 生成报告
+        /// 生成标准报告
         /// </summary>
         /// <param name="para"></param>
         /// <returns></returns>
@@ -64,6 +62,13 @@ namespace EmcReportWebApi.Business.Implement
             return result;
         }
 
+        /// <summary>
+        /// 解析json字符串
+        /// </summary>
+        /// <param name="reportId">报告编号</param>
+        /// <param name="jsonStr">需解析的json字符串</param>
+        /// <param name="reportFilesPath">解压出的报告文件路径</param>
+        /// <returns></returns>
         public string JsonToWordStandard(string reportId, string jsonStr, string reportFilesPath)
         {
             //解析json字符串
@@ -119,6 +124,23 @@ namespace EmcReportWebApi.Business.Implement
             DelectDir(reportFilesPath);
 
             return outfileName;
+        }
+
+
+        public ReportResult<string> CreateReportStandardNew(ReportParams para)
+        {
+            ReportResult<string> result = new ReportResult<string>();
+
+            //获取合同信息
+
+            //获取报告信息
+
+            //获取报告文件内容
+
+            //数据库报告文件相对内容
+
+
+            return result;
         }
     }
 }

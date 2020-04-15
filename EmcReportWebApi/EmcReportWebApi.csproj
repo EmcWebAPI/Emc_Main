@@ -157,6 +157,7 @@
     <Compile Include="Models\ReportParams.cs" />
     <Compile Include="Models\ReportResult.cs" />
     <Compile Include="Models\RtfTableInfo.cs" />
+    <Compile Include="Models\StandardReportParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

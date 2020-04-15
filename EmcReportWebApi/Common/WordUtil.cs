@@ -56,6 +56,8 @@ namespace EmcReportWebApi.Common
             _needWrite = true;
         }
 
+        #region 标准报告业务相关
+        
         /// <summary>
         /// 表格拆分
         /// </summary>
@@ -108,6 +110,12 @@ namespace EmcReportWebApi.Common
 
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
+            //单项结论
+            if(jObject["comment"]!=null&& !jObject["comment"].Equals(""))
+                table.Cell(2, 6).Range.Text = jObject["comment"].ToString();
+            //备注
+            if (jObject["reMark"] != null && !jObject["reMark"].Equals(""))
+                table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
 
             JArray firstItems = (JArray)jObject["list"];
 
@@ -138,253 +146,119 @@ namespace EmcReportWebApi.Common
                     cellCol4Dic.Add(firstItem, (2 + i).ToString() + "," + 4.ToString());
 
                 }
-
-
-                Dictionary<JObject, string> cellCol5Dic = new Dictionary<JObject, string>();
-                int incr = 0;
-
-                //第4列
-                foreach (var item in cellCol4Dic)
-                {
-                    JObject j = item.Key;
-                    string c = item.Value;
-                    int cRow = int.Parse(c.Split(',')[0]) + incr;
-                    int cCol = int.Parse(c.Split(',')[1]);
-
-                    JArray secondItems = (JArray)j["list"];
-                    int secondItemsCount = secondItems.Count;
-                    if (secondItemsCount > 0)
-                    {
-                        if (secondItemsCount != 1)
-                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);//检验结果
-                        table.Cell(cRow, cCol).Split(secondItemsCount, 2);
-
-                        if (secondItemsCount != 1)
-                            table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
-                        //table.Cell(cRow, cCol).SetWidth(51f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
-                        table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
-                        table.Cell(cRow, cCol).PreferredWidth = 51f;
-
-                        for (int i = 0; i < secondItemsCount; i++)
-                        {
-                            Cell tempCell = table.Cell(cRow + i, cCol + 1);
-                            JObject secondItem = (JObject)secondItems[i];
-                            tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
-                            cellCol5Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
-                        }
-                        incr = incr + secondItemsCount - 1;
-                    }
-                }
-
-                Dictionary<JObject, string> cellCol6Dic = new Dictionary<JObject, string>();
-
-                incr = 0;
-                //第5列
-                foreach (var item in cellCol5Dic)
-                {
-                    JObject j = item.Key;
-                    string c = item.Value;
-                    int cRow = int.Parse(c.Split(',')[0]) + incr;
-                    int cCol = int.Parse(c.Split(',')[1]);
-
-                    JArray secondItems = (JArray)j["list"];
-                    int secondItemsCount = secondItems.Count;
-                    if (secondItemsCount > 0)
-                    {
-                        if (secondItemsCount != 1)
-                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
-                        table.Cell(cRow, cCol).Split(secondItemsCount, 2);
-
-                        if (secondItemsCount != 1)
-                            table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
-                        //table.Cell(cRow, cCol).SetWidth(60f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
-                        table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
-                        table.Cell(cRow, cCol).PreferredWidth = 60f;
-
-                        for (int i = 0; i < secondItemsCount; i++)
-                        {
-                            Cell tempCell = table.Cell(cRow + i, cCol + 1);
-                            JObject secondItem = (JObject)secondItems[i];
-                            tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
-                            cellCol6Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
-                        }
-                        incr = incr + secondItemsCount - 1;
-                    }
-                }
-
-                ////第6列
-                Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
-                incr = 0;
-                //第5列
-                foreach (var item in cellCol6Dic)
-                {
-                    JObject j = item.Key;
-                    string c = item.Value;
-                    int cRow = int.Parse(c.Split(',')[0]) + incr;
-                    int cCol = int.Parse(c.Split(',')[1]);
-
-                    JArray secondItems = (JArray)j["list"];
-                    int secondItemsCount = secondItems.Count;
-                    if (secondItemsCount > 0)
-                    {
-                        if (secondItemsCount != 1)
-                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
-                        table.Cell(cRow, cCol).Split(secondItemsCount, 2);
-
-                        if (secondItemsCount != 1)
-                            table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
-                       // table.Cell(cRow, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
-
-                        table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
-                        table.Cell(cRow, cCol).PreferredWidth = 40f;
-
-
-                        for (int i = 0; i < secondItemsCount; i++)
-                        {
-                            Cell tempCell = table.Cell(cRow + i, cCol + 1);
-                            JObject secondItem = (JObject)secondItems[i];
-                            tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
-                            cellCol7Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
-                        }
-                        incr = incr + secondItemsCount - 1;
-                    }
+                //遍历节点拆分单元格
+                bool whilebool = true;
+                while (whilebool) {
+                    cellCol4Dic = AddCellAndSplit(table, cellCol4Dic);
+                    whilebool = (cellCol4Dic.Count != 0);
                 }
             }
 
             return 1;
         }
+        /// <summary>
+        /// 遍历节点拆分单元格
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<JObject, string> AddCellAndSplit(Table table,Dictionary<JObject, string> cellCol6Dic) {
+            Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
+            int incr = 0;
+            foreach (var item in cellCol6Dic)
+            {
+                JObject j = item.Key;
+                string c = item.Value;
+                int cRow = int.Parse(c.Split(',')[0]) + incr;
+                int cCol = int.Parse(c.Split(',')[1]);
 
-        public int GetDocumnetPageCount()
-        {
-            return _currentWord.ComputeStatistics(WdStatistic.wdStatisticPages, ref _missing);
+                JArray secondItems = (JArray)j["list"];
+                int secondItemsCount = secondItems.Count;
+                if (secondItemsCount > 0)
+                {
+                    if (secondItemsCount != 1)
+                        table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
+                    table.Cell(cRow, cCol).Split(secondItemsCount, 2);
+
+                    if (secondItemsCount != 1)
+                        table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
+                    // table.Cell(cRow, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
+
+                    table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
+                    table.Cell(cRow, cCol).PreferredWidth = 40f;
+
+
+                    for (int i = 0; i < secondItemsCount; i++)
+                    {
+                        Cell tempCell = table.Cell(cRow + i, cCol + 1);
+                        JObject secondItem = (JObject)secondItems[i];
+                        tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
+                        //检验结果
+                        if (secondItems[i]["result"] != null && !secondItems[i]["result"].Equals("")) {
+                            Cell resultCell = table.Cell(cRow + i, cCol + 2);
+                            resultCell.Range.Text = secondItems[i]["result"].ToString();
+                        }
+                        cellCol7Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
+                    }
+                    incr = incr + secondItemsCount - 1;
+                }
+            }
+
+            return cellCol7Dic;
         }
 
+        #endregion
+
+        #region emc报告业务相关 
+
+        /// <summary>
+        /// 将html内容导入模板
+        /// </summary>
+        /// <returns></returns>
         public string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark, bool isNeedBreak, bool isCloseTheFile, bool isCloseTemplateFile)
         {
-            Document htmlDoc = OpenWord(htmlFilePath);
-            htmlDoc.Select();
-            htmlDoc.Content.Copy();
-
-            Document templateDoc = OpenWord(TemplateFilePath);
-            templateDoc.Select();
-            Range range = GetBookmarkRank(templateDoc, bookmark);
-            range.Select();
-            int tableCount = range.Tables.Count;
-
-            Range tableRange = range.Tables[tableCount].Range;
-
-            CreateAndGoToNextParagraph(tableRange, true, true);
-            CreateAndGoToNextParagraph(tableRange, true, true);
-            tableRange.Paste();
-
-            foreach (Table item in range.Tables)
-            {
-                item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
-            }
-            if (isCloseTemplateFile)
-            {
-                CloseWord(templateDoc, TemplateFilePath);
-            }
-            if (isCloseTheFile)
-                CloseWord(htmlDoc, htmlFilePath);
-            return "创建成功";
-        }
-
-        public string CopyTableToWord(string otherFilePath, string bookmark, int tableIndex, bool isCloseTheFile)
-        {
             try
             {
-                Document otherFile = OpenWord(otherFilePath);
-                Range range = GetBookmarkRank(_currentWord, bookmark);
-                otherFile.Tables[tableIndex].Range.Copy();
-                range.Paste();
-                range.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+                Document htmlDoc = OpenWord(htmlFilePath);
+                htmlDoc.Select();
+                htmlDoc.Content.Copy();
+
+                Document templateDoc = OpenWord(TemplateFilePath);
+                templateDoc.Select();
+                Range range = GetBookmarkRank(templateDoc, bookmark);
+                range.Select();
+                int tableCount = range.Tables.Count;
+
+                Range tableRange = range.Tables[tableCount].Range;
+
+                CreateAndGoToNextParagraph(tableRange, true, true);
+                CreateAndGoToNextParagraph(tableRange, true, true);
+                tableRange.Paste();
+
+                foreach (Table item in range.Tables)
+                {
+                    item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+                }
+                if (isCloseTemplateFile)
+                {
+                    CloseWord(templateDoc, TemplateFilePath);
+                }
                 if (isCloseTheFile)
-                    CloseWord(otherFile, otherFilePath);
+                    CloseWord(htmlDoc, htmlFilePath);
             }
             catch (Exception ex)
             {
+
                 _needWrite = false;
                 Dispose();
                 throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
+           
             return "创建成功";
         }
-
-        public string CopyImageToWord(string otherFilePath, string bookmark, bool isCloseTheFile)
-        {
-            try
-            {
-
-                Document otherFile = OpenWord(otherFilePath);
-                otherFile.Select();
-
-                Range bookmarkPic = GetBookmarkRank(_currentWord, bookmark);
-
-                try
-                {
-                    ShapeRange shapeRange = otherFile.Shapes.Range(1);
-                    InlineShape inlineShape = shapeRange.ConvertToInlineShape();
-                    inlineShape.Select();
-                    _wordApp.Selection.Copy();
-                }
-                catch (Exception)
-                {
-                    Shape shape = otherFile.Shapes[1];
-                    Frame inlineShape = shape.ConvertToFrame();
-                    inlineShape.Select();
-                    _wordApp.Selection.Copy();
-                }
-                finally
-                {
-                    bookmarkPic.Paste();
-                    if (isCloseTheFile)
-                        CloseWord(otherFile, otherFilePath);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
-            }
-
-            return "创建成功";
-        }
-
-        public string SelecionCheckbox(string bookmark, int controlIndex, bool isCheck = true)
-        {
-            try
-            {
-                Range range = GetBookmarkRank(_currentWord, bookmark);
-                range.Select();
-                range = _wordApp.Selection.Cells[1].Range;
-                range.Select();
-
-                int i = 1;
-
-                foreach (InlineShape shape in _wordApp.Selection.InlineShapes)
-                {
-                    if (shape.Type == WdInlineShapeType.wdInlineShapeOLEControlObject)
-                    {
-                        object oleControl = shape.OLEFormat.Object;
-                        Type oleControlType = oleControl.GetType();
-                        //设置复选框选中
-                        if (i == controlIndex)
-                            oleControlType.InvokeMember("Value", System.Reflection.BindingFlags.SetProperty, null, oleControl, new object[] { isCheck.ToString() });
-                        i++;
-                    }
-                }
-
-                return "设置成功";
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+        
+        /// <summary>
+        /// 在书签位置插入内容
+        /// </summary>
+        /// <returns></returns>
         public string InsertContentInBookmark(string fileFullPath, string content, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -526,124 +400,11 @@ namespace EmcReportWebApi.Common
 
             return "保存成功";
         }
-
-        public string InsertListIntoTableByTitle(Dictionary<string, List<string>> dic, string bookmark, bool isNeedNumber = true)
-        {
-
-            Range range = GetBookmarkRank(_currentWord, bookmark);
-            range.Select();
-            Table table = range.Tables[1];
-            table.Select();
-            table.Rows.Add(ref _missing);
-            int columnCount = 4;
-            int rowCount = 2;
-            //创建模板
-
-            string mergeContent = "tempStr";
-            string mergeContent2 = "tempStr";
-            int startRow1 = 0;
-            int endRow1 = 0;
-            int startRow2 = 0;
-            int endRow2 = 0;
-            int dicFor = 0;
-            foreach (var item in dic)
-            {
-                string title = item.Key;
-                List<string> list = item.Value;
-                if (dicFor != 0)
-                {
-                    table.Rows.Add(ref _missing);
-                    table.Rows.Add(ref _missing);
-                    rowCount = rowCount + 2;
-                }
-                //设置title
-                table.Select();
-                table.Cell(rowCount - 1, 1).Range.Text = title;
-                //添加列头
-                table.Cell(rowCount, 1).Range.Text = "条款";
-                table.Cell(rowCount, 2).Range.Text = "项目";
-                table.Cell(rowCount, 3).Range.Text = "实验结果";
-                table.Cell(rowCount, 4).Range.Text = "备注";
-                MergeCell(table, rowCount - 1, 1, rowCount - 1, columnCount);
-                table.Cell(rowCount - 1, 1).Select();
-                FontBoldLeft();
-
-                foreach (var listItem in list)
-                {
-                    table.Select();
-                    table.Rows.Add(ref _missing);
-                    rowCount++;
-                    string[] arrStr = listItem.Split(',');
-                    for (int i = 0; i < arrStr.Length; i++)
-                    {
-                        if (i == 0)
-                        {
-                            if (mergeContent == arrStr[i])
-                            {
-                                endRow1 = rowCount;
-                            }
-                            else
-                            {
-                                if (endRow1 != 0)
-                                {
-                                    MergeCell(table, startRow1, i + 1, endRow1, i + 1);
-                                    endRow1 = 0;
-                                }
-                                mergeContent = arrStr[i];
-                                startRow1 = rowCount;
-                            }
-                        }
-                        else if (i == 3)
-                        {
-                            if (mergeContent2 == arrStr[i])
-                            {
-                                endRow2 = rowCount;
-                            }
-                            else
-                            {
-                                if (endRow2 != 0)
-                                {
-                                    MergeCell(table, startRow2, i + 1, endRow2, i + 1);
-                                    endRow2 = 0;
-                                }
-                                mergeContent2 = arrStr[i];
-                                startRow2 = rowCount;
-                            }
-                        }
-
-                        table.Cell(rowCount, i + 1).Range.Text = arrStr[i];
-                    }
-                }
-                dicFor++;
-            }
-            return "保存成功";
-        }
-
+        
         /// <summary>
-        /// 根据书签向word中插入内容
+        /// 样品连接图
         /// </summary>
-        /// <param name="content"></param>
-        /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string InsertContentToWordByBookmark(string content, string bookmark)
-        {
-            try
-            {
-                Range range = GetBookmarkRankFirstPage(_currentWord, bookmark);
-                if (range == null)
-                    return "未找到书签:" + bookmark;
-                range.Select();
-                range.Text = content;
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
-            }
-            return "插入成功";
-        }
-        //样品连接图
         public string InsertImageToWord(List<string> list, string bookmark)
         {
             try
@@ -672,8 +433,13 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        //样品图片
-        public string InsertImageToWord2(List<string> list, string bookmark)
+        /// <summary>
+        /// 样品图片用到的
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        public string InsertImageToWordSample(List<string> list, string bookmark)
         {
             try
             {
@@ -725,6 +491,10 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
+        /// <summary>
+        /// 将图片插入模板文件
+        /// </summary>
+        /// <returns></returns>
         public string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -791,7 +561,79 @@ namespace EmcReportWebApi.Common
 
             return "插入图片成功";
         }
+        
+        /// <summary>
+        /// 复制其他文件内容到当前word并创建一个新的书签
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="bookmark"></param>
+        /// <param name="isNewBookmark"></param>
+        /// <param name="isCloseTheFile"></param>
+        /// <returns></returns>
+        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
+        {
+            string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            try
+            {
+                Document htmldoc = OpenWord(filePath);
+                if (isNewBookmark)
+                {
+                    Range rangeContent = htmldoc.Content;
+                    rangeContent.Select();
+                    InsertBreakPage(true);
+                    rangeContent = rangeContent.Sections.Last.Range;
+                    CreateAndGoToNextParagraph(rangeContent, false, true);
+                    rangeContent.Select();
+                    _wordApp.Selection.Bookmarks.Add(newBookmark, rangeContent);
+                }
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                htmldoc.Content.Copy();
+                range.Paste();
+                range.Select();
+                int tableCount = _wordApp.Selection.Tables.Count;
+                if (tableCount > 0)
+                {
+                    foreach (Table table in _wordApp.Selection.Tables)
+                    {
+                        table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+                    }
+                }
 
+                if (isCloseTheFile)
+                    CloseWord(htmldoc, filePath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+            return newBookmark;
+        }
+        
+        /// <summary>
+        /// 插入实验数据后设置word的格式
+        /// </summary>
+        /// <param name="intbackspace"></param>
+        /// <returns></returns>
+        public string FormatCurrentWord(int intbackspace)
+        {
+            intbackspace = intbackspace - 1;
+            _currentWord.Content.Select();
+            object unite = WdUnits.wdSection;
+            _wordApp.Selection.Expand(unite);
+            Range range = GetBookmarkRank(_currentWord, "experimentEnd");
+            range.Select();
+            unite = WdUnits.wdParagraph;
+            _wordApp.Selection.MoveUp(ref unite, 1);
+            for (int i = 1; i <= intbackspace; i++)
+            {
+                _wordApp.Selection.TypeBackspace();
+            }
+            return "修改成功";
+        }
+        
         #region rtf操作
 
         /// <summary>
@@ -1160,6 +1002,216 @@ namespace EmcReportWebApi.Common
 
         #endregion
 
+        #region history 以后可能会用到
+
+        /// <summary>
+        /// 设置title并插入list 实验结果概述要用到
+        /// </summary>
+        /// <returns></returns>
+        public string InsertListIntoTableByTitle(Dictionary<string, List<string>> dic, string bookmark, bool isNeedNumber = true)
+        {
+
+            Range range = GetBookmarkRank(_currentWord, bookmark);
+            range.Select();
+            Table table = range.Tables[1];
+            table.Select();
+            table.Rows.Add(ref _missing);
+            int columnCount = 4;
+            int rowCount = 2;
+            //创建模板
+
+            string mergeContent = "tempStr";
+            string mergeContent2 = "tempStr";
+            int startRow1 = 0;
+            int endRow1 = 0;
+            int startRow2 = 0;
+            int endRow2 = 0;
+            int dicFor = 0;
+            foreach (var item in dic)
+            {
+                string title = item.Key;
+                List<string> list = item.Value;
+                if (dicFor != 0)
+                {
+                    table.Rows.Add(ref _missing);
+                    table.Rows.Add(ref _missing);
+                    rowCount = rowCount + 2;
+                }
+                //设置title
+                table.Select();
+                table.Cell(rowCount - 1, 1).Range.Text = title;
+                //添加列头
+                table.Cell(rowCount, 1).Range.Text = "条款";
+                table.Cell(rowCount, 2).Range.Text = "项目";
+                table.Cell(rowCount, 3).Range.Text = "实验结果";
+                table.Cell(rowCount, 4).Range.Text = "备注";
+                MergeCell(table, rowCount - 1, 1, rowCount - 1, columnCount);
+                table.Cell(rowCount - 1, 1).Select();
+                FontBoldLeft();
+
+                foreach (var listItem in list)
+                {
+                    table.Select();
+                    table.Rows.Add(ref _missing);
+                    rowCount++;
+                    string[] arrStr = listItem.Split(',');
+                    for (int i = 0; i < arrStr.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            if (mergeContent == arrStr[i])
+                            {
+                                endRow1 = rowCount;
+                            }
+                            else
+                            {
+                                if (endRow1 != 0)
+                                {
+                                    MergeCell(table, startRow1, i + 1, endRow1, i + 1);
+                                    endRow1 = 0;
+                                }
+                                mergeContent = arrStr[i];
+                                startRow1 = rowCount;
+                            }
+                        }
+                        else if (i == 3)
+                        {
+                            if (mergeContent2 == arrStr[i])
+                            {
+                                endRow2 = rowCount;
+                            }
+                            else
+                            {
+                                if (endRow2 != 0)
+                                {
+                                    MergeCell(table, startRow2, i + 1, endRow2, i + 1);
+                                    endRow2 = 0;
+                                }
+                                mergeContent2 = arrStr[i];
+                                startRow2 = rowCount;
+                            }
+                        }
+
+                        table.Cell(rowCount, i + 1).Range.Text = arrStr[i];
+                    }
+                }
+                dicFor++;
+            }
+            return "保存成功";
+        }
+
+        #endregion
+        #endregion
+
+        #region 公共方法
+
+        /// <summary>
+        /// 获取操作word的页数
+        /// </summary>
+        /// <returns></returns>
+        public int GetDocumnetPageCount()
+        {
+            return _currentWord.ComputeStatistics(WdStatistic.wdStatisticPages, ref _missing);
+        }
+
+        /// <summary>
+        /// 复制其他文件的表格到当前word
+        /// </summary>
+        /// <returns></returns>
+        public string CopyTableToWord(string otherFilePath, string bookmark, int tableIndex, bool isCloseTheFile)
+        {
+            try
+            {
+                Document otherFile = OpenWord(otherFilePath);
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                otherFile.Tables[tableIndex].Range.Copy();
+                range.Paste();
+                range.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+                if (isCloseTheFile)
+                    CloseWord(otherFile, otherFilePath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            return "创建成功";
+        }
+
+        /// <summary>
+        /// 复制其他文件的文本框到当前word
+        /// </summary>
+        /// <returns></returns>
+        public string CopyImageToWord(string otherFilePath, string bookmark, bool isCloseTheFile)
+        {
+            try
+            {
+
+                Document otherFile = OpenWord(otherFilePath);
+                otherFile.Select();
+
+                Range bookmarkPic = GetBookmarkRank(_currentWord, bookmark);
+
+                try
+                {
+                    ShapeRange shapeRange = otherFile.Shapes.Range(1);
+                    InlineShape inlineShape = shapeRange.ConvertToInlineShape();
+                    inlineShape.Select();
+                    _wordApp.Selection.Copy();
+                }
+                catch (Exception)
+                {
+                    Shape shape = otherFile.Shapes[1];
+                    Frame inlineShape = shape.ConvertToFrame();
+                    inlineShape.Select();
+                    _wordApp.Selection.Copy();
+                }
+                finally
+                {
+                    bookmarkPic.Paste();
+                    if (isCloseTheFile)
+                        CloseWord(otherFile, otherFilePath);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+
+            return "创建成功";
+        }
+        
+        /// <summary>
+        /// 根据书签向word中插入内容
+        /// </summary>
+        /// <returns></returns>
+        public string InsertContentToWordByBookmark(string content, string bookmark)
+        {
+            try
+            {
+                Range range = GetBookmarkReturnNull(_currentWord, bookmark);
+                if (range == null)
+                    return "未找到书签:" + bookmark;
+                range.Select();
+                range.Text = content;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            return "插入成功";
+        }
+
+        /// <summary>
+        /// 复制其他文件内容到当前文件
+        /// </summary>
+        /// <returns></returns>
         public string CopyOtherFileContentToWord(string filePth, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -1192,48 +1244,10 @@ namespace EmcReportWebApi.Common
             return "保存成功";
         }
 
-        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
-        {
-            string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddhhmmss");
-            try
-            {
-                Document htmldoc = OpenWord(filePath);
-                if (isNewBookmark)
-                {
-                    Range rangeContent = htmldoc.Content;
-                    rangeContent.Select();
-                    InsertBreakPage(true);
-                    rangeContent = rangeContent.Sections.Last.Range;
-                    CreateAndGoToNextParagraph(rangeContent, false, true);
-                    rangeContent.Select();
-                    _wordApp.Selection.Bookmarks.Add(newBookmark, rangeContent);
-                }
-                Range range = GetBookmarkRank(_currentWord, bookmark);
-                htmldoc.Content.Copy();
-                range.Paste();
-                range.Select();
-                int tableCount = _wordApp.Selection.Tables.Count;
-                if (tableCount > 0)
-                {
-                    foreach (Table table in _wordApp.Selection.Tables)
-                    {
-                        table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
-                    }
-                }
-
-                if (isCloseTheFile)
-                    CloseWord(htmldoc, filePath);
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
-            }
-
-            return newBookmark;
-        }
-
+        /// <summary>
+        /// 复制第二个文件内容到第一个文件
+        /// </summary>
+        /// <returns></returns>
         public string CopyOtherFileContentToWord(string firstFilePath, string secondFilePath, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -1265,6 +1279,38 @@ namespace EmcReportWebApi.Common
             }
 
             return "保存成功";
+        }
+
+        /// <summary>
+        /// 替换文字
+        /// </summary>
+        /// <returns></returns>
+        public string ReplaceWritten(Dictionary<int, Dictionary<string, string>> replaceDic, int replaceType = 2)
+        {
+            try
+            {
+                _currentWord.Content.Select();
+
+                foreach (var item in replaceDic)
+                {
+                    int type = item.Key;
+                    foreach (var itemV in item.Value)
+                    {
+                        Replace(type, itemV.Key, itemV.Value, replaceType);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            finally
+            {
+                Dispose();
+            }
+
+            return "替换成功";
         }
 
         /// <summary>
@@ -1322,6 +1368,10 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
+        /// <summary>
+        /// 合并word
+        /// </summary>
+        /// <returns></returns>
         public int MerageWord(List<string> fileFullNamelist, bool isPage = false)
         {
             try
@@ -1341,91 +1391,43 @@ namespace EmcReportWebApi.Common
 
             return fileFullNamelist.Count;
         }
-
-        public int InsertFiles(List<string> fileFullNamelist)
+        
+        /// <summary>
+        /// 设置复选框选中
+        /// </summary>
+        /// <returns></returns>
+        public string SelecionCheckbox(string bookmark, int controlIndex, bool isCheck = true)
         {
             try
             {
-                _currentWord.Activate();
-                object unite = WdUnits.wdStory;
-                object breakType = WdBreakType.wdSectionBreakContinuous;//分节符
-                _wordApp.Selection.EndKey(ref unite, ref _missing);
-                _wordApp.ActiveWindow.Selection.InsertBreak(breakType);
-                foreach (var item in fileFullNamelist)
+                Range range = GetBookmarkRank(_currentWord, bookmark);
+                range.Select();
+                range = _wordApp.Selection.Cells[1].Range;
+                range.Select();
+
+                int i = 1;
+
+                foreach (InlineShape shape in _wordApp.Selection.InlineShapes)
                 {
-                    InsertWord(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
-            }
-
-            return fileFullNamelist.Count;
-        }
-
-        public string FormatCurrentWord(int intbackspace) {
-            string array ="Line 2";
-
-            object obj = (object)array;
-            intbackspace = intbackspace-1;
-            _currentWord.Content.Select();
-            object unite = WdUnits.wdSection;
-            _wordApp.Selection.Expand(unite);
-            Range range=  GetBookmarkRank(_currentWord, "experimentEnd");
-            //_currentWord.Shapes.Range(obj).Select();
-            range.Select();
-            unite = WdUnits.wdParagraph;
-            _wordApp.Selection.MoveUp(ref unite, 1);
-            for (int i = 1; i <= intbackspace; i++)
-            {
-                _wordApp.Selection.TypeBackspace();
-            }
-
-            //_currentWord.Shapes.Range(obj).Select();
-            //unite = WdUnits.wdLine;
-            //_wordApp.Selection.MoveUp(ref unite, 1);
-            //unite = WdUnits.wdCharacter;
-            //_wordApp.Selection.Delete(unite, 1);
-            return "修改成功";
-        }
-
-        public string ReplaceWritten(Dictionary<int, Dictionary<string, string>> replaceDic, int replaceType = 2)
-        {
-            try
-            {
-                _currentWord.Content.Select();
-
-                foreach (var item in replaceDic)
-                {
-                    int type = item.Key;
-                    foreach (var itemV in item.Value)
+                    if (shape.Type == WdInlineShapeType.wdInlineShapeOLEControlObject)
                     {
-                        Replace(type, itemV.Key, itemV.Value, replaceType);
+                        object oleControl = shape.OLEFormat.Object;
+                        Type oleControlType = oleControl.GetType();
+                        //设置复选框选中
+                        if (i == controlIndex)
+                            oleControlType.InvokeMember("Value", System.Reflection.BindingFlags.SetProperty, null, oleControl, new object[] { isCheck.ToString() });
+                        i++;
                     }
                 }
+
+                return "设置成功";
             }
             catch (Exception ex)
             {
-                _needWrite = false;
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw ex;
             }
-            finally
-            {
-                Dispose();
-            }
-
-            return "替换成功";
         }
-
-        private int ClearWordCodeFormat()
-        {
-            _currentWord.Select();
-            ClearCode();
-            return 1;
-        }
+        #endregion
 
         #region 私有方法
         private void NewApp()
@@ -1535,8 +1537,12 @@ namespace EmcReportWebApi.Common
           );
         }
 
-        //拓展名
-        public object FilterExtendName(string fileFullName)
+        /// <summary>
+        /// 根据文件拓展名获取文件类型
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        /// <returns></returns>
+        private object FilterExtendName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('.');
             string extendName = fileFullName.Substring(index, fileFullName.Length - index);
@@ -1560,8 +1566,12 @@ namespace EmcReportWebApi.Common
             return resultFormat;
         }
 
-        //获取文件名
-        public string FilterFileName(string fileFullName)
+        /// <summary>
+       /// 获取文件名称
+       /// </summary>
+       /// <param name="fileFullName"></param>
+       /// <returns></returns>
+        private string FilterFileName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('\\');
             return fileFullName.Substring(index, fileFullName.Length - index);
@@ -1582,7 +1592,10 @@ namespace EmcReportWebApi.Common
                         );
         }
 
-        //插入分页符
+        /// <summary>
+        /// 为当前选中区域添加分页符
+        /// </summary>
+        /// <param name="isPage"></param>
         private void InsertBreakPage(bool isPage)
         {
             object unite = WdUnits.wdStory;
@@ -1598,7 +1611,10 @@ namespace EmcReportWebApi.Common
             }
         }
 
-        //插入图片
+        /// <summary>
+        /// 当前word插入图片
+        /// </summary>
+        /// <returns></returns>
         private InlineShape AddPicture(string picFileName, Document doc, Range range, float width = 0, float height = 0)
         {
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
@@ -1610,7 +1626,12 @@ namespace EmcReportWebApi.Common
             return image;
         }
 
-        //获取bookmark的位置
+        /// <summary>
+        /// 获取书签的位置
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
         private Range GetBookmarkRank(Document word, string bookmark)
         {
             object bk = bookmark;
@@ -1623,7 +1644,13 @@ namespace EmcReportWebApi.Common
             return bookmarkRank;
         }
 
-        private Range GetBookmarkRankFirstPage(Document word, string bookmark)
+        /// <summary>
+        /// 获取书签位置,如果不存在返回null
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        private Range GetBookmarkReturnNull(Document word, string bookmark)
         {
             object bk = bookmark;
             Range bookmarkRank = null;
@@ -1635,7 +1662,20 @@ namespace EmcReportWebApi.Common
             return bookmarkRank;
         }
 
-        //域代码转文本
+        /// <summary>
+        /// word清除域代码格式
+        /// </summary>
+        /// <returns></returns>
+        private int ClearWordCodeFormat()
+        {
+            _currentWord.Select();
+            ClearCode();
+            return 1;
+        }
+
+        /// <summary>
+        /// 域代码转文本
+        /// </summary>
         private void ClearCode()
         {
             ShowCodesAndUnlink(_currentWord.Content);
@@ -1656,7 +1696,10 @@ namespace EmcReportWebApi.Common
             }
         }
 
-        //将域代码替换为文本域值
+        /// <summary>
+        /// 将域代码替换为文本域值
+        /// </summary>
+        /// <param name="range"></param>
         private void ShowCodesAndUnlink(Range range)
         {
             range.Fields.ToggleShowCodes();
@@ -1778,26 +1821,43 @@ namespace EmcReportWebApi.Common
             }
         }
 
-        //table合并单元格
+        /// <summary>
+        /// table合并单元格
+        /// </summary>
+        /// <param name="table">表格</param>
+        /// <param name="startRow">首单元格的行</param>
+        /// <param name="startColumn">首单元格的列</param>
+        /// <param name="endRow">尾单元格的行</param>
+        /// <param name="endColumn">尾单元格的列</param>
         private void MergeCell(Table table, int startRow, int startColumn, int endRow, int endColumn)
         {
             MergeCell(table.Cell(startRow, startColumn), table.Cell(endRow, endColumn));
         }
 
-        //重写table合并单元格
+        /// <summary>
+        /// 重写table合并单元格
+        /// </summary>
+        /// <param name="startCell">首单元格</param>
+        /// <param name="endCell">尾单元格</param>
         private void MergeCell(Cell startCell, Cell endCell)
         {
             startCell.Merge(endCell);
         }
 
-        //文字加粗居左
+        /// <summary>
+        /// 当前选中文字加粗居左
+        /// </summary>
         private void FontBoldLeft()
         {
             _wordApp.Selection.Font.Bold = (int)WdConstants.wdToggle;
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
         }
 
-        //设置table格式
+
+        /// <summary>
+        /// 设置表格添加边框
+        /// </summary>
+        /// <param name="table"></param>
         private void SetTabelFormat(Table table)
         {
             table.Select();
@@ -1809,6 +1869,7 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="table">表格</param>
         /// <param name="columnNumber">添加序号的列</param>
+        /// <param name="isTitle">是否有表头</param>
         private void AddTableNumber(Table table, int columnNumber, bool isTitle = true)
         {
             table.Select();
@@ -1833,35 +1894,7 @@ namespace EmcReportWebApi.Common
             }
         }
 
-        //结束word文件进程
-        public void KillWordProcess(string fileName)
-        {
-            Process myProcess = new Process();
-            Process[] wordProcess = Process.GetProcessesByName("winword");
-            foreach (Process pro in wordProcess) //这里是找到那些没有界面的Word进程
-            {
-                //IntPtr ip = pro.MainWindowHandle;
-
-                string str = pro.MainWindowTitle; //发现程序中打开跟用户自己打开的区别就在这个属性
-                                                  //用户打开的str 是文件的名称，程序中打开的就是空字符串
-                if (str == fileName)
-                {
-                    pro.Kill();
-                }
-            }
-        }
-
-        public void KillWordProcess()
-        {
-            Process myProcess = new Process();
-            Process[] wordProcess = Process.GetProcessesByName("winword");
-            foreach (Process pro in wordProcess) //这里是找到那些没有界面的Word进程
-            {
-                pro.Kill();
-            }
-        }
-
-        #region emc
+       
         /// <summary>
         /// 创建并移动到下一个段落
         /// </summary>
@@ -1880,7 +1913,10 @@ namespace EmcReportWebApi.Common
                 range.Move(WdUnits.wdParagraph, ref move);
             }
         }
-
+        /// <summary>
+        /// 插入段落
+        /// </summary>
+        /// <param name="range"></param>
         private void InsertParagraph(Range range)
         {
             object contLine = 1;
@@ -1935,6 +1971,10 @@ namespace EmcReportWebApi.Common
 
         }
 
+        /// <summary>
+        /// 根据windows大小设置表格大小
+        /// </summary>
+        /// <param name="table"></param>
         private void SetAutoFitContentForTable(Table table)
         {
             table.Select();
@@ -1942,44 +1982,45 @@ namespace EmcReportWebApi.Common
             _wordApp.Selection.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
         }
 
-        private Dictionary<int, string> DicNum(Dictionary<int, string> dic)
+        /// <summary>
+        /// 根据文件名称结束word进程
+        /// </summary>
+        /// <param name="fileName">word文件名称</param>
+        public void KillWordProcess(string fileName)
         {
-            List<int> list = new List<int>();
-            foreach (var item in dic)
+            Process myProcess = new Process();
+            Process[] wordProcess = Process.GetProcessesByName("winword");
+            foreach (Process pro in wordProcess) //这里是找到那些没有界面的Word进程
             {
-                list.Add(item.Key);
-            }
-            //对list进行冒泡排序
-            int temp = 0;
-            for (int i = 0; i < list.Count - 1; i++)
-            {
-                for (int j = 0; j < list.Count - 1 - i; j++)
+                //IntPtr ip = pro.MainWindowHandle;
+
+                string str = pro.MainWindowTitle; //发现程序中打开跟用户自己打开的区别就在这个属性
+                                                  //用户打开的str 是文件的名称，程序中打开的就是空字符串
+                if (str == fileName)
                 {
-                    if (list[j] > list[j + 1])
-                    {
-                        temp = list[j + 1];
-                        list[j + 1] = list[j];
-                        list[j] = temp;
-                    }
+                    pro.Kill();
                 }
             }
-
-            //新的dic
-            Dictionary<int, string> newDic = new Dictionary<int, string>();
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                newDic.Add(list[i], dic[list[i]]);
-            }
-            return newDic;
         }
-        #endregion
+
+        /// <summary>
+        /// 删除word进程
+        /// </summary>
+        public void KillWordProcess()
+        {
+            Process myProcess = new Process();
+            Process[] wordProcess = Process.GetProcessesByName("winword");
+            foreach (Process pro in wordProcess) //这里是找到那些没有界面的Word进程
+            {
+                pro.Kill();
+            }
+        }
 
         #endregion
 
         #region 资源回收
         public void Dispose()
         {
-
             Dispose(true);
             GC.SuppressFinalize(this);
         }

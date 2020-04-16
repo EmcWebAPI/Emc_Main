@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace EmcReportWebApi.Common
 {
-    public static class MyTools
+    public static class EmcConfig
     {
         /// <summary>
         /// 报表日志记录
@@ -25,47 +25,55 @@ namespace EmcReportWebApi.Common
         /// </summary>
         public static string CurrRoot = AppDomain.CurrentDomain.BaseDirectory;
 
+        /// <summary>
+        /// rtf中获取表格的配置
+        /// </summary>
         public static List<RtfTableInfo> RtfTableInfos = GetRtfTableInfo();
+        /// <summary>
+        /// rtf中获取图片的配置
+        /// </summary>
         public static List<RtfPictureInfo> RtfPictureInfos = GetRtfPictueInfo();
-
-        private static Queue<ReportParams> Queue = new Queue<ReportParams>();
-
+        
+        /// <summary>
+        /// 当前运行的接口数
+        /// </summary>
         public static List<Guid> ReportQueue = new List<Guid>();
-            
-        public static void QueueAdd(ReportParams p)
-        {
-            Queue.Enqueue(p);
-        }
 
-        public static ReportParams QueueGetFirstAndRemove()
-        {
-            return Queue.Dequeue();
-        }
-
-        public static bool QueueIsGet(ReportParams p)
-        {
-            bool resule = false;
-            resule = Queue.Contains(p);
-            return resule;
-        }
-
-        public static bool IsQueueHaveElement()
-        {
-            if (Queue.Count <= 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public static int GetQueueCount()
-        {
-            return Queue.Count;
-        }
-
+        /// <summary>
+        /// 合同内容对应的书签
+        /// </summary>
+        public static Dictionary<string, string> ContractToJObject = new Dictionary<string, string>() {
+            { "main_wtf","ContractClient"},
+            { "main_jylb","DetectType"},
+            { "main_ypmc","SampleName"},
+            { "main_xhgg","SampleModelSpecification"},
+            { "ypmc","SampleName"},
+            { "sb",""},
+            { "wtf","ContractClient"},
+            { "wtfdz","AddressOrIdCard"},
+            { "scdw","ManufactureCompany"},
+            { "sjdw","DetectCompany"},
+            { "cydw","SamplingCompany"},
+            { "cydd","SamplingAddress"},
+            { "cyrq","SamplingDate"},
+            { "dyrq","SampleReceiptDate"},
+            { "jyxm","Content"},
+            { "jyyj","SampleTestBasis"},
+            { "jyjl",""},
+            { "bz","TestRemark"},
+            { "ypbh","SampleNumber"},
+            { "xhgg","SampleModelSpecification"},
+            { "jylb","DetectType"},
+            { "cpbhph","SampleModelSpecification"},
+            { "cydbh","SamplingNumber"},
+            { "scrq","SampleProductionDate"},
+            { "ypsl","SampleQuantity"},
+            { "cyjs","SamplingBase"},
+            { "jydd","AfterTreatmentMethod"},
+            { "jyrq",""},
+            { "ypms","SampleTrademark"},
+            { "xhgghqtsm","TestRemark"}
+        };
 
         /// <summary>
         /// 获取时间戳

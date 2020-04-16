@@ -1,5 +1,7 @@
 ﻿using EmcReportWebApi.Common;
 using EmcReportWebApi.Models;
+using EmcReportWebApi.Models.Repository;
+using EmcReportWebApi.Repository;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,26 +13,30 @@ namespace EmcReportWebApi.Business.Implement
 {
     public class ReportStandardImpl : ReportBase, IReportStandard
     {
+        private IReportStandardInfos _reportStandardInfos;
+        public ReportStandardImpl(IReportStandardInfos reportStandardInfos) {
+            _reportStandardInfos = reportStandardInfos;
+        }
+
         /// <summary>
         /// 生成标准报告
         /// </summary>
         /// <param name="para"></param>
         /// <returns></returns>
-        public ReportResult<string> CreateReportStandard(ReportParams para)
+        public ReportResult<string> CreateReportStandard(StandardReportParams para)
         {
             //计时
             Stopwatch sw = new Stopwatch();
             sw.Start();
             //保存参数用作排查bug
-            SaveParams(para);
             ReportResult<string> result = new ReportResult<string>();
             try
             {
                 string reportId = para.ReportId;
                 //获取zip文件 
-                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", MyTools.CurrRoot));
+                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, DateTime.Now.ToString("yyyyMMddhhmmss"));
-                string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + MyTools.GetTimestamp(DateTime.Now);
+                string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + EmcConfig.GetTimestamp(DateTime.Now);
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
                 {
                     zipUrl = para.ZipFilesUrl;
@@ -40,22 +46,23 @@ namespace EmcReportWebApi.Business.Implement
                 if (fileBytes.Length <= 0)
                 {
                     result = SetReportResult<string>("请求报告文件失败", false, para.ReportId.ToString());
-                    MyTools.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.ReportId));
+                    EmcConfig.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.ReportId));
                     return result;
                 }
                 //解压zip文件
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
-                string content = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
+                //string content = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : para.JsonStr, reportFilesPath);
+                string content = JsonToWordStandardNew(reportId.Equals("") ? "QW2018-698" : reportId, para.ContractId, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
-                MyTools.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
+                EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
 
             }
             catch (Exception ex)
             {
-                MyTools.ErrorLog.Error(ex.Message, ex);//设置错误信息
+                EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
                 result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.ReportId, ex.Message), false, "");
                 return result;
             }
@@ -63,7 +70,7 @@ namespace EmcReportWebApi.Business.Implement
         }
 
         /// <summary>
-        /// 解析json字符串
+        /// 解析json字符串(测试用,方法通了移除)
         /// </summary>
         /// <param name="reportId">报告编号</param>
         /// <param name="jsonStr">需解析的json字符串</param>
@@ -73,11 +80,11 @@ namespace EmcReportWebApi.Business.Implement
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("report2{0}.docx", MyTools.GetTimestamp(DateTime.Now));//输出文件名称
-            string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", MyTools.CurrRoot, outfileName);//输出文件路径
-            string filePath = string.Format(@"{0}\Files\{1}", MyTools.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
+            string outfileName = string.Format("report2{0}.docx", EmcConfig.GetTimestamp(DateTime.Now));//输出文件名称
+            string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
+            string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
 
-            string middleDir = MyTools.CurrRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             string result = "保存成功1";
             //生成报告
@@ -132,21 +139,101 @@ namespace EmcReportWebApi.Business.Implement
             return outfileName;
         }
 
-
-        public ReportResult<string> CreateReportStandardNew(ReportParams para)
+        /// <summary>
+        /// 解析生成报告
+        /// </summary>
+        /// <param name="reportId"></param>
+        /// <param name="contractId"></param>
+        /// <param name="reportFilesPath"></param>
+        /// <returns></returns>
+        public string JsonToWordStandardNew(string reportId, string contractId,string reportFilesPath)
         {
-            ReportResult<string> result = new ReportResult<string>();
 
             //获取合同信息
+            ContractInfo contractInfo = _reportStandardInfos.GetContract(contractId);
+            JObject firstPage = ContractInfoToJObject(contractInfo);
 
-            //获取报告信息
+            //获取报告标准内容
+            //JArray standardArray = (JArray)mainObj["standard"];
 
             //获取报告文件内容
 
             //数据库报告文件相对内容
 
 
-            return result;
+            string outfileName = string.Format("report2{0}.docx", EmcConfig.GetTimestamp(DateTime.Now));//输出文件名称
+            string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
+            string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
+
+            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            filePath = CreateTemplateMiddle(middleDir, "template", filePath);
+            string result = "保存成功1";
+            //生成报告
+            using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
+            {
+                //首页内容 object
+                result = InsertContentToWord(wordUtil, firstPage);
+
+                if (!result.Equals("保存成功"))
+                {
+                    return result;
+                }
+                //报告编号
+                string[] reportArray = reportId.Split('-');
+                string reportStr = "国医检(磁)字QW2018第698号";
+                if (reportArray.Length >= 2)
+                {
+                    reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
+                }
+                wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
+
+                //标准内容
+
+                //wordUtil.TableSplit(standardArray, "standard");
+
+                //样品图片
+                //if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
+                //{
+                //    JArray yptp = (JArray)mainObj["yptp"];
+                //    InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
+                //}
+
+                //替换页眉内容
+                int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
+
+                Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
+                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
+                valuePairs.Add("reportId", reportStr);
+                valuePairs.Add("page", pageCount.ToString());
+                replaceDic.Add(3, valuePairs);//替换页眉
+
+                wordUtil.ReplaceWritten(replaceDic);
+
+            }
+            //删除中间件文件夹
+            DelectDir(middleDir);
+            DelectDir(reportFilesPath);
+
+            return outfileName;
+        }
+
+        /// <summary>
+        /// 合同信息转成jobject供报告使用
+        /// </summary>
+        /// <param name="contractInfo"></param>
+        /// <returns></returns>
+        private JObject ContractInfoToJObject(ContractInfo contractInfo) {
+            JObject jObject = new JObject();
+            foreach (var item in EmcConfig.ContractToJObject)
+            {
+                string key = item.Key;
+                string value = item.Value;
+
+                var property = contractInfo.Data.GetType().GetProperty(value);
+                string obj = (property == null || property.GetValue(contractInfo.Data, null) == null) ? "" : contractInfo.Data.GetType().GetProperty(value).GetValue(contractInfo.Data, null).ToString();
+                jObject.Add(key, obj);
+            }
+            return jObject;
         }
 
         //照片和说明

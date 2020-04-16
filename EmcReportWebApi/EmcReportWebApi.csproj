@@ -144,7 +144,7 @@
     <Compile Include="Common\FileUtil.cs" />
     <Compile Include="Common\SyncHttpHelper.cs" />
     <Compile Include="Common\MD5Helper.cs" />
-    <Compile Include="Common\MyTools.cs" />
+    <Compile Include="Common\EmcConfig.cs" />
     <Compile Include="Common\WordUtil.cs" />
     <Compile Include="Common\ZipFileHelper.cs" />
     <Compile Include="Common\ZipStringHelper.cs" />
@@ -156,9 +156,12 @@
     <Compile Include="Models\FileParams.cs" />
     <Compile Include="Models\ReportParams.cs" />
     <Compile Include="Models\ReportResult.cs" />
+    <Compile Include="Models\Repository\ContractInfo.cs" />
     <Compile Include="Models\RtfTableInfo.cs" />
     <Compile Include="Models\StandardReportParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Implement\ReportStandardInfos.cs" />
+    <Compile Include="Repository\IReportStandardInfos.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Files\报告模板.docx" />

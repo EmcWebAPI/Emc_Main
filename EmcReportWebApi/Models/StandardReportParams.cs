@@ -10,13 +10,17 @@ namespace EmcReportWebApi.Models
         /// <summary>
         /// 报告编号
         /// </summary>
-        public string ReportCode { get; set; }
+        public string ReportId { get; set; }
 
         /// <summary>
         /// 合同编号
         /// </summary>
-        public string ContractCode { get; set; }
+        public string ContractId { get; set; }
 
+        /// <summary>
+        /// 文件解压路径
+        /// </summary>
+        public string ZipFilesUrl { get; set; }
 
     }
 }

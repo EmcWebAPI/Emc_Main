@@ -59,7 +59,7 @@ namespace EmcReportWebApi.Controllers
         /// <param name="para">参数</param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult CreateStandardReport(ReportParams para)
+        public IHttpActionResult CreateStandardReport(StandardReportParams para)
         {
             ReportResult<string> result = _reportStandard.CreateReportStandard(para);
             return Json<ReportResult<string>>(result);
@@ -83,7 +83,7 @@ namespace EmcReportWebApi.Controllers
                 {
                     browser = HttpContext.Current.Request.UserAgent.ToUpper();
                 }
-                string fileFullName = string.Format(@"{0}Files\OutPut\{1}", MyTools.CurrRoot, fileName);
+                string fileFullName = string.Format(@"{0}Files\OutPut\{1}", EmcConfig.CurrRoot, fileName);
                 if (!FileUtil.FileExists(fileFullName))
                 {
                     throw new Exception(string.Format("文件{0},不存在", fileName));
@@ -101,13 +101,13 @@ namespace EmcReportWebApi.Controllers
                             : HttpUtility.UrlEncode(Path.GetFileName(fileFullName))
                     //FileName = HttpUtility.UrlEncode(Path.GetFileName(filePath))
                 };
-                MyTools.InfoLog.Info("下载成功:" + fileName);
+                EmcConfig.InfoLog.Info("下载成功:" + fileName);
                 return ResponseMessage(httpResponseMessage);
             }
             catch (Exception ex)
             {
                 ReportResult<string> result = new ReportResult<string>();
-                MyTools.ErrorLog.Error(ex.Message, ex);
+                EmcConfig.ErrorLog.Error(ex.Message, ex);
                 result.Message = string.Format("下载失败,错误信息:{0}", ex.Message);
                 result.SumbitResult = false;
                 return Json<ReportResult<string>>(result);

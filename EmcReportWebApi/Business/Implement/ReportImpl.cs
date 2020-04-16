@@ -22,13 +22,13 @@ namespace EmcReportWebApi.Business.Implement
         public ReportResult<string> CreateReport(ReportParams para)
         {
             ReportResult<string> result = new ReportResult<string>();
-            int count = MyTools.ReportQueue.Count;
+            int count = EmcConfig.ReportQueue.Count;
             if (count > 4)
             {
                 return SetReportResult<string>("服务器繁忙,请稍后再试", false, "");
             }
             Guid guid = Guid.NewGuid();
-            MyTools.ReportQueue.Add(guid);
+            EmcConfig.ReportQueue.Add(guid);
             //计时
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -38,9 +38,9 @@ namespace EmcReportWebApi.Business.Implement
             {
                 string reportId = para.ReportId;
                 //获取zip文件 
-                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}Files\\ReportFiles", MyTools.CurrRoot));
+                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, DateTime.Now.ToString("yyyyMMddhhmmss"));
-                string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + MyTools.GetTimestamp(DateTime.Now);
+                string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + EmcConfig.GetTimestamp(DateTime.Now);
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
                 {
                     zipUrl = para.ZipFilesUrl;
@@ -50,7 +50,7 @@ namespace EmcReportWebApi.Business.Implement
                 if (fileBytes.Length <= 0)
                 {
                     result = SetReportResult<string>("请求报告文件失败", false, para.ReportId.ToString());
-                    MyTools.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.ReportId));
+                    EmcConfig.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.ReportId));
                     return result;
                 }
                 //解压zip文件
@@ -60,18 +60,18 @@ namespace EmcReportWebApi.Business.Implement
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
-                MyTools.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
+                EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
 
             }
             catch (Exception ex)
             {
-                MyTools.ErrorLog.Error(ex.Message, ex);//设置错误信息
+                EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
                 result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.ReportId, ex.Message), false, "");
                 return result;
             }
             finally
             {
-                MyTools.ReportQueue.Remove(guid);
+                EmcConfig.ReportQueue.Remove(guid);
             }
             return result;
         }
@@ -80,10 +80,10 @@ namespace EmcReportWebApi.Business.Implement
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("report{0}.docx", MyTools.GetTimestamp(DateTime.Now));//输出文件名称
-            string outfilePth = string.Format(@"{0}Files\OutPut\{1}", MyTools.CurrRoot, outfileName);//输出文件路径
-            string filePath = string.Format(@"{0}Files\{1}", MyTools.CurrRoot, ConfigurationManager.AppSettings["TemplateName"].ToString());//模板文件
-            string middleDir = MyTools.CurrRoot + "Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            string outfileName = string.Format("report{0}.docx", EmcConfig.GetTimestamp(DateTime.Now));//输出文件名称
+            string outfilePth = string.Format(@"{0}Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
+            string filePath = string.Format(@"{0}Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["TemplateName"].ToString());//模板文件
+            string middleDir = EmcConfig.CurrRoot + "Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             string result = "保存成功1";
             //生成报告
@@ -150,7 +150,7 @@ namespace EmcReportWebApi.Business.Implement
                     //判断模板是否存在
                     if (!File.Exists(GetTemplatePath(item["name"] + ".docx")) && !item["name"].ToString().Equals("电压暂降/短时中断"))
                     {
-                        MyTools.ErrorLog.Error(string.Format("{0}模板不存在", item["name"]));
+                        EmcConfig.ErrorLog.Error(string.Format("{0}模板不存在", item["name"]));
                         continue;
                     }
 
@@ -255,8 +255,8 @@ namespace EmcReportWebApi.Business.Implement
 
             JArray sysj = (JArray)jObject["sysj"];
 
-            RtfTableInfo rtfTableInfo = MyTools.RtfTableInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
-            RtfPictureInfo rtfPictureInfo = MyTools.RtfPictureInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
+            RtfTableInfo rtfTableInfo = EmcConfig.RtfTableInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
+            RtfPictureInfo rtfPictureInfo = EmcConfig.RtfPictureInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
 
             int startIndex = 0;
             int endIndex = 0;

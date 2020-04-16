@@ -7,6 +7,8 @@ using Autofac;
 using Autofac.Integration.WebApi;
 using EmcReportWebApi.Business;
 using EmcReportWebApi.Business.Implement;
+using EmcReportWebApi.Repository;
+using EmcReportWebApi.Repository.Implement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,7 @@ namespace EmcReportWebApi.App_Start
             var builder = new ContainerBuilder();
             builder.RegisterType<ReportImpl>().As<IReport>().AsImplementedInterfaces();
             builder.RegisterType<ReportStandardImpl>().As<IReportStandard>().AsImplementedInterfaces();
+            builder.RegisterType<ReportStandardInfos>().As<IReportStandardInfos>().AsImplementedInterfaces();
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             

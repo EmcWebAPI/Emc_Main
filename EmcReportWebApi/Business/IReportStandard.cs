@@ -13,7 +13,7 @@ namespace EmcReportWebApi.Business
         /// </summary>
         /// <param name="para">参数</param>
         /// <returns></returns>
-        ReportResult<string> CreateReportStandard(ReportParams para);
+        ReportResult<string> CreateReportStandard(StandardReportParams para);
 
         /// <summary>
         /// 生成标准报告方法
@@ -23,5 +23,14 @@ namespace EmcReportWebApi.Business
         /// <param name="reportFilesPath"></param>
         /// <returns></returns>
         string JsonToWordStandard(string reportId, string jsonStr, string reportFilesPath);
+
+        /// <summary>
+        /// 生成标准报告方法
+        /// </summary>
+        /// <param name="reportId"></param>
+        /// <param name="contractId"></param>
+        /// <param name="reportFilesPath"></param>
+        /// <returns></returns>
+        string JsonToWordStandardNew(string reportId, string contractId, string reportFilesPath);
     }
 }

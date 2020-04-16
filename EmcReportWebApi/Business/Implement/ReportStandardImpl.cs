@@ -220,8 +220,6 @@ namespace EmcReportWebApi.Business.Implement
         /// <summary>
         /// 合同信息转成jobject供报告使用
         /// </summary>
-        /// <param name="contractInfo"></param>
-        /// <returns></returns>
         private JObject ContractInfoToJObject(ContractInfo contractInfo) {
             JObject jObject = new JObject();
             foreach (var item in EmcConfig.ContractToJObject)
@@ -236,7 +234,9 @@ namespace EmcReportWebApi.Business.Implement
             return jObject;
         }
 
-        //照片和说明
+        /// <summary>
+        /// 照片和说明
+        /// </summary>
         private string InsertImageToWordYptp(WordUtil wordUtil, JArray array, string reportFilesPath)
         {
             List<string> list = new List<string>();

@@ -38,43 +38,7 @@ namespace EmcReportWebApi.Common
         /// 当前运行的接口数
         /// </summary>
         public static List<Guid> ReportQueue = new List<Guid>();
-
-        /// <summary>
-        /// 合同内容对应的书签
-        /// </summary>
-        public static Dictionary<string, string> ContractToJObject = new Dictionary<string, string>() {
-            { "main_wtf","ContractClient"},
-            { "main_jylb","DetectType"},
-            { "main_ypmc","SampleName"},
-            { "main_xhgg","SampleModelSpecification"},
-            { "ypmc","SampleName"},
-            { "sb",""},
-            { "wtf","ContractClient"},
-            { "wtfdz","AddressOrIdCard"},
-            { "scdw","ManufactureCompany"},
-            { "sjdw","DetectCompany"},
-            { "cydw","SamplingCompany"},
-            { "cydd","SamplingAddress"},
-            { "cyrq","SamplingDate"},
-            { "dyrq","SampleReceiptDate"},
-            { "jyxm","Content"},
-            { "jyyj","SampleTestBasis"},
-            { "jyjl",""},
-            { "bz","TestRemark"},
-            { "ypbh","SampleNumber"},
-            { "xhgg","SampleModelSpecification"},
-            { "jylb","DetectType"},
-            { "cpbhph","SampleModelSpecification"},
-            { "cydbh","SamplingNumber"},
-            { "scrq","SampleProductionDate"},
-            { "ypsl","SampleQuantity"},
-            { "cyjs","SamplingBase"},
-            { "jydd","AfterTreatmentMethod"},
-            { "jyrq",""},
-            { "ypms","SampleTrademark"},
-            { "xhgghqtsm","TestRemark"}
-        };
-
+        
         /// <summary>
         /// 获取时间戳
         /// </summary>
@@ -150,5 +114,44 @@ namespace EmcReportWebApi.Common
 
             return data;
         }
+
+
+        #region 标准报告
+        /// <summary>
+        /// 合同内容对应的书签
+        /// </summary>
+        public static Dictionary<string, string> ContractToJObject = new Dictionary<string, string>() {
+            { "main_wtf","ContractClient"},
+            { "main_jylb","DetectType"},
+            { "main_ypmc","SampleName"},
+            { "main_xhgg","SampleModelSpecification"},
+            { "ypmc","SampleName"},
+            { "sb",""},
+            { "wtf","ContractClient"},
+            { "wtfdz","AddressOrIdCard"},
+            { "scdw","ManufactureCompany"},
+            { "sjdw","DetectCompany"},
+            { "cydw","SamplingCompany"},
+            { "cydd","SamplingAddress"},
+            { "cyrq","SamplingDate"},
+            { "dyrq","SampleReceiptDate"},
+            { "jyxm","Content"},
+            { "jyyj","SampleTestBasis"},
+            { "jyjl",""},
+            { "bz","TestRemark"},
+            { "ypbh","SampleNumber"},
+            { "xhgg","SampleModelSpecification"},
+            { "jylb","DetectType"},
+            { "cpbhph","SampleModelSpecification"},
+            { "cydbh","SamplingNumber"},
+            { "scrq","SampleProductionDate"},
+            { "ypsl","SampleQuantity"},
+            { "cyjs","SamplingBase"},
+            { "jydd","AfterTreatmentMethod"},
+            { "jyrq",""},
+            { "ypms","SampleTrademark"},
+            { "xhgghqtsm","TestRemark"}
+        };
+        #endregion
     }
 }

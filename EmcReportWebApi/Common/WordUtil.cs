@@ -57,7 +57,7 @@ namespace EmcReportWebApi.Common
         }
 
         #region 标准报告业务相关
-        
+
         /// <summary>
         /// 表格拆分
         /// </summary>
@@ -111,7 +111,7 @@ namespace EmcReportWebApi.Common
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
-            if(jObject["comment"]!=null&& !jObject["comment"].Equals(""))
+            if (jObject["comment"] != null && !jObject["comment"].Equals(""))
                 table.Cell(2, 6).Range.Text = jObject["comment"].ToString();
             //备注
             if (jObject["reMark"] != null && !jObject["reMark"].Equals(""))
@@ -148,7 +148,8 @@ namespace EmcReportWebApi.Common
                 }
                 //遍历节点拆分单元格
                 bool whilebool = true;
-                while (whilebool) {
+                while (whilebool)
+                {
                     cellCol4Dic = AddCellAndSplit(table, cellCol4Dic);
                     whilebool = (cellCol4Dic.Count != 0);
                 }
@@ -160,7 +161,8 @@ namespace EmcReportWebApi.Common
         /// 遍历节点拆分单元格
         /// </summary>
         /// <returns></returns>
-        private Dictionary<JObject, string> AddCellAndSplit(Table table,Dictionary<JObject, string> cellCol6Dic) {
+        private Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic)
+        {
             Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
             int incr = 0;
             foreach (var item in cellCol6Dic)
@@ -192,7 +194,8 @@ namespace EmcReportWebApi.Common
                         JObject secondItem = (JObject)secondItems[i];
                         tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
                         //检验结果
-                        if (secondItems[i]["result"] != null && !secondItems[i]["result"].Equals("")) {
+                        if (secondItems[i]["result"] != null && !secondItems[i]["result"].Equals(""))
+                        {
                             Cell resultCell = table.Cell(cRow + i, cCol + 2);
                             resultCell.Range.Text = secondItems[i]["result"].ToString();
                         }
@@ -206,6 +209,50 @@ namespace EmcReportWebApi.Common
         }
 
         /// <summary>
+        /// 添加附表
+        /// </summary>
+        public string AddAttachTable(string title, List<string> list, string bookmark)
+        {
+            try
+            {
+                Range tableRange = GetBookmarkRank(_currentWord, bookmark);
+                Table table = tableRange.Tables[1];
+                table.Cell(1, 1).Select();
+                _wordApp.Selection.InsertRowsBelow(1);
+                _wordApp.Selection.Cells.Merge();
+                _wordApp.Selection.Range.Text = title;
+
+                int rowIndex = 2;
+
+                foreach (var item in list)
+                {
+                    string[] arrStr = item.Split(',');
+
+                    int arrCount = arrStr.Length;
+
+                    table.Cell(rowIndex, 1).Select();
+                    _wordApp.Selection.InsertRowsBelow(1);
+                    Cell cell = table.Cell(rowIndex + 1, 1);
+                    cell.Select();
+                    if (rowIndex == 2)
+                        cell.Split(1, arrCount);
+                    for (int i = 1; i <= arrCount; i++)
+                    {
+                        table.Cell(rowIndex + 1, i).Range.Text = arrStr[i - 1];
+                    }
+                    rowIndex++;
+                }
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            return "创建成功";
+        }
+
+        /// <summary>
         /// 照片和说明
         /// </summary>
         /// <param name="list"></param>
@@ -216,7 +263,8 @@ namespace EmcReportWebApi.Common
             try
             {
                 int listCount = list.Count;
-                if (listCount == 0) {
+                if (listCount == 0)
+                {
                     return "没有照片";
                 }
                 Range range = GetBookmarkRank(_currentWord, bookmark);
@@ -264,6 +312,8 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
+
+
         #endregion
 
         #region emc报告业务相关 
@@ -310,10 +360,10 @@ namespace EmcReportWebApi.Common
                 Dispose();
                 throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
-           
+
             return "创建成功";
         }
-        
+
         /// <summary>
         /// 在书签位置插入内容
         /// </summary>
@@ -459,7 +509,7 @@ namespace EmcReportWebApi.Common
 
             return "保存成功";
         }
-        
+
         /// <summary>
         /// 样品连接图
         /// </summary>
@@ -620,7 +670,7 @@ namespace EmcReportWebApi.Common
 
             return "插入图片成功";
         }
-        
+
         /// <summary>
         /// 复制其他文件内容到当前word并创建一个新的书签
         /// </summary>
@@ -670,7 +720,7 @@ namespace EmcReportWebApi.Common
 
             return newBookmark;
         }
-        
+
         /// <summary>
         /// 插入实验数据后设置word的格式
         /// </summary>
@@ -692,7 +742,7 @@ namespace EmcReportWebApi.Common
             }
             return "修改成功";
         }
-        
+
         #region rtf操作
 
         /// <summary>
@@ -1243,7 +1293,7 @@ namespace EmcReportWebApi.Common
 
             return "创建成功";
         }
-        
+
         /// <summary>
         /// 根据书签向word中插入内容
         /// </summary>
@@ -1450,7 +1500,7 @@ namespace EmcReportWebApi.Common
 
             return fileFullNamelist.Count;
         }
-        
+
         /// <summary>
         /// 设置复选框选中
         /// </summary>
@@ -1626,10 +1676,10 @@ namespace EmcReportWebApi.Common
         }
 
         /// <summary>
-       /// 获取文件名称
-       /// </summary>
-       /// <param name="fileFullName"></param>
-       /// <returns></returns>
+        /// 获取文件名称
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        /// <returns></returns>
         private string FilterFileName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('\\');
@@ -1953,7 +2003,7 @@ namespace EmcReportWebApi.Common
             }
         }
 
-       
+
         /// <summary>
         /// 创建并移动到下一个段落
         /// </summary>

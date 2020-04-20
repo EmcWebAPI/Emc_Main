@@ -107,11 +107,18 @@ namespace EmcReportWebApi.Business.Implement
                 }
                 wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
 
+
+                //先画附表再画标准内容
+                //附表测试数据
+                JArray attachArray = (JArray)mainObj["attach"];
+                this.AddAttachTable(wordUtil, "附表202", attachArray, "standard");
+
                 //标准内容
-
                 JArray standardArray = (JArray)mainObj["standard"];
-
                 wordUtil.TableSplit(standardArray, "standard");
+
+                
+                
                 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
@@ -217,21 +224,26 @@ namespace EmcReportWebApi.Business.Implement
             return outfileName;
         }
 
-        /// <summary>
-        /// 合同信息转成jobject供报告使用
-        /// </summary>
-        private JObject ContractInfoToJObject(ContractInfo contractInfo) {
-            JObject jObject = new JObject();
-            foreach (var item in EmcConfig.ContractToJObject)
-            {
-                string key = item.Key;
-                string value = item.Value;
 
-                var property = contractInfo.Data.GetType().GetProperty(value);
-                string obj = (property == null || property.GetValue(contractInfo.Data, null) == null) ? "" : contractInfo.Data.GetType().GetProperty(value).GetValue(contractInfo.Data, null).ToString();
-                jObject.Add(key, obj);
+        private string AddAttachTable(WordUtil wordUtil,string title,JArray array,string bookmark) {
+            List<string> list = new List<string>();
+
+            foreach (JObject item in array)
+            {
+                string jTemp = "";
+                int iTemp = 0;
+                foreach (var item2 in item)
+                {
+                    iTemp++;
+                    if (iTemp != item.Count)
+                        jTemp += (item2.Value + ",");
+                    else
+                        jTemp += item2.Value;
+                }
+                list.Add(jTemp);
             }
-            return jObject;
+
+           return wordUtil.AddAttachTable(title, list, bookmark);
         }
 
         /// <summary>
@@ -245,6 +257,26 @@ namespace EmcReportWebApi.Business.Implement
                 list.Add(reportFilesPath + "\\" + item["fileName"].ToString() + "," + item["content"].ToString());
             }
             return wordUtil.InsertPhotoToWord(list, "photo");
+        }
+
+
+
+        /// <summary>
+        /// 合同信息转成jobject供报告使用
+        /// </summary>
+        private JObject ContractInfoToJObject(ContractInfo contractInfo)
+        {
+            JObject jObject = new JObject();
+            foreach (var item in EmcConfig.ContractToJObject)
+            {
+                string key = item.Key;
+                string value = item.Value;
+
+                var property = contractInfo.Data.GetType().GetProperty(value);
+                string obj = (property == null || property.GetValue(contractInfo.Data, null) == null) ? "" : contractInfo.Data.GetType().GetProperty(value).GetValue(contractInfo.Data, null).ToString();
+                jObject.Add(key, obj);
+            }
+            return jObject;
         }
     }
 }

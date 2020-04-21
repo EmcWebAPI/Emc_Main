@@ -49,7 +49,7 @@ namespace EmcReportWebApi.Business.Implement
         protected string CreateTemplateMiddle(string dir, string template, string filePath)
         {
 
-            string dateStr = DateTime.Now.ToString("yyyyMMddhhmmss");
+            string dateStr = Guid.NewGuid().ToString();
             string fileName = template + dateStr + ".docx";
             DirectoryInfo di = new DirectoryInfo(dir);
             if (!di.Exists) { di.Create(); }
@@ -103,7 +103,7 @@ namespace EmcReportWebApi.Business.Implement
         /// </summary>
         protected string CreateHtmlFile(string htmlStr, string dirPath)
         {
-            string dateStr = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string dateStr = Guid.NewGuid().ToString();
             string htmlpath = dirPath + "\\reportHtml" + dateStr + ".html";
             FileStream fs = new FileStream(htmlpath, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
@@ -120,7 +120,7 @@ namespace EmcReportWebApi.Business.Implement
         /// </summary>
         protected void SaveParams(ReportParams para)
         {
-            string dateStr = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string dateStr = Guid.NewGuid().ToString();
             string txtPath = string.Format("{0}Log\\Params\\{1}.txt", EmcConfig.CurrRoot, dateStr);
             if (!System.IO.File.Exists(txtPath))
             {

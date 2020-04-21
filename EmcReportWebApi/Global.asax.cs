@@ -17,7 +17,7 @@ namespace EmcReportWebApi
             
             GlobalConfiguration.Configure(WebApiConfig.Register);
             AutoFacConfig.InitAutoFac();
-
+            TimerConfig.InitTimer();
         }
     }
 }

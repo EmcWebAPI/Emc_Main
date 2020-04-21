@@ -35,7 +35,7 @@ namespace EmcReportWebApi.Business.Implement
                 string reportId = para.ReportId;
                 //获取zip文件 
                 string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrRoot));
-                string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, DateTime.Now.ToString("yyyyMMddhhmmss"));
+                string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, Guid.NewGuid().ToString());
                 string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + EmcConfig.GetTimestamp(DateTime.Now);
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
                 {
@@ -80,11 +80,11 @@ namespace EmcReportWebApi.Business.Implement
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("report2{0}.docx", EmcConfig.GetTimestamp(DateTime.Now));//输出文件名称
+            string outfileName = string.Format("report2{0}.docx", Guid.NewGuid().ToString());//输出文件名称
             string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
             string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
 
-            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + Guid.NewGuid().ToString();
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             string result = "保存成功1";
             //生成报告
@@ -167,12 +167,11 @@ namespace EmcReportWebApi.Business.Implement
 
             //数据库报告文件相对内容
 
-
-            string outfileName = string.Format("report2{0}.docx", EmcConfig.GetTimestamp(DateTime.Now));//输出文件名称
+            string outfileName = string.Format("report2{0}.docx", Guid.NewGuid().ToString());//输出文件名称
             string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
             string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
 
-            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + DateTime.Now.ToString("yyyyMMddhhmmss");
+            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + Guid.NewGuid().ToString();
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             string result = "保存成功1";
             //生成报告

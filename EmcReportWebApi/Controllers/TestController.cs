@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace EmcReportWebApi.Controllers
@@ -154,6 +155,38 @@ namespace EmcReportWebApi.Controllers
             return result + ":" + time1.ToString();
         }
 
+        [HttpGet]
+        public string Test4() {
+
+            for (int i = 0; i < 20; i++)
+            {
+                EmcConfig.TaskQueue.Enqueue(Guid.NewGuid());
+            }
+
+            //Task task = new Task(TestTask);
+            //task.Start();
+            return "报告生成中....";
+        }
+
+        private void TestTask() {
+            try
+            {
+                //EmcConfig.KillWordProcess();
+
+                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
+                string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrRoot, "QT2019-3015.zip");
+                //解压zip文件
+                ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
+
+                string result = _reportStandard.JsonToWordStandard("QT2019-3015", jsonStr, reportFilesPath);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
+        }
         
     }
 }

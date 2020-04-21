@@ -8,7 +8,7 @@ namespace EmcReportWebApi.Common
         //根据报告id创建报告文件夹
         public static string CreateReportDirectory(string fileFullName)
         {
-            string datetimeStr = DateTime.Now.ToString("yyyyMMddhhmmss");
+            string datetimeStr = Guid.NewGuid().ToString();
             string outputPath = string.Format("{0}\\{1}", fileFullName, datetimeStr);
             if (Directory.Exists(outputPath))
             {

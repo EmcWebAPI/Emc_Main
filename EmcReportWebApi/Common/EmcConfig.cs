@@ -38,6 +38,11 @@ namespace EmcReportWebApi.Common
         /// 当前运行的接口数
         /// </summary>
         public static List<Guid> ReportQueue = new List<Guid>();
+
+        /// <summary>
+        /// 待执行的任务数
+        /// </summary>
+        public static Queue<Guid> TaskQueue = new Queue<Guid>(); 
         
         /// <summary>
         /// 获取时间戳

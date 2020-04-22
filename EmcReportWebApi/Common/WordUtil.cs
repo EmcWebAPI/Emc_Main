@@ -681,7 +681,7 @@ namespace EmcReportWebApi.Common
         /// <returns></returns>
         public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
         {
-            string newBookmark = "bookmark" + Guid.NewGuid().ToString();
+            string newBookmark = "bookmark" +  DateTime.Now.ToString("yyyyMMddHHmmssfff").ToString();
             try
             {
                 Document htmldoc = OpenWord(filePath);

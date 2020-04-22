@@ -80,7 +80,7 @@ namespace EmcReportWebApi.Business.Implement
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("report{0}.docx", Guid.NewGuid().ToString());//输出文件名称
+            string outfileName = string.Format("Report{0}.docx", Guid.NewGuid().ToString());//输出文件名称
             string outfilePth = string.Format(@"{0}Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
             string filePath = string.Format(@"{0}Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["TemplateName"].ToString());//模板文件
             string middleDir = EmcConfig.CurrRoot + "Files\\TemplateMiddleware\\" + Guid.NewGuid().ToString();

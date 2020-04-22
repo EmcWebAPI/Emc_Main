@@ -80,7 +80,7 @@ namespace EmcReportWebApi.Business.Implement
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("report2{0}.docx", Guid.NewGuid().ToString());//输出文件名称
+            string outfileName = string.Format("StandardReport{0}.docx", Guid.NewGuid().ToString());//输出文件名称
             string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
             string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
 
@@ -117,8 +117,6 @@ namespace EmcReportWebApi.Business.Implement
                 JArray standardArray = (JArray)mainObj["standard"];
                 wordUtil.TableSplit(standardArray, "standard");
 
-                
-                
                 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
@@ -163,11 +161,15 @@ namespace EmcReportWebApi.Business.Implement
             //获取报告标准内容
             //JArray standardArray = (JArray)mainObj["standard"];
 
-            //获取报告文件内容
+            //获取附表内容
+            //JArray attachArray = (JArray)mainObj["attach"];
+
+            //获取报告图片内容
+            //JArray imageArray=
 
             //数据库报告文件相对内容
 
-            string outfileName = string.Format("report2{0}.docx", Guid.NewGuid().ToString());//输出文件名称
+            string outfileName = string.Format("StandardReport{0}.docx", Guid.NewGuid().ToString());//输出文件名称
             string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
             string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
 
@@ -257,9 +259,7 @@ namespace EmcReportWebApi.Business.Implement
             }
             return wordUtil.InsertPhotoToWord(list, "photo");
         }
-
-
-
+        
         /// <summary>
         /// 合同信息转成jobject供报告使用
         /// </summary>
@@ -277,5 +277,16 @@ namespace EmcReportWebApi.Business.Implement
             }
             return jObject;
         }
+
+        /// <summary>
+        /// 报告标准内容
+        /// </summary>
+        /// <returns></returns>
+        private JArray GetStandardToJArray() {
+            JArray ja = new JArray();
+
+            return new JArray();
+        }
+        
     }
 }

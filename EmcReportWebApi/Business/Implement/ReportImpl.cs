@@ -219,7 +219,7 @@ namespace EmcReportWebApi.Business.Implement
                 list.Add(jTemp);
             }
 
-            string result = wordUtil.InsertListToTable(list, bookmark, mergeColumn, isNeedNumber);
+            string result = wordUtil.InsertListToTable(list, bookmark);
 
             return result;
         }

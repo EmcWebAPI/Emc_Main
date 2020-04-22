@@ -389,6 +389,36 @@ namespace EmcReportWebApi.Common
         }
 
         /// <summary>
+        /// 向table中插入list(不需要合并单元格)
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        public string InsertListToTable(List<string> list, string bookmark) {
+            Range range = GetBookmarkRank(_currentWord, bookmark);
+            Table table = range.Tables[1];
+            int tableRowIndex = table.Rows.Count;
+            int listCount = list.Count;
+            for (int i = 0; i < listCount; i++)
+            {
+                
+                if(i!=0){
+                    table.Cell(tableRowIndex, 1).Select();
+                    _wordApp.Selection.InsertRowsBelow(1);
+                    tableRowIndex++;
+                }
+
+                string[] arrStr = list[i].Split(',');
+                for (int j = 0; j < arrStr.Length; j++)
+                {
+                    table.Cell(tableRowIndex,j + 1).Range.Text = arrStr[j];
+                }
+            }
+
+            return "保存成功";
+        }
+
+        /// <summary>
         /// 向table中插入list
         /// </summary>
         /// <param name="list">内容集合</param>

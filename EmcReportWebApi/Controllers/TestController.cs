@@ -36,6 +36,7 @@ namespace EmcReportWebApi.Controllers
         }
 
         [HttpPost]
+        [CompressContentAttribute]
         public IHttpActionResult CreateReportTest1(ReportParams para)
         {
             ReportResult<string> result = new ReportResult<string>();

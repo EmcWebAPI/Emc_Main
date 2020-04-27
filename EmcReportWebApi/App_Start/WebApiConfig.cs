@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace EmcReportWebApi
 {
@@ -9,6 +10,9 @@ namespace EmcReportWebApi
     {
         public static void Register(HttpConfiguration config)
         {
+            //跨域配置
+            config.EnableCors(new EnableCorsAttribute("*", "*", "*"));
+
             // Web API 配置和服务
 
             // Web API 路由

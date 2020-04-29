@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace EmcReportWebApi.Business.Implement
@@ -21,21 +22,22 @@ namespace EmcReportWebApi.Business.Implement
         /// <returns></returns>
         public ReportResult<string> CreateReport(ReportParams para)
         {
+            Task<ReportResult<string>> task = new Task<ReportResult<string>>(() => CreateReportAsync(para));
+            task.Start();
+            ReportResult<string> result = task.Result;
+            return result;
+        }
+
+        private ReportResult<string> CreateReportAsync(ReportParams para) {
             ReportResult<string> result = new ReportResult<string>();
-            int count = EmcConfig.ReportQueue.Count;
-            if (count > 4)
-            {
-                return SetReportResult<string>("服务器繁忙,请稍后再试", false, "");
-            }
-            Guid guid = Guid.NewGuid();
-            EmcConfig.ReportQueue.Add(guid);
-            //计时
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            //保存参数用作排查bug
-            SaveParams(para);
             try
             {
+                EmcConfig.SemLim.Wait();
+                //计时
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                //保存参数用作排查bug
+                SaveParams(para);
                 string reportId = para.ReportId;
                 //获取zip文件 
                 string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
@@ -71,7 +73,7 @@ namespace EmcReportWebApi.Business.Implement
             }
             finally
             {
-                EmcConfig.ReportQueue.Remove(guid);
+                EmcConfig.SemLim.Release();
             }
             return result;
         }

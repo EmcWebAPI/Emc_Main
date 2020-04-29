@@ -141,7 +141,6 @@
   <ItemGroup>
     <Compile Include="App_Start\AutoFacConfig.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
-    <Compile Include="App_Start\TimerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Business\IReportStandard.cs" />
     <Compile Include="Business\Implement\ReportBase.cs" />

@@ -36,6 +36,11 @@ namespace EmcReportWebApi.Controllers
             _reportStandard = reportStandard;
         }
 
+        /// <summary>
+        /// 测试报告,带参数
+        /// </summary>
+        /// <param name="para"></param>
+        /// <returns></returns>
         [HttpPost]
         [CompressContentAttribute]
         public IHttpActionResult CreateReportTest1(ReportParams para)

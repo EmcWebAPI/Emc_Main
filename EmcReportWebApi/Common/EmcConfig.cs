@@ -36,19 +36,9 @@ namespace EmcReportWebApi.Common
         public static List<RtfPictureInfo> RtfPictureInfos = GetRtfPictueInfo();
         
         /// <summary>
-        /// 当前运行的接口数
-        /// </summary>
-        public static List<Guid> ReportQueue = new List<Guid>();
-
-        /// <summary>
-        /// 待执行的任务数
-        /// </summary>
-        public static Queue<Guid> TaskQueue = new Queue<Guid>(); 
-        
-        /// <summary>
         /// 线程池任务信号量
         /// </summary>
-        public static SemaphoreSlim SemLim = new SemaphoreSlim(1);
+        public static SemaphoreSlim SemLim = new SemaphoreSlim(4);
 
         /// <summary>
         /// 获取时间戳

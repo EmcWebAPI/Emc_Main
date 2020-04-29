@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace EmcReportWebApi.Business.Implement
 {
@@ -25,13 +26,22 @@ namespace EmcReportWebApi.Business.Implement
         /// <returns></returns>
         public ReportResult<string> CreateReportStandard(StandardReportParams para)
         {
-            //计时
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            //保存参数用作排查bug
+
+            Task<ReportResult<string>> task = new Task<ReportResult<string>>(() => CreateReportStandardAsync(para));
+            task.Start();
+            ReportResult<string> result = task.Result;
+            return result;
+        }
+
+        private ReportResult<string> CreateReportStandardAsync(StandardReportParams para)
+        {
             ReportResult<string> result = new ReportResult<string>();
             try
             {
+                EmcConfig.SemLim.Wait();
+                //计时
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 string reportId = para.ReportId;
                 //获取zip文件 
                 string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrRoot));
@@ -65,6 +75,10 @@ namespace EmcReportWebApi.Business.Implement
                 EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
                 result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.ReportId, ex.Message), false, "");
                 return result;
+            }
+            finally
+            {
+                EmcConfig.SemLim.Release();
             }
             return result;
         }

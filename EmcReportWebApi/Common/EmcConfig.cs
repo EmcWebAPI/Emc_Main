@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Xml.Linq;
 
 namespace EmcReportWebApi.Common
@@ -44,6 +45,11 @@ namespace EmcReportWebApi.Common
         /// </summary>
         public static Queue<Guid> TaskQueue = new Queue<Guid>(); 
         
+        /// <summary>
+        /// 线程池任务信号量
+        /// </summary>
+        public static SemaphoreSlim SemLim = new SemaphoreSlim(1);
+
         /// <summary>
         /// 获取时间戳
         /// </summary>

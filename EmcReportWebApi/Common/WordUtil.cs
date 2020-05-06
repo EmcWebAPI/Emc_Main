@@ -176,8 +176,14 @@ namespace EmcReportWebApi.Common
                 int secondItemsCount = secondItems.Count;
                 if (secondItemsCount > 0)
                 {
-                    if (secondItemsCount != 1)
+                    if (secondItemsCount != 1) {
+                        //检验结果列拆分
                         table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
+                        //备注列拆分
+                        table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
+                    }
+                        
+                    
                     table.Cell(cRow, cCol).Split(secondItemsCount, 2);
 
                     if (secondItemsCount != 1)
@@ -187,21 +193,44 @@ namespace EmcReportWebApi.Common
                     table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
                     table.Cell(cRow, cCol).PreferredWidth = 40f;
 
+                    //结果有拆分的
+                    int resultIndex = 0;
+                    //备注列标识 是否有加列
+                    int remarkCol = 4;
 
                     for (int i = 0; i < secondItemsCount; i++)
                     {
-                        Cell tempCell = table.Cell(cRow + i, cCol + 1);
+                        Cell tempCell = table.Cell(cRow + i+resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
                         tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
-                        //检验结果
-                        if (secondItems[i]["result"] != null && !secondItems[i]["result"].Equals(""))
-                        {
-                            Cell resultCell = table.Cell(cRow + i, cCol + 2);
-                            resultCell.Range.Text = secondItems[i]["result"].ToString();
+                        if (secondItems[i]["reMark"] != null && !secondItems[i]["reMark"].Equals("")) {
+                            table.Cell(cRow + i + resultIndex, cCol + remarkCol).Range.Text = secondItems[i]["reMark"].ToString();
                         }
-                        cellCol7Dic.Add(secondItem, (cRow + i).ToString() + "," + (cCol + 1).ToString());
+                        //检验结果
+                        if (secondItems[i]["controls"] != null && !secondItems[i]["controls"].Equals(""))
+                        {
+                            Cell resultCell = table.Cell(cRow + i+ resultIndex, cCol + 2);
+                            JArray resultList = JArray.Parse(secondItems[i]["controls"].ToString());
+                            int resultCount = resultList.Count;
+                            if (resultCount > 1)
+                            {
+                                resultCell.Split(2, resultCount);
+                                for (int k = 0; k < resultCount; k++)
+                                {
+                                    table.Cell(cRow + i+ resultIndex + k, cCol + 2 ).Range.Text = "#"+(k+1).ToString();
+                                    table.Cell(cRow+i+ resultIndex + k,cCol+2+1).Range.Text= resultList[k]["result"].ToString();
+                                    remarkCol = 5;
+                                }
+                                resultIndex= resultIndex + resultCount - 1;
+                            }
+                            else {
+                                resultCell.Range.Text = resultList.First["result"].ToString();
+                            }
+                            
+                        }
+                        cellCol7Dic.Add(secondItem, (cRow + i+ resultIndex).ToString() + "," + (cCol + 1).ToString());
                     }
-                    incr = incr + secondItemsCount - 1;
+                    incr = incr + secondItemsCount+ resultIndex - 1;
                 }
             }
 

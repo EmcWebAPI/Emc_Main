@@ -182,8 +182,6 @@ namespace EmcReportWebApi.Common
                         //备注列拆分
                         table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
                     }
-                        
-                    
                     table.Cell(cRow, cCol).Split(secondItemsCount, 2);
 
                     if (secondItemsCount != 1)
@@ -217,7 +215,12 @@ namespace EmcReportWebApi.Common
                                 resultCell.Split(2, resultCount);
                                 for (int k = 0; k < resultCount; k++)
                                 {
-                                    table.Cell(cRow + i+ resultIndex + k, cCol + 2 ).Range.Text = "#"+(k+1).ToString();
+                                    //序号列的单元格
+                                    Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
+                                    //设置序号列宽度
+                                    xuhaoCell.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
+                                    xuhaoCell.PreferredWidth = 20f;
+                                    xuhaoCell.Range.Text = "#"+(k+1).ToString();
                                     table.Cell(cRow+i+ resultIndex + k,cCol+2+1).Range.Text= resultList[k]["result"].ToString();
                                     remarkCol = 5;
                                 }

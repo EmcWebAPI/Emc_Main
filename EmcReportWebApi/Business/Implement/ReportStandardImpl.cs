@@ -106,31 +106,25 @@ namespace EmcReportWebApi.Business.Implement
             {
                 //首页内容 object
                 JObject firstPage = (JObject)mainObj["firstPage"];
+                //样品编号
+                string ypbh = firstPage["ypbh"]!=null?firstPage["ypbh"].ToString():"" ;
+                //报告编号
+                string reportStr = firstPage["bgbh"] != null ? firstPage["bgbh"].ToString() : "";
                 result = InsertContentToWord(wordUtil, firstPage);
 
                 if (!result.Equals("保存成功"))
                 {
                     return result;
                 }
-                //报告编号
-                string[] reportArray = reportId.Split('-');
-                string reportStr = "国医检(磁)字QW2018第698号";
-                if (reportArray.Length >= 2)
-                {
-                    reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
-                }
-                wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
-
-
+                
                 //先画附表再画标准内容
                 //附表测试数据
                 JArray attachArray = (JArray)mainObj["attach"];
-                this.AddAttachTable(wordUtil, "附表202", attachArray, "standard");
+                this.AddAttachTable(wordUtil, attachArray, "standard");
 
                 //标准内容
                 JArray standardArray = (JArray)mainObj["standard"];
                 wordUtil.TableSplit(standardArray, "standard");
-
                 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
@@ -141,10 +135,10 @@ namespace EmcReportWebApi.Business.Implement
 
                 //替换页眉内容
                 int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
-
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
                 Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("reportId", reportStr);
+                valuePairs.Add("bgbh", reportStr);//报告编号
+                valuePairs.Add("ypbh", ypbh);//样品编号
                 valuePairs.Add("page", pageCount.ToString());
                 replaceDic.Add(3, valuePairs);//替换页眉
 
@@ -240,25 +234,34 @@ namespace EmcReportWebApi.Business.Implement
         }
 
 
-        private string AddAttachTable(WordUtil wordUtil,string title,JArray array,string bookmark) {
-            List<string> list = new List<string>();
+        private string AddAttachTable(WordUtil wordUtil,JArray array,string bookmark) {
+            string result = "";
 
-            foreach (JObject item in array)
+            for (int i = array.Count-1; i >=0 ; i--)
             {
-                string jTemp = "";
-                int iTemp = 0;
-                foreach (var item2 in item)
-                {
-                    iTemp++;
-                    if (iTemp != item.Count)
-                        jTemp += (item2.Value + ",");
-                    else
-                        jTemp += item2.Value;
-                }
-                list.Add(jTemp);
-            }
+                string title = array[i]["title"].ToString();
+                JArray attachList = (JArray)array[i]["list"];
 
-           return wordUtil.AddAttachTable(title, list, bookmark);
+                List<string> list = new List<string>();
+
+                foreach (JObject attachItem in attachList)
+                {
+                    string jTemp = "";
+                    int iTemp = 0;
+                    foreach (var item2 in attachItem)
+                    {
+                        iTemp++;
+                        if (iTemp != attachItem.Count)
+                            jTemp += (item2.Value + ",");
+                        else
+                            jTemp += item2.Value;
+                    }
+                    list.Add(jTemp);
+                }
+
+                result = wordUtil.AddAttachTable(title, list, bookmark);
+            }
+            return result;
         }
 
         /// <summary>

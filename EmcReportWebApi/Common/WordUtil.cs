@@ -171,7 +171,8 @@ namespace EmcReportWebApi.Common
                 string c = item.Value;
                 int cRow = int.Parse(c.Split(',')[0]) + incr;
                 int cCol = int.Parse(c.Split(',')[1]);
-
+                if (j["list"] == null)
+                    continue;
                 JArray secondItems = (JArray)j["list"];
                 int secondItemsCount = secondItems.Count;
                 if (secondItemsCount > 0)
@@ -193,11 +194,15 @@ namespace EmcReportWebApi.Common
 
                     //结果有拆分的
                     int resultIndex = 0;
-                    //备注列标识 是否有加列
-                    int remarkCol = 4;
+
+                    //是否有加列
+                    int remarkColIndex = 4;
 
                     for (int i = 0; i < secondItemsCount; i++)
                     {
+                        //备注列标识 是否有加列
+                        int remarkCol = 4;
+
                         Cell tempCell = table.Cell(cRow + i+resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
                         tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
@@ -205,14 +210,14 @@ namespace EmcReportWebApi.Common
                             table.Cell(cRow + i + resultIndex, cCol + remarkCol).Range.Text = secondItems[i]["reMark"].ToString();
                         }
                         //检验结果
-                        if (secondItems[i]["controls"] != null && !secondItems[i]["controls"].Equals(""))
+                        if (secondItems[i]["controls"] != null && !secondItems[i]["controls"].Equals("")&& (secondItems[i]["list"]==null||((JArray)secondItems[i]["list"]).Count==0))
                         {
                             Cell resultCell = table.Cell(cRow + i+ resultIndex, cCol + 2);
                             JArray resultList = JArray.Parse(secondItems[i]["controls"].ToString());
                             int resultCount = resultList.Count;
                             if (resultCount > 1)
                             {
-                                resultCell.Split(2, resultCount);
+                                resultCell.Split(resultCount, 2);
                                 for (int k = 0; k < resultCount; k++)
                                 {
                                     //序号列的单元格
@@ -222,7 +227,7 @@ namespace EmcReportWebApi.Common
                                     xuhaoCell.PreferredWidth = 20f;
                                     xuhaoCell.Range.Text = "#"+(k+1).ToString();
                                     table.Cell(cRow+i+ resultIndex + k,cCol+2+1).Range.Text= resultList[k]["result"].ToString();
-                                    remarkCol = 5;
+                                    remarkColIndex = 5;
                                 }
                                 resultIndex= resultIndex + resultCount - 1;
                             }

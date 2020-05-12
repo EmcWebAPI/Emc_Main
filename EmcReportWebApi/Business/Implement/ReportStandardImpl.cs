@@ -30,6 +30,7 @@ namespace EmcReportWebApi.Business.Implement
             Task<ReportResult<string>> task = new Task<ReportResult<string>>(() => CreateReportStandardAsync(para));
             task.Start();
             ReportResult<string> result = task.Result;
+            //ReportResult<string> result= SetReportResult<string>(string.Format("报告生成中......"), true, content);
             return result;
         }
 
@@ -78,16 +79,18 @@ namespace EmcReportWebApi.Business.Implement
             }
             finally
             {
+                //保存参数用作排查bug
+                SaveParams(para);
                 EmcConfig.SemLim.Release();
             }
             return result;
         }
 
         /// <summary>
-        /// 解析json字符串(测试用,方法通了移除)
+        /// 解析json字符串
         /// </summary>
         /// <param name="reportId">报告编号</param>
-        /// <param name="jsonStr">需解析的json字符串</param>
+        /// <param name="mainObj">需解析的json字符串</param>
         /// <param name="reportFilesPath">解压出的报告文件路径</param>
         /// <returns></returns>
         public string JsonToWordStandard(string reportId, JObject mainObj, string reportFilesPath)

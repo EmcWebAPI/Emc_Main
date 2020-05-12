@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 
 namespace EmcReportWebApi.Business.Implement
@@ -118,18 +119,22 @@ namespace EmcReportWebApi.Business.Implement
         /// <summary>
         /// 保存参数文件
         /// </summary>
-        protected void SaveParams(ReportParams para)
+        protected void SaveParams<T>(T para)
         {
-            string dateStr = Guid.NewGuid().ToString();
+            string dateStr = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             string txtPath = string.Format("{0}Log\\Params\\{1}.txt", EmcConfig.CurrRoot, dateStr);
             if (!System.IO.File.Exists(txtPath))
             {
                 //没有则创建这个文件
                 FileStream fs1 = new FileStream(txtPath, FileMode.Create, FileAccess.Write);//创建写入文件      
                 StreamWriter sw = new StreamWriter(fs1);
-                sw.WriteLine("ReportId:" + para.ReportId);
-                sw.WriteLine("ZipFilesUrl:" + para.ZipFilesUrl);
-                sw.WriteLine("JsonStr:" + para.JsonStr);
+
+                PropertyInfo[] propertyInfos= para.GetType().GetProperties();
+                foreach (PropertyInfo item in propertyInfos)
+                {
+                    if (item.GetValue(para) != null)
+                        sw.WriteLine(item.Name + ":" + item.GetValue(para, null).ToString());
+                }
                 sw.Close();
                 fs1.Close();
             }

@@ -36,8 +36,6 @@ namespace EmcReportWebApi.Business.Implement
                 //计时
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                //保存参数用作排查bug
-                SaveParams(para);
                 string reportId = para.ReportId;
                 //获取zip文件 
                 string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
@@ -73,6 +71,8 @@ namespace EmcReportWebApi.Business.Implement
             }
             finally
             {
+                //保存参数用作排查bug
+                SaveParams(para);
                 EmcConfig.SemLim.Release();
             }
             return result;

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EmcReportWebApi.Business.Implement
@@ -116,15 +117,20 @@ namespace EmcReportWebApi.Business.Implement
                 {
                     return result;
                 }
-                
+
                 //先画附表再画标准内容
                 //附表测试数据
-                JArray attachArray = (JArray)mainObj["attach"];
-                this.AddAttachTable(wordUtil, attachArray, "standard");
+                if (mainObj["attach"] != null && !mainObj["attach"].ToString().Equals("")) {
+                    JArray attachArray = (JArray)mainObj["attach"];
+                    this.AddAttachTable(wordUtil, attachArray, "standard");
+                }
 
-                //标准内容
-                JArray standardArray = (JArray)mainObj["standard"];
-                wordUtil.TableSplit(standardArray, "standard");
+                if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
+                {
+                    //标准内容
+                    JArray standardArray = (JArray)mainObj["standard"];
+                    wordUtil.TableSplit(standardArray, "standard");
+                }
                 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
@@ -239,22 +245,40 @@ namespace EmcReportWebApi.Business.Implement
 
             for (int i = array.Count-1; i >=0 ; i--)
             {
-                string title = array[i]["title"].ToString();
+                string title = array[i]["header"].ToString();
                 JArray attachList = (JArray)array[i]["list"];
 
                 List<string> list = new List<string>();
 
-                foreach (JObject attachItem in attachList)
+                JObject titleObj = (JObject)attachList.Where(p => bool.Parse(p["isTitle"].ToString())).FirstOrDefault();
+                string jTemp = "";
+                int iTemp = 0;
+                foreach (var item in titleObj)
                 {
-                    string jTemp = "";
-                    int iTemp = 0;
+                    iTemp++;
+                    if (!item.Key.ToString().Equals("isTitle"))
+                    {
+                        if (iTemp != titleObj.Count)
+                            jTemp += (item.Value + ",");
+                        else
+                            jTemp += item.Value;
+                    }
+                }
+                list.Add(jTemp);
+
+                foreach (JObject attachItem in attachList.Where(p => !bool.Parse(p["isTitle"].ToString())))
+                {
+                    jTemp = "";
+                    iTemp = 0;
                     foreach (var item2 in attachItem)
                     {
                         iTemp++;
-                        if (iTemp != attachItem.Count)
-                            jTemp += (item2.Value + ",");
-                        else
-                            jTemp += item2.Value;
+                        if (!item2.Key.ToString().Equals("isTitle")) {
+                            if (iTemp != attachItem.Count)
+                                jTemp += (item2.Value + ",");
+                            else
+                                jTemp += item2.Value;
+                        }
                     }
                     list.Add(jTemp);
                 }

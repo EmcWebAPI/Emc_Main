@@ -1,4 +1,5 @@
 ﻿using EmcReportWebApi.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace EmcReportWebApi.Business
         /// <param name="jsonStr"></param>
         /// <param name="reportFilesPath"></param>
         /// <returns></returns>
-        string JsonToWordStandard(string reportId, string jsonStr, string reportFilesPath);
+        string JsonToWordStandard(string reportId, JObject jsonStr, string reportFilesPath);
 
         /// <summary>
         /// 生成标准报告方法

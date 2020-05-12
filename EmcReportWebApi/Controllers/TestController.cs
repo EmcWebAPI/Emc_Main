@@ -2,6 +2,8 @@
 using EmcReportWebApi.Business.Implement;
 using EmcReportWebApi.Common;
 using EmcReportWebApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -151,8 +153,9 @@ namespace EmcReportWebApi.Controllers
             string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrRoot, "QT2019-3015.zip");
             //解压zip文件
             ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
-           
-            string result = _reportStandard.JsonToWordStandard("QT2019-3015", jsonStr, reportFilesPath);
+            JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
+
+            string result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
             //string result = "";
             sw.Stop();
             double time1 = (double)sw.ElapsedMilliseconds / 1000;
@@ -203,8 +206,8 @@ namespace EmcReportWebApi.Controllers
                     string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrRoot, "QT2019-3015.zip");
                     //解压zip文件
                     ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
-
-                    string result = _reportStandard.JsonToWordStandard("QT2019-3015", jsonStr, reportFilesPath);
+                    JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
+                    string result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
                     semLim.Release();
                     return result;
                 });

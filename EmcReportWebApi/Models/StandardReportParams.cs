@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -47,7 +48,9 @@ namespace EmcReportWebApi.Models
         ///     <pre>...</pre>]                                                          <br/>
         ///  }                                                    <br/>
         /// </summary>
-        public string JsonStr { get; set; }
+        public JObject JsonObject { get; set; }
+        
+        //public string JsonStr { get; set; }
         
     }
 }

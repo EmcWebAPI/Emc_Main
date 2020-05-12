@@ -62,7 +62,7 @@ namespace EmcReportWebApi.Business.Implement
                 //解压zip文件
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
-                string content = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId,para.JsonStr, reportFilesPath);
+                string content = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId,para.JsonObject, reportFilesPath);
                 //string content = JsonToWordStandardNew(reportId.Equals("") ? "QW2018-698" : reportId, para.ContractId, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
@@ -90,10 +90,10 @@ namespace EmcReportWebApi.Business.Implement
         /// <param name="jsonStr">需解析的json字符串</param>
         /// <param name="reportFilesPath">解压出的报告文件路径</param>
         /// <returns></returns>
-        public string JsonToWordStandard(string reportId, string jsonStr, string reportFilesPath)
+        public string JsonToWordStandard(string reportId, JObject mainObj, string reportFilesPath)
         {
             //解析json字符串
-            JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
+           // JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
             string outfileName = string.Format("StandardReport{0}.docx", Guid.NewGuid().ToString());//输出文件名称
             string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
             string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件

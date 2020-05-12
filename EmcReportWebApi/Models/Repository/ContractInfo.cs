@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace EmcReportWebApi.Models.Repository
 {
@@ -18,7 +15,13 @@ namespace EmcReportWebApi.Models.Repository
 
     public class ContractData
     {
+
         #region 报告用
+        /// <summary>
+        /// bgbh 报告编号
+        /// </summary>
+        public string ReportCode { get; set; }
+
         /// <summary>
         /// "main_wtf" 委托方
         /// </summary>
@@ -64,15 +67,48 @@ namespace EmcReportWebApi.Models.Repository
         /// </summary>
         public string SamplingAddress { get; set; }
 
+
+        private string _samplingDate;
         /// <summary>
         /// "cyrq" 抽样日期
         /// </summary>
-        public string SamplingDate { get; set; }
+        public string SamplingDate
+        {
+            get
+            {
+                DateTime dtTime;
+                if (DateTime.TryParse(_samplingDate, out dtTime))
+                {
+                    return dtTime.ToString("yyyy年MM月dd日");
+                }
+                else
+                {
+                    return _samplingDate;
+                }
+            }
+            set { _samplingDate = value; }
+        }
 
+        private string _sampleReceiptDate;
         /// <summary>
         /// "dyrq" 到样日期
         /// </summary>
-        public string SampleReceiptDate { get; set; }
+        public string SampleReceiptDate
+        {
+            get {
+                DateTime dtTime;
+                if (DateTime.TryParse(_sampleReceiptDate, out dtTime))
+                {
+                    return dtTime.ToString("yyyy年MM月dd日");
+                }
+                else
+                {
+                    return _sampleReceiptDate;
+                }
+             }
+            set { _sampleReceiptDate = value; }
+        }
+
 
         /// <summary>
         /// "jyxm" 检验项目
@@ -94,10 +130,26 @@ namespace EmcReportWebApi.Models.Repository
         /// </summary>
         public string SampleNumber { get; set; }
 
+        private string _sampleProductionDate;
         /// <summary>
         ///  "scrq" 生产日期
         /// </summary>
-        public string SampleProductionDate { get; set; }
+        public string SampleProductionDate
+        {
+            get {
+                DateTime dtTime;
+                if (DateTime.TryParse(_sampleProductionDate, out dtTime))
+                {
+                    return dtTime.ToString("yyyy年MM月dd日");
+                }
+                else
+                {
+                    return _sampleProductionDate;
+                }
+            }
+            set { _sampleProductionDate = value; }
+        }
+
 
         /// <summary>
         /// "ypsl" /抽样数量

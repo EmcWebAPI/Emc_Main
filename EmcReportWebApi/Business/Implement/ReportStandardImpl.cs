@@ -27,7 +27,6 @@ namespace EmcReportWebApi.Business.Implement
         /// <returns></returns>
         public ReportResult<string> CreateReportStandard(StandardReportParams para)
         {
-
             Task<ReportResult<string>> task = new Task<ReportResult<string>>(() => CreateReportStandardAsync(para));
             task.Start();
             ReportResult<string> result = task.Result;
@@ -63,8 +62,8 @@ namespace EmcReportWebApi.Business.Implement
                 //解压zip文件
                 ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
-                //string content = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : para.JsonStr, reportFilesPath);
-                string content = JsonToWordStandardNew(reportId.Equals("") ? "QW2018-698" : reportId, para.ContractId, reportFilesPath);
+                string content = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId,para.JsonStr, reportFilesPath);
+                //string content = JsonToWordStandardNew(reportId.Equals("") ? "QW2018-698" : reportId, para.ContractId, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
@@ -106,7 +105,8 @@ namespace EmcReportWebApi.Business.Implement
             using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
             {
                 //首页内容 object
-                JObject firstPage = (JObject)mainObj["firstPage"];
+                ContractData contractInfo = mainObj["firstPage"].ToObject<ContractData>();
+                JObject firstPage = ContractDataToJObject(contractInfo);
                 //样品编号
                 string ypbh = firstPage["ypbh"]!=null?firstPage["ypbh"].ToString():"" ;
                 //报告编号
@@ -314,6 +314,24 @@ namespace EmcReportWebApi.Business.Implement
 
                 var property = contractInfo.Data.GetType().GetProperty(value);
                 string obj = (property == null || property.GetValue(contractInfo.Data, null) == null) ? "" : contractInfo.Data.GetType().GetProperty(value).GetValue(contractInfo.Data, null).ToString();
+                jObject.Add(key, obj);
+            }
+            return jObject;
+        }
+
+        /// <summary>
+        /// 合同信息转成jobject供报告使用
+        /// </summary>
+        private JObject ContractDataToJObject(ContractData contractData)
+        {
+            JObject jObject = new JObject();
+            foreach (var item in EmcConfig.ContractToJObject)
+            {
+                string key = item.Key;
+                string value = item.Value;
+
+                var property = contractData.GetType().GetProperty(value);
+                string obj = (property == null || property.GetValue(contractData, null) == null) ? "" : contractData.GetType().GetProperty(value).GetValue(contractData, null).ToString();
                 jObject.Add(key, obj);
             }
             return jObject;

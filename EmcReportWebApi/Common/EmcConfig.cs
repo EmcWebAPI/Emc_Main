@@ -122,6 +122,7 @@ namespace EmcReportWebApi.Common
         /// 合同内容对应的书签
         /// </summary>
         public static Dictionary<string, string> ContractToJObject = new Dictionary<string, string>() {
+            { "bgbh","ReportCode" },
             { "main_wtf","ContractClient"},
             { "main_jylb","DetectType"},
             { "main_ypmc","SampleName"},

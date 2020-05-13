@@ -46,25 +46,25 @@ namespace EmcReportWebApi.Business.Implement
                 //计时
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                string reportId = para.ReportId;
+                string reportId = para.OriginalRecord;
                 //获取zip文件 
                 string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, Guid.NewGuid().ToString());
-                string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + EmcConfig.GetTimestamp(DateTime.Now);
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
                 {
-                    zipUrl = para.ZipFilesUrl;
+                    string zipUrl = para.ZipFilesUrl;
+                    byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(zipUrl, reportZipFilesPath,
+                 int.Parse(DateTime.Now.ToString("hhmmss")));
+                    if (fileBytes.Length <= 0)
+                    {
+                        result = SetReportResult<string>("请求报告文件失败", false, para.OriginalRecord.ToString());
+                        EmcConfig.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.OriginalRecord));
+                        return result;
+                    }
+                    //解压zip文件
+                    ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 }
-                byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(zipUrl, reportZipFilesPath,
-                int.Parse(DateTime.Now.ToString("hhmmss")));
-                if (fileBytes.Length <= 0)
-                {
-                    result = SetReportResult<string>("请求报告文件失败", false, para.ReportId.ToString());
-                    EmcConfig.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.ReportId));
-                    return result;
-                }
-                //解压zip文件
-                ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
+               
                 //生成报告
                 StandardReportResult srr = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId,para.JsonObject, reportFilesPath);
                 //string content = JsonToWordStandardNew(reportId.Equals("") ? "QW2018-698" : reportId, para.ContractId, reportFilesPath);
@@ -75,15 +75,15 @@ namespace EmcReportWebApi.Business.Implement
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, srr.FileName);
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
 
-                this.CallbackReqSuccess(srr.FilePath, srr.ReportCode, result.Message, para.CallbackUrl, para.ReportId, para.ContractId);
+                this.CallbackReqSuccess(srr.FilePath, srr.ReportCode, result.Message, para.CallbackUrl, para.OriginalRecord);
 
             }
             catch (Exception ex)
             {
                 EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
-                string message = string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.ReportId, ex.Message);
+                string message = string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.OriginalRecord, ex.Message);
                 result = SetReportResult<string>(message, false, "");
-                this.CallbackReqFail(message, para.CallbackUrl, para.ReportId, para.ContractId);
+                this.CallbackReqFail(message, para.CallbackUrl, para.OriginalRecord);
                 return result;
             }
             finally
@@ -154,7 +154,8 @@ namespace EmcReportWebApi.Business.Implement
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
                 {
                     JArray yptp = (JArray)mainObj["yptp"];
-                    InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
+                    if(yptp.Count>0)
+                        InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
                 }
 
                 //替换页眉内容
@@ -376,10 +377,9 @@ namespace EmcReportWebApi.Business.Implement
         /// <param name="reportCode">报告编号</param>
         /// <param name="message">生成报告消息</param>
         /// <param name="url">请求路径</param>
-        /// <param name="reportId">报告id</param>
-        /// <param name="contractId">合同id</param>
+        /// <param name="original">原始数据</param>
         /// <returns></returns>
-        private string CallbackReqSuccess(string filePath,string reportCode,string message,string url,string reportId,string contractId) {
+        private string CallbackReqSuccess(string filePath,string reportCode,string message,string url,string original) {
             // string url = @"http://192.168.30.10:9081/hydra/std/readXls";
             //string url = para.CallbackUrl;
             //string reportId = para.ReportId;
@@ -411,12 +411,8 @@ namespace EmcReportWebApi.Business.Implement
                         + "Content-Disposition: form-data; name=\"multipartFile\"; filename=\"" + reportCode + "\"" + Enter + Enter;
 
                 string reportIdStr = Enter + "--" + boundary + Enter
-                      + "Content-Disposition: form-data; name=\"reportId\"" + Enter + Enter
-                      + reportId;
-
-                string contractIdStr = Enter + "--" + boundary + Enter
-                        + "Content-Disposition: form-data; name=\"contractId\"" + Enter + Enter
-                        + contractId;
+                      + "Content-Disposition: form-data; name=\"original\"" + Enter + Enter
+                      + original;
 
                 string statusStr = Enter + "--" + boundary + Enter
                         + "Content-Disposition: form-data; name=\"status\"" + Enter + Enter
@@ -430,8 +426,6 @@ namespace EmcReportWebApi.Business.Implement
                 var fileContentStrByte = Encoding.UTF8.GetBytes(fileContentStr);//fileContent一些名称等信息的二进制（不包含文件本身）
 
                 var reportIdStrByte = Encoding.UTF8.GetBytes(reportIdStr);//reportId所有字符串二进制
-
-                var contractIdStrByte = Encoding.UTF8.GetBytes(contractIdStr);//contractId所有字符串二进制
 
                 var statusStrByte = Encoding.UTF8.GetBytes(statusStr);//contractId所有字符串二进制
                 var messageStrByte = Encoding.UTF8.GetBytes(messageStr);//contractId所有字符串二进制
@@ -451,8 +445,6 @@ namespace EmcReportWebApi.Business.Implement
                 myRequestStream.Write(fileContentByte, 0, fileContentByte.Length);
 
                 myRequestStream.Write(reportIdStrByte, 0, reportIdStrByte.Length);
-
-                myRequestStream.Write(contractIdStrByte, 0, contractIdStrByte.Length);
 
                 myRequestStream.Write(statusStrByte, 0, statusStrByte.Length);
                 myRequestStream.Write(messageStrByte, 0, messageStrByte.Length);
@@ -479,7 +471,7 @@ namespace EmcReportWebApi.Business.Implement
            
         }
 
-        private string CallbackReqFail(string message, string url,string reportId,string contractId) {
+        private string CallbackReqFail(string message, string url,string original) {
 
             try
             {
@@ -489,13 +481,9 @@ namespace EmcReportWebApi.Business.Implement
                 string Enter = "\r\n";
 
                 string reportIdStr = "--" + boundary + Enter
-                        + "Content-Disposition: form-data; name=\"reportId\"" + Enter + Enter
-                        + reportId;
-
-                string contractIdStr = Enter + "--" + boundary + Enter
-                        + "Content-Disposition: form-data; name=\"contractId\"" + Enter + Enter
-                        + contractId;
-
+                        + "Content-Disposition: form-data; name=\"original\"" + Enter + Enter
+                        + original;
+                
                 string statusStr = Enter + "--" + boundary + Enter
                         + "Content-Disposition: form-data; name=\"status\"" + Enter + Enter
                         + false.ToString();
@@ -505,9 +493,7 @@ namespace EmcReportWebApi.Business.Implement
                        + message + Enter + "--" + boundary + "--";
 
                 var reportIdStrByte = Encoding.UTF8.GetBytes(reportIdStr);//reportId所有字符串二进制
-
-                var contractIdStrByte = Encoding.UTF8.GetBytes(contractIdStr);//contractId所有字符串二进制
-
+                
                 var statusStrByte = Encoding.UTF8.GetBytes(statusStr);//contractId所有字符串二进制
                 var messageStrByte = Encoding.UTF8.GetBytes(messageStr);//contractId所有字符串二进制
 
@@ -522,7 +508,6 @@ namespace EmcReportWebApi.Business.Implement
                 #region 将各个二进制 安顺序写入请求流 modelIdStr -> (fileContentStr + fileContent) -> uodateTimeStr -> encryptStr
 
                 myRequestStream.Write(reportIdStrByte, 0, reportIdStrByte.Length);
-                myRequestStream.Write(contractIdStrByte, 0, contractIdStrByte.Length);
                 myRequestStream.Write(statusStrByte, 0, statusStrByte.Length);
                 myRequestStream.Write(messageStrByte, 0, messageStrByte.Length);
 

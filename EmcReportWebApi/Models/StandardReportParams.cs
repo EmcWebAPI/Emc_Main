@@ -9,15 +9,10 @@ namespace EmcReportWebApi.Models
     public class StandardReportParams
     {
         /// <summary>
-        /// 报告ID
+        /// 原始记录(json字符串)
         /// </summary>
-        public string ReportId { get; set; }
-
-        /// <summary>
-        /// 合同ID
-        /// </summary>
-        public string ContractId { get; set; }
-
+        public string OriginalRecord { get; set; }
+        
         /// <summary>
         /// 解压文件请求路径
         /// </summary>

@@ -168,6 +168,7 @@
     <Compile Include="Models\Repository\ContractInfo.cs" />
     <Compile Include="Models\RtfTableInfo.cs" />
     <Compile Include="Models\StandardReportParams.cs" />
+    <Compile Include="Models\StandardReportResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Implement\ReportStandardInfos.cs" />
     <Compile Include="Repository\IReportStandardInfos.cs" />

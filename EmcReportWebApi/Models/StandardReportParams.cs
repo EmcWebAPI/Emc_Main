@@ -19,9 +19,21 @@ namespace EmcReportWebApi.Models
         public string ContractId { get; set; }
 
         /// <summary>
-        /// 文件解压路径
+        /// 解压文件请求路径
         /// </summary>
         public string ZipFilesUrl { get; set; }
+
+        /// <summary>
+        /// 回调函数请求路径  <br/>
+        /// 
+        /// 参数:<br/>
+        /// reportId: 报告id<br/>
+        /// contractId: 合同id<br/>
+        /// status:状态 <br/>
+        /// message:生成报告信息<br/>
+        /// multipartFile:获取文件的key<br/>
+        /// </summary>
+        public string CallbackUrl { get; set; }
 
         /// <summary>
         /// 生成文件的json字符串                                        <br/>

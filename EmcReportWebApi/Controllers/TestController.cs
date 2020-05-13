@@ -7,11 +7,13 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace EmcReportWebApi.Controllers
@@ -36,6 +38,88 @@ namespace EmcReportWebApi.Controllers
         public TestController(IReport report, IReportStandard reportStandard) {
             _report = report;
             _reportStandard = reportStandard;
+        }
+
+
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        [HiddenApi]
+        [HttpPost]
+        public ReportResult<string> UploadFiles()
+        {
+            ReportResult<string> result = new ReportResult<string>();
+            HttpRequest request = HttpContext.Current.Request;
+            HttpFileCollection filelist = HttpContext.Current.Request.Files;
+
+            string reportId = request["reportId"];
+            string contractId = request["contractId"];
+            string status = request["status"];
+            string message = request["message"];
+
+            //string message = request.Params["message"];
+            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
+            if (filelist != null && filelist.Count > 0)
+            {
+                for (int i = 0; i < filelist.Count; i++)
+                {
+                    try
+                    {
+                        HttpPostedFile file = filelist[i];
+                        string filename = file.FileName;
+                        if (filename.Equals(""))
+                        {
+                            EmcConfig.ErrorLog.Error("上传失败:上传的文件信息不存在！");
+                            result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
+                        }
+                        string filePath = currRoot + "\\Files\\Upload\\";
+                        string forceName = "upload";
+                        string extendName = FilterExtendName(filename);
+                        string templateFileName = forceName + DateTime.Now.ToString("yyyyMMddHHmmssfff") + extendName;
+
+                        DirectoryInfo di = new DirectoryInfo(filePath);
+                        if (!di.Exists) { di.Create(); }
+
+                        file.SaveAs(filePath + templateFileName);
+                        EmcConfig.InfoLog.Info(result);
+                        result = SetReportResult<string>(string.Format("上传成功:{0}", filename), true, templateFileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        EmcConfig.ErrorLog.Error(ex.Message, ex);
+                        result = SetReportResult<string>(string.Format("上传文件写入失败：{0}", ex.Message), false, "");
+                    }
+                }
+            }
+            else
+            {
+                EmcConfig.ErrorLog.Error("上传失败:上传的文件信息不存在！");
+                result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
+            }
+
+            return result;
+        }
+
+        private static string FilterExtendName(string fileFullName)
+        {
+            int index = fileFullName.LastIndexOf('.');
+            string extendName = fileFullName.Substring(index, fileFullName.Length - index);
+
+            return extendName;
+        }
+
+
+        /// <summary>
+        /// 返回结果参数
+        /// </summary>
+        private ReportResult<T> SetReportResult<T>(string message, bool submitResult, T content)
+        {
+            Type type = content.GetType();
+            ReportResult<T> reportResult = new ReportResult<T>();
+            reportResult.Message = message;
+            reportResult.SumbitResult = submitResult;
+            reportResult.Content = content;
+            return reportResult;
         }
 
         /// <summary>
@@ -159,11 +243,11 @@ namespace EmcReportWebApi.Controllers
             ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
 
-            string result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
+            StandardReportResult result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
             //string result = "";
             sw.Stop();
             double time1 = (double)sw.ElapsedMilliseconds / 1000;
-            return result + ":" + time1.ToString();
+            return result.FileName + ":" + time1.ToString();
         }
 
         /// <summary>
@@ -212,9 +296,9 @@ namespace EmcReportWebApi.Controllers
                     //解压zip文件
                     ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                     JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-                    string result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
+                    StandardReportResult result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
                     semLim.Release();
-                    return result;
+                    return result.FileName;
                 });
                // EmcConfig.KillWordProcess();
 
@@ -227,6 +311,7 @@ namespace EmcReportWebApi.Controllers
 
 
         }
+
         
     }
 }

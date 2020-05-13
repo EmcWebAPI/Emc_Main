@@ -44,6 +44,7 @@ namespace EmcReportWebApi.Controllers
         /// <param name="para"></param>
         /// <returns></returns>
         [HttpPost]
+        [HiddenApi]
         [CompressContentAttribute]
         public IHttpActionResult CreateReportTest1(ReportParams para)
         {
@@ -94,6 +95,7 @@ namespace EmcReportWebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [HiddenApi]
         public string Test()
         {
             Stopwatch sw = new Stopwatch();
@@ -118,6 +120,7 @@ namespace EmcReportWebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [HiddenApi]
         public string Test2()
         {
             Stopwatch sw = new Stopwatch();
@@ -142,6 +145,7 @@ namespace EmcReportWebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [HiddenApi]
         public string Test3()
         {
             Stopwatch sw = new Stopwatch();
@@ -167,6 +171,7 @@ namespace EmcReportWebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [HiddenApi]
         public string Test4() {
 
             //for (int i = 0; i < 20; i++)

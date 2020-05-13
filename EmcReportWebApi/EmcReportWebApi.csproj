@@ -150,6 +150,7 @@
     <Compile Include="Common\CompressContent.cs" />
     <Compile Include="Common\CompressContentAttribute.cs" />
     <Compile Include="Common\FileUtil.cs" />
+    <Compile Include="Common\HiddenApiFilter.cs" />
     <Compile Include="Common\SyncHttpHelper.cs" />
     <Compile Include="Common\MD5Helper.cs" />
     <Compile Include="Common\EmcConfig.cs" />

@@ -35,6 +35,7 @@ namespace EmcReportWebApi.Controllers
         /// 默认输出
         /// </summary>
         /// <returns></returns>
+        [HiddenApi]
         [HttpGet]
         public IEnumerable<string> Get()
         {

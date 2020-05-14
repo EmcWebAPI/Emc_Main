@@ -122,37 +122,37 @@ namespace EmcReportWebApi.Common
         /// 合同内容对应的书签
         /// </summary>
         public static Dictionary<string, string> ContractToJObject = new Dictionary<string, string>() {
-            { "bgbh","ReportCode" },
-            { "main_wtf","ContractClient"},
-            { "main_jylb","DetectType"},
-            { "main_ypmc","SampleName"},
-            { "main_xhgg","SampleModelSpecification"},
-            { "ypmc","SampleName"},
-            { "sb",""},
-            { "wtf","ContractClient"},
-            { "wtfdz","AddressOrIdCard"},
-            { "scdw","ManufactureCompany"},
-            { "sjdw","DetectCompany"},
-            { "cydw","SamplingCompany"},
-            { "cydd","SamplingAddress"},
-            { "cyrq","SamplingDate"},
-            { "dyrq","SampleReceiptDate"},
-            { "jyxm","Content"},
-            { "jyyj","SampleTestBasis"},
-            { "jyjl",""},
-            { "bz","TestRemark"},
-            { "ypbh","SampleNumber"},
-            { "xhgg","SampleModelSpecification"},
-            { "jylb","DetectType"},
-            { "cpbhph","SampleModelSpecification"},
-            { "cydbh","SamplingNumber"},
-            { "scrq","SampleProductionDate"},
-            { "ypsl","SampleQuantity"},
-            { "cyjs","SamplingBase"},
-            { "jydd","AfterTreatmentMethod"},
-            { "jyrq",""},
-            { "ypms","SampleTrademark"},
-            { "xhgghqtsm","TestRemark"}
+            { "bgbh","ReportCode" },//报告编号
+            { "main_wtf","ContractClient"},//委托方
+            { "main_jylb","DetectType"},//检验类别
+            { "main_ypmc","SampleName"},//样品名称
+            { "main_xhgg","SampleModelSpecification"},//型号规格
+            { "ypmc","SampleName"},//样品名称
+            { "sb","SampleTrademark"},//商标
+            { "wtf","ContractClient"},//委托方
+            { "wtfdz","AddressOrIdCard"},//委托方地址
+            { "scdw","ManufactureCompany"},//生产单位
+            { "sjdw","DetectCompany"},//受检单位
+            { "cydw","SamplingCompany"},//抽样单位
+            { "cydd","SamplingAddress"},//抽样地点
+            { "cyrq","SamplingDate"},//抽样日期
+            { "dyrq","SampleReceiptDate"},//到样日期
+            { "jyxm","Content"},//检验项目
+            { "jyyj","SampleTestBasis"},//检验依据
+            { "jyjl",""},//检验结论
+            { "bz","TestRemark"},//备注
+            { "ypbh","SampleNumber"},//样品编号
+            { "xhgg","SampleModelSpecification"},//型号规格
+            { "jylb","DetectType"},//检验类别
+            { "cpbhph","SampleModelSpecification"},//产品编号/批号
+            { "cydbh","SamplingNumber"},//抽样单编号
+            { "scrq","SampleProductionDate"},//生产日期
+            { "ypsl","SampleQuantity"},//样品数量
+            { "cyjs","SamplingBase"},//抽样技术
+            { "jydd","AfterTreatmentMethod"},//检验地点
+            { "jyrq",""},//检验日期
+            { "ypms",""},//样品描述
+            { "xhgghqtsm",""}//型号规格及其他说明
         };
         #endregion
     }

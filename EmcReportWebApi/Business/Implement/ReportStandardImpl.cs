@@ -32,8 +32,8 @@ namespace EmcReportWebApi.Business.Implement
         {
             Task<ReportResult<string>> task = new Task<ReportResult<string>>(() => CreateReportStandardAsync(para));
             task.Start();
-            ReportResult<string> result = task.Result;
-            //ReportResult<string> result= SetReportResult<string>(string.Format("报告生成中......"), true, content);
+            //ReportResult<string> result = task.Result;
+            ReportResult<string> result= SetReportResult<string>(string.Format("报告生成中......"), true, para.OriginalRecord);
             return result;
         }
 
@@ -385,7 +385,7 @@ namespace EmcReportWebApi.Business.Implement
             //string reportId = para.ReportId;
             //string contractId = para.ContractId;
 
-            //string fileName = reportCode;
+            string fileName = reportCode+".docx";
 
             try
             {
@@ -408,7 +408,7 @@ namespace EmcReportWebApi.Business.Implement
 
                 string fileContentStr = "--" + boundary + Enter
                         + "Content-Type:application/octet-stream" + Enter
-                        + "Content-Disposition: form-data; name=\"multipartFile\"; filename=\"" + reportCode + "\"" + Enter + Enter;
+                        + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName + "\"" + Enter + Enter;
 
                 string reportIdStr = Enter + "--" + boundary + Enter
                       + "Content-Disposition: form-data; name=\"original\"" + Enter + Enter

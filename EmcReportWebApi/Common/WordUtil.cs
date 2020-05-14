@@ -349,6 +349,22 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
+        /// <summary>
+        /// 移除图片和说明
+        /// </summary>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        public string RemovePhotoTable(string bookmark) {
+            Range range = GetBookmarkRank(_currentWord, bookmark);
+            Table table = range.Tables[1];
+            table.Select();
+            table.Delete();
+            _wordApp.Selection.TypeBackspace();
+            _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
+            _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
+            return "成功";
+        }
+
 
 
         #endregion

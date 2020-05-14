@@ -149,13 +149,19 @@ namespace EmcReportWebApi.Business.Implement
                     JArray standardArray = (JArray)mainObj["standard"];
                     wordUtil.TableSplit(standardArray, "standard");
                 }
-                
+
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
                 {
                     JArray yptp = (JArray)mainObj["yptp"];
-                    if(yptp.Count>0)
+                    if (yptp.Count > 0)
                         InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
+                    else {
+                        wordUtil.RemovePhotoTable("photo");
+                    }
+                }
+                else {
+                    wordUtil.RemovePhotoTable("photo");
                 }
 
                 //替换页眉内容

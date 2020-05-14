@@ -111,8 +111,8 @@ namespace EmcReportWebApi.Common
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
-            if (jObject["comment"] != null && !jObject["comment"].Equals(""))
-                table.Cell(2, 6).Range.Text = jObject["comment"].ToString();
+            if (jObject["testResult"] != null && !jObject["testResult"].Equals(""))
+                table.Cell(2, 6).Range.Text = jObject["testResult"].ToString();
             //备注
             if (jObject["reMark"] != null && !jObject["reMark"].Equals(""))
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
@@ -129,8 +129,7 @@ namespace EmcReportWebApi.Common
                 {
                     table.Cell(2 + i, 3).Range.Text = firstItems[i]["stdItmNo"].ToString();
                 }
-
-
+                
                 //标准要求
                 Cell cell4 = table.Cell(2, 4);
                 Cell cell5 = table.Cell(2, 5);
@@ -177,6 +176,7 @@ namespace EmcReportWebApi.Common
                 int secondItemsCount = secondItems.Count;
                 if (secondItemsCount > 0)
                 {
+
                     if (secondItemsCount != 1) {
                         //检验结果列拆分
                         table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
@@ -201,13 +201,21 @@ namespace EmcReportWebApi.Common
                     for (int i = 0; i < secondItemsCount; i++)
                     {
                         //备注列标识 是否有加列
-                        int remarkCol = 4;
+                        int remarkCol = secondItemsCount != 1?4:2;
 
                         Cell tempCell = table.Cell(cRow + i+resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
                         tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
                         if (secondItems[i]["reMark"] != null && !secondItems[i]["reMark"].Equals("")) {
-                            table.Cell(cRow + i + resultIndex, cCol + remarkCol).Range.Text = secondItems[i]["reMark"].ToString();
+                            try
+                            {
+                                table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItems[i]["reMark"].ToString();
+                            }
+                            catch (Exception ex)
+                            {
+                                table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItems[i]["reMark"].ToString();
+                            }
+                            
                         }
                         //检验结果
                         if (secondItems[i]["controls"] != null && !secondItems[i]["controls"].Equals("")&& (secondItems[i]["list"]==null||((JArray)secondItems[i]["list"]).Count==0))

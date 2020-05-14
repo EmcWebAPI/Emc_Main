@@ -140,7 +140,7 @@ namespace EmcReportWebApi.Common
             { "jyxm","Content"},//检验项目
             { "jyyj","SampleTestBasis"},//检验依据
             { "jyjl",""},//检验结论
-            { "bz",""},//备注
+            { "bz","TestRemark"},//备注
             { "ypbh","SampleNumber"},//样品编号
             { "xhgg","SampleModelSpecification"},//型号规格
             { "jylb","DetectType"},//检验类别
@@ -152,7 +152,7 @@ namespace EmcReportWebApi.Common
             { "jydd","AfterTreatmentMethod"},//检验地点
             { "jyrq",""},//检验日期
             { "ypms",""},//样品描述
-            { "xhgghqtsm","TestRemark"}//型号规格及其他说明
+            { "xhgghqtsm",""}//型号规格及其他说明
         };
         #endregion
     }

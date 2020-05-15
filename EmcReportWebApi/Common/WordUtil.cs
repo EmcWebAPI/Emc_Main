@@ -136,6 +136,10 @@ namespace EmcReportWebApi.Common
                 cell4.Split(firstItemsCount, 1);
                 cell5.Split(firstItemsCount, 1);
 
+                //拆分备注列
+                Cell cell7 = table.Cell(2, 7);
+                cell7.Split(firstItemsCount, 1);
+
                 Dictionary<JObject, string> cellCol4Dic = new Dictionary<JObject, string>();
                 for (int i = 0; i < firstItemsCount; i++)
                 {

@@ -114,6 +114,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Document\20200514183752926.txt" />
+    <Content Include="Document\20200515104103476.txt" />
     <Content Include="Files\ReportFiles\Test\image1.jpg" />
     <Content Include="Files\ReportFiles\Test\image2.jpg" />
     <Content Include="Files\ReportFiles\Test\index1.html" />

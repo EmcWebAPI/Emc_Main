@@ -187,20 +187,24 @@ namespace EmcReportWebApi.Common
                         //备注列拆分
                         table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
                     }
-                    table.Cell(cRow, cCol).Split(secondItemsCount, 2);
 
+                    table.Cell(cRow, cCol).Select();
+                    table.Cell(cRow, cCol).Split(secondItemsCount, 2);
+                    for (int i = 0; i < secondItemsCount; i++)
+                    {
+                        table.Cell(cRow + i, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);
+
+                        //table.Cell(cRow+i, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
+                        //table.Cell(cRow+i, cCol).PreferredWidth = 40f;
+                    }
+                    
                     if (secondItemsCount != 1)
                         table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
                     // table.Cell(cRow, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
-
-                    table.Cell(cRow, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
-                    table.Cell(cRow, cCol).PreferredWidth = 40f;
-
+                    
                     //结果有拆分的
                     int resultIndex = 0;
-
-                    //是否有加列
-                    int remarkColIndex = 4;
+                    
 
                     for (int i = 0; i < secondItemsCount; i++)
                     {
@@ -229,17 +233,23 @@ namespace EmcReportWebApi.Common
                             int resultCount = resultList.Count;
                             if (resultCount > 1)
                             {
+                                resultCell.Select();
                                 resultCell.Split(resultCount, 2);
                                 for (int k = 0; k < resultCount; k++)
                                 {
                                     //序号列的单元格
                                     Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
+                                    xuhaoCell.SetWidth(25f, WdRulerStyle.wdAdjustFirstColumn);
                                     //设置序号列宽度
-                                    xuhaoCell.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
-                                    xuhaoCell.PreferredWidth = 20f;
-                                    xuhaoCell.Range.Text = "#"+(k+1).ToString();
-                                    table.Cell(cRow+i+ resultIndex + k,cCol+2+1).Range.Text= resultList[k]["result"].ToString();
-                                    remarkColIndex = 5;
+                                    //xuhaoCell.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
+                                    //xuhaoCell.PreferredWidth = 25f;
+                                    
+                                }
+                                for (int k = 0; k < resultCount; k++)
+                                {
+                                    Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
+                                    xuhaoCell.Range.Text = "#" + (k + 1).ToString();
+                                    table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1).Range.Text = resultList[k]["result"].ToString();
                                 }
                                 resultIndex= resultIndex + resultCount - 1;
                             }

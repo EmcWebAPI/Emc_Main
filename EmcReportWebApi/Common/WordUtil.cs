@@ -102,7 +102,7 @@ namespace EmcReportWebApi.Common
 
             table.Cell(1, 1).Select();
             _wordApp.Selection.InsertRowsBelow(1);
-
+            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
             // Row newRow = table.Rows[2];
 
             //序号

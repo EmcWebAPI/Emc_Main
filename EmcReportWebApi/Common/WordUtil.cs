@@ -1,8 +1,10 @@
-﻿using Microsoft.Office.Interop.Word;
+﻿using EmcReportWebApi.Models;
+using Microsoft.Office.Interop.Word;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace EmcReportWebApi.Common
 {
@@ -27,9 +29,19 @@ namespace EmcReportWebApi.Common
         {
 
         }
-        public WordUtil(string fileFullName, bool isSaveAs)
+        public WordUtil(string fileFullName)
         {
-            NewApp();
+            if (fileFullName.Equals(""))
+                _currentWord = CreatWord();
+            else
+            {
+                _currentWord = OpenWord(fileFullName);
+            }
+            _outFilePath = fileFullName;
+
+            _isSaveAs = false;
+            _disposed = false;
+            _needWrite = true;
         }
 
         /// <summary>
@@ -58,6 +70,109 @@ namespace EmcReportWebApi.Common
 
         #region 标准报告业务相关
 
+        public int TableSplit(string bookmark)
+        {
+
+
+            //tableRange.Select();
+            //int count = 5;
+            //_wordApp.Selection.GoTo(WdGoToItem.wdGoToPage, WdGoToDirection.wdGoToAbsolute, count);
+            //_wordApp.Selection.GoTo(WdGoToItem.wdGoToLine, WdGoToDirection.wdGoToRelative, 1);
+            ////for (int i = 0; i < 10; i++)
+            ////{
+            ////    _wordApp.Selection.TypeParagraph();
+            ////}
+            //_wordApp.Selection.InsertAfter("111111111111111111111111111111");
+
+
+            try
+            {
+                List<CellInfo> cellList = new List<CellInfo>();
+
+                int pageIndex = 0;
+                Range tableRange = GetBookmarkRank(_currentWord, bookmark);
+                Table table = tableRange.Tables[1];
+                for (int i = 1; i <= table.Range.Paragraphs.Count; i++)
+                {
+                    Range r = table.Range.Paragraphs[i].Range;
+                    if (r.Text.Equals("\r\a"))
+                    {
+                        continue;
+                    }
+
+                    int rowNumber = (int)r.get_Information(WdInformation.wdStartOfRangeRowNumber);
+                    int columnNumber = (int)r.get_Information(WdInformation.wdStartOfRangeColumnNumber);
+                    cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber));
+                    int pageNumber = (int)r.get_Information(WdInformation.wdActiveEndPageNumber);
+                    r.Select();
+                    if (_wordApp.Selection.Bookmarks.Exists("photo"))
+                        break;
+
+
+                    if (pageNumber >= 5 && pageNumber != pageIndex)
+                    {
+                        _wordApp.Selection.SplitTable();
+
+
+                        for (int j = 1; j <= 3; j++)
+                        {
+                            TableContinueContent(table, j, cellList);
+                        }
+
+                        _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
+                        pageIndex = pageNumber;
+                    }
+                }
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+           
+        }
+
+        private void TableContinueContent(Table table, int column,List<CellInfo> list)
+        {
+
+            Range range = table.Range.GoToNext(WdGoToItem.wdGoToTable);
+            Table tableNext = range.Tables[1];
+            if (!tableNext.Cell(1, column).Range.Text.Equals("\r\a"))
+                return;
+            string cellText = "";
+            int inoRow = table.Range.Paragraphs.Count;
+
+            cellText = list.Where(p => p.ColumnNumber == column&&!p.CellText.Equals("\r\a")).OrderByDescending(p => p.RowNumber).First().CellText;
+
+            //cellText = (from Paragraph e in table.Range.Paragraphs
+            //                         where e.Range.get_Information(WdInformation.wdStartOfRangeColumnNumber) ==column &&  !e.Range.Text.Equals("\r\a")
+            //                         select e.Range.Text).ToList().Last();
+            //while (cellText.Equals(""))
+            //{
+            //    inoRow--;
+            //    try
+            //    {
+            //        cellText = table.Cell(inoRow, column).Range.Text;
+            //    }
+            //    catch (Exception)
+            //    {
+
+            //    }
+
+            //}
+
+            if (tableNext.Cell(1, column).Range.Text.Equals("\r\a")) {
+                if (!cellText.Contains("续"))
+                    cellText = cellText.Replace("\r\a", "") + "续";
+                tableNext.Cell(1, column).Range.InsertAfter(cellText);
+            }
+                
+        }
+
         /// <summary>
         /// 表格拆分
         /// </summary>
@@ -79,6 +194,7 @@ namespace EmcReportWebApi.Common
 
                 table.Cell(1, 1).Select();
                 _wordApp.Selection.Rows.HeadingFormat = -1;
+                ClearTableFormat(table);
                 return 1;
             }
             catch (Exception ex)
@@ -88,6 +204,16 @@ namespace EmcReportWebApi.Common
                 throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
 
+        }
+
+        private void ClearTableFormat(Table table)
+        {
+            table.Select();
+            _wordApp.Selection.ParagraphFormat.SpaceBeforeAuto = 0;
+            _wordApp.Selection.ParagraphFormat.SpaceAfterAuto = 0;
+            _wordApp.Selection.ParagraphFormat.AutoAdjustRightIndent = 0;
+            _wordApp.Selection.ParagraphFormat.DisableLineHeightGrid = -1;
+           // _wordApp.Selection.ParagraphFormat.WordWrap = -1;
         }
 
         /// <summary>
@@ -129,7 +255,7 @@ namespace EmcReportWebApi.Common
                 {
                     table.Cell(2 + i, 3).Range.Text = firstItems[i]["stdItmNo"].ToString();
                 }
-                
+
                 //标准要求
                 Cell cell4 = table.Cell(2, 4);
                 Cell cell5 = table.Cell(2, 5);
@@ -181,7 +307,8 @@ namespace EmcReportWebApi.Common
                 if (secondItemsCount > 0)
                 {
 
-                    if (secondItemsCount != 1) {
+                    if (secondItemsCount != 1)
+                    {
                         //检验结果列拆分
                         table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
                         //备注列拆分
@@ -197,38 +324,39 @@ namespace EmcReportWebApi.Common
                         //table.Cell(cRow+i, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
                         //table.Cell(cRow+i, cCol).PreferredWidth = 40f;
                     }
-                    
+
                     if (secondItemsCount != 1)
                         table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
                     // table.Cell(cRow, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
-                    
+
                     //结果有拆分的
                     int resultIndex = 0;
-                    
+
 
                     for (int i = 0; i < secondItemsCount; i++)
                     {
                         //备注列标识 是否有加列
-                        int remarkCol = secondItemsCount != 1?4:2;
+                        int remarkCol = secondItemsCount != 1 ? 4 : 2;
 
-                        Cell tempCell = table.Cell(cRow + i+resultIndex, cCol + 1);
+                        Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
                         tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
-                        if (secondItems[i]["reMark"] != null && !secondItems[i]["reMark"].Equals("")) {
+                        if (secondItems[i]["reMark"] != null && !secondItems[i]["reMark"].Equals(""))
+                        {
                             try
                             {
                                 table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItems[i]["reMark"].ToString();
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                                 table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItems[i]["reMark"].ToString();
                             }
-                            
+
                         }
                         //检验结果
-                        if (secondItems[i]["controls"] != null && !secondItems[i]["controls"].Equals("")&& (secondItems[i]["list"]==null||((JArray)secondItems[i]["list"]).Count==0))
+                        if (secondItems[i]["controls"] != null && !secondItems[i]["controls"].Equals("") && (secondItems[i]["list"] == null || ((JArray)secondItems[i]["list"]).Count == 0))
                         {
-                            Cell resultCell = table.Cell(cRow + i+ resultIndex, cCol + 2);
+                            Cell resultCell = table.Cell(cRow + i + resultIndex, cCol + 2);
                             JArray resultList = JArray.Parse(secondItems[i]["controls"].ToString());
                             int resultCount = resultList.Count;
                             if (resultCount > 1)
@@ -243,7 +371,7 @@ namespace EmcReportWebApi.Common
                                     //设置序号列宽度
                                     //xuhaoCell.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
                                     //xuhaoCell.PreferredWidth = 25f;
-                                    
+
                                 }
                                 for (int k = 0; k < resultCount; k++)
                                 {
@@ -251,16 +379,17 @@ namespace EmcReportWebApi.Common
                                     xuhaoCell.Range.Text = "#" + (k + 1).ToString();
                                     table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1).Range.Text = resultList[k]["result"].ToString();
                                 }
-                                resultIndex= resultIndex + resultCount - 1;
+                                resultIndex = resultIndex + resultCount - 1;
                             }
-                            else {
+                            else
+                            {
                                 resultCell.Range.Text = resultList.First["result"].ToString();
                             }
-                            
+
                         }
-                        cellCol7Dic.Add(secondItem, (cRow + i+ resultIndex).ToString() + "," + (cCol + 1).ToString());
+                        cellCol7Dic.Add(secondItem, (cRow + i + resultIndex).ToString() + "," + (cCol + 1).ToString());
                     }
-                    incr = incr + secondItemsCount+ resultIndex - 1;
+                    incr = incr + secondItemsCount + resultIndex - 1;
                 }
             }
 
@@ -376,7 +505,8 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string RemovePhotoTable(string bookmark) {
+        public string RemovePhotoTable(string bookmark)
+        {
             Range range = GetBookmarkRank(_currentWord, bookmark);
             Table table = range.Tables[1];
             table.Select();
@@ -469,15 +599,17 @@ namespace EmcReportWebApi.Common
         /// <param name="list"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string InsertListToTable(List<string> list, string bookmark) {
+        public string InsertListToTable(List<string> list, string bookmark)
+        {
             Range range = GetBookmarkRank(_currentWord, bookmark);
             Table table = range.Tables[1];
             int tableRowIndex = table.Rows.Count;
             int listCount = list.Count;
             for (int i = 0; i < listCount; i++)
             {
-                
-                if(i!=0){
+
+                if (i != 0)
+                {
                     table.Cell(tableRowIndex, 1).Select();
                     _wordApp.Selection.InsertRowsBelow(1);
                     tableRowIndex++;
@@ -486,7 +618,7 @@ namespace EmcReportWebApi.Common
                 string[] arrStr = list[i].Split(',');
                 for (int j = 0; j < arrStr.Length; j++)
                 {
-                    table.Cell(tableRowIndex,j + 1).Range.Text = arrStr[j];
+                    table.Cell(tableRowIndex, j + 1).Range.Text = arrStr[j];
                 }
             }
 
@@ -786,7 +918,7 @@ namespace EmcReportWebApi.Common
         /// <returns></returns>
         public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
         {
-            string newBookmark = "bookmark" +  DateTime.Now.ToString("yyyyMMddHHmmssfff").ToString();
+            string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff").ToString();
             try
             {
                 Document htmldoc = OpenWord(filePath);

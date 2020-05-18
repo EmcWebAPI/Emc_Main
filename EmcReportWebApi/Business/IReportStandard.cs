@@ -24,14 +24,6 @@ namespace EmcReportWebApi.Business
         /// <param name="reportFilesPath"></param>
         /// <returns></returns>
         StandardReportResult JsonToWordStandard(string reportId, JObject jsonStr, string reportFilesPath);
-
-        /// <summary>
-        /// 生成标准报告方法
-        /// </summary>
-        /// <param name="reportId"></param>
-        /// <param name="contractId"></param>
-        /// <param name="reportFilesPath"></param>
-        /// <returns></returns>
-        string JsonToWordStandardNew(string reportId, string contractId, string reportFilesPath);
+        
     }
 }

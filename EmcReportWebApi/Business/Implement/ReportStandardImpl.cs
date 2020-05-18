@@ -2,7 +2,6 @@
 using EmcReportWebApi.Models;
 using EmcReportWebApi.Models.Repository;
 using EmcReportWebApi.Repository;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,8 @@ namespace EmcReportWebApi.Business.Implement
     public class ReportStandardImpl : ReportBase, IReportStandard
     {
         private IReportStandardInfos _reportStandardInfos;
-        public ReportStandardImpl(IReportStandardInfos reportStandardInfos) {
+        public ReportStandardImpl(IReportStandardInfos reportStandardInfos)
+        {
             _reportStandardInfos = reportStandardInfos;
         }
 
@@ -33,7 +33,7 @@ namespace EmcReportWebApi.Business.Implement
             Task<ReportResult<string>> task = new Task<ReportResult<string>>(() => CreateReportStandardAsync(para));
             task.Start();
             //ReportResult<string> result = task.Result;
-            ReportResult<string> result= SetReportResult<string>(string.Format("报告生成中......"), true, para.OriginalRecord);
+            ReportResult<string> result = SetReportResult<string>(string.Format("报告生成中......"), true, para.OriginalRecord);
             return result;
         }
 
@@ -64,9 +64,9 @@ namespace EmcReportWebApi.Business.Implement
                     //解压zip文件
                     ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 }
-               
+
                 //生成报告
-                StandardReportResult srr = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId,para.JsonObject, reportFilesPath);
+                StandardReportResult srr = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonObject, reportFilesPath);
                 //string content = JsonToWordStandardNew(reportId.Equals("") ? "QW2018-698" : reportId, para.ContractId, reportFilesPath);
                 sw.Stop();
                 //报告生成时间
@@ -75,7 +75,7 @@ namespace EmcReportWebApi.Business.Implement
                 result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, srr.FileName);
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
 
-                this.CallbackReqSuccess(srr.FilePath, srr.ReportCode, result.Message, para.CallbackUrl, para.OriginalRecord);
+                CallbackReqSuccess(srr.FilePath, srr.ReportCode, result.Message, para.CallbackUrl, para.OriginalRecord);
 
             }
             catch (Exception ex)
@@ -83,7 +83,7 @@ namespace EmcReportWebApi.Business.Implement
                 EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
                 string message = string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.OriginalRecord, ex.Message);
                 result = SetReportResult<string>(message, false, "");
-                this.CallbackReqFail(message, para.CallbackUrl, para.OriginalRecord);
+                CallbackReqFail(message, para.CallbackUrl, para.OriginalRecord);
                 return result;
             }
             finally
@@ -108,7 +108,7 @@ namespace EmcReportWebApi.Business.Implement
             StandardReportResult srr = new StandardReportResult();
 
             //解析json字符串
-           // JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
+            // JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
             string outfileName = string.Format("StandardReport{0}.docx", Guid.NewGuid().ToString());//输出文件名称
             string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
             string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
@@ -124,7 +124,7 @@ namespace EmcReportWebApi.Business.Implement
                 ContractData contractInfo = mainObj["firstPage"].ToObject<ContractData>();
                 JObject firstPage = ContractDataToJObject(contractInfo);
                 //样品编号
-                string ypbh = firstPage["ypbh"]!=null?firstPage["ypbh"].ToString():"" ;
+                string ypbh = firstPage["ypbh"] != null ? firstPage["ypbh"].ToString() : "";
                 //报告编号
                 reportStr = firstPage["bgbh"] != null ? firstPage["bgbh"].ToString() : "";
                 result = InsertContentToWord(wordUtil, firstPage);
@@ -138,9 +138,10 @@ namespace EmcReportWebApi.Business.Implement
 
                 //先画附表再画标准内容
                 //附表测试数据
-                if (mainObj["attach"] != null && !mainObj["attach"].ToString().Equals("")) {
+                if (mainObj["attach"] != null && !mainObj["attach"].ToString().Equals(""))
+                {
                     JArray attachArray = (JArray)mainObj["attach"];
-                    this.AddAttachTable(wordUtil, attachArray, "standard");
+                    AddAttachTable(wordUtil, attachArray, "standard");
                 }
 
                 if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
@@ -156,11 +157,13 @@ namespace EmcReportWebApi.Business.Implement
                     JArray yptp = (JArray)mainObj["yptp"];
                     if (yptp.Count > 0)
                         InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
-                    else {
+                    else
+                    {
                         wordUtil.RemovePhotoTable("photo");
                     }
                 }
-                else {
+                else
+                {
                     wordUtil.RemovePhotoTable("photo");
                 }
 
@@ -190,93 +193,12 @@ namespace EmcReportWebApi.Business.Implement
 
             return srr;
         }
-
-        /// <summary>
-        /// 解析生成报告
-        /// </summary>
-        /// <param name="reportId"></param>
-        /// <param name="contractId"></param>
-        /// <param name="reportFilesPath"></param>
-        /// <returns></returns>
-        public string JsonToWordStandardNew(string reportId, string contractId,string reportFilesPath)
+        
+        private string AddAttachTable(WordUtil wordUtil, JArray array, string bookmark)
         {
-
-            //获取合同信息
-            ContractInfo contractInfo = _reportStandardInfos.GetContract(contractId);
-            JObject firstPage = ContractInfoToJObject(contractInfo);
-
-            //获取报告标准内容
-            //JArray standardArray = (JArray)mainObj["standard"];
-
-            //获取附表内容
-            //JArray attachArray = (JArray)mainObj["attach"];
-
-            //获取报告图片内容
-            //JArray imageArray=
-
-            //数据库报告文件相对内容
-
-            string outfileName = string.Format("StandardReport{0}.docx", Guid.NewGuid().ToString());//输出文件名称
-            string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
-            string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
-
-            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + Guid.NewGuid().ToString();
-            filePath = CreateTemplateMiddle(middleDir, "template", filePath);
-            string result = "保存成功1";
-            //生成报告
-            using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
-            {
-                //首页内容 object
-                result = InsertContentToWord(wordUtil, firstPage);
-
-                if (!result.Equals("保存成功"))
-                {
-                    return result;
-                }
-                //报告编号
-                string[] reportArray = reportId.Split('-');
-                string reportStr = "国医检(磁)字QW2018第698号";
-                if (reportArray.Length >= 2)
-                {
-                    reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
-                }
-                wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
-
-                //标准内容
-
-                //wordUtil.TableSplit(standardArray, "standard");
-
-                //样品图片
-                //if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
-                //{
-                //    JArray yptp = (JArray)mainObj["yptp"];
-                //    InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
-                //}
-
-                //替换页眉内容
-                int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
-
-                Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("reportId", reportStr);
-                valuePairs.Add("page", pageCount.ToString());
-                replaceDic.Add(3, valuePairs);//替换页眉
-
-                wordUtil.ReplaceWritten(replaceDic);
-
-            }
-            //删除中间件文件夹
-            DelectDir(middleDir);
-            DelectDir(reportFilesPath);
-
-            return outfileName;
-        }
-
-
-        private string AddAttachTable(WordUtil wordUtil,JArray array,string bookmark) {
             string result = "";
 
-            for (int i = array.Count-1; i >=0 ; i--)
+            for (int i = array.Count - 1; i >= 0; i--)
             {
                 string title = array[i]["header"].ToString();
                 JArray attachList = (JArray)array[i]["list"];
@@ -297,7 +219,8 @@ namespace EmcReportWebApi.Business.Implement
                             jTemp += item.Value;
                     }
                 }
-                list.Add(jTemp);
+                if (!jTemp.Equals(""))
+                    list.Add(jTemp);
 
                 foreach (JObject attachItem in attachList.Where(p => !bool.Parse(p["isTitle"].ToString())))
                 {
@@ -306,7 +229,8 @@ namespace EmcReportWebApi.Business.Implement
                     foreach (var item2 in attachItem)
                     {
                         iTemp++;
-                        if (!item2.Key.ToString().Equals("isTitle")) {
+                        if (!item2.Key.ToString().Equals("isTitle"))
+                        {
                             if (iTemp != attachItem.Count)
                                 jTemp += (item2.Value + ",");
                             else
@@ -333,7 +257,7 @@ namespace EmcReportWebApi.Business.Implement
             }
             return wordUtil.InsertPhotoToWord(list, "photo");
         }
-        
+
         /// <summary>
         /// 合同信息转成jobject供报告使用
         /// </summary>
@@ -374,7 +298,8 @@ namespace EmcReportWebApi.Business.Implement
         /// 报告标准内容
         /// </summary>
         /// <returns></returns>
-        private JArray GetStandardToJArray() {
+        private JArray GetStandardToJArray()
+        {
             JArray ja = new JArray();
 
             return new JArray();
@@ -389,13 +314,14 @@ namespace EmcReportWebApi.Business.Implement
         /// <param name="url">请求路径</param>
         /// <param name="original">原始数据</param>
         /// <returns></returns>
-        private string CallbackReqSuccess(string filePath,string reportCode,string message,string url,string original) {
+        private string CallbackReqSuccess(string filePath, string reportCode, string message, string url, string original)
+        {
             // string url = @"http://192.168.30.10:9081/hydra/std/readXls";
             //string url = para.CallbackUrl;
             //string reportId = para.ReportId;
             //string contractId = para.ContractId;
 
-            string fileName = reportCode+".docx";
+            string fileName = reportCode + ".docx";
 
             try
             {
@@ -475,13 +401,14 @@ namespace EmcReportWebApi.Business.Implement
             }
             catch (Exception ex)
             {
-                throw  new Exception("报告生成成功但是回调函数失败,错误信息:"+ex.Message);
+                throw new Exception("报告生成成功但是回调函数失败,错误信息:" + ex.Message);
             }
 
-           
+
         }
 
-        private string CallbackReqFail(string message, string url,string original) {
+        private string CallbackReqFail(string message, string url, string original)
+        {
 
             try
             {
@@ -493,7 +420,7 @@ namespace EmcReportWebApi.Business.Implement
                 string reportIdStr = "--" + boundary + Enter
                         + "Content-Disposition: form-data; name=\"original\"" + Enter + Enter
                         + original;
-                
+
                 string statusStr = Enter + "--" + boundary + Enter
                         + "Content-Disposition: form-data; name=\"status\"" + Enter + Enter
                         + false.ToString();
@@ -503,7 +430,7 @@ namespace EmcReportWebApi.Business.Implement
                        + message + Enter + "--" + boundary + "--";
 
                 var reportIdStrByte = Encoding.UTF8.GetBytes(reportIdStr);//reportId所有字符串二进制
-                
+
                 var statusStrByte = Encoding.UTF8.GetBytes(statusStr);//contractId所有字符串二进制
                 var messageStrByte = Encoding.UTF8.GetBytes(messageStr);//contractId所有字符串二进制
 
@@ -540,7 +467,7 @@ namespace EmcReportWebApi.Business.Implement
             {
                 throw ex;
             }
-           
+
         }
     }
 }

@@ -102,19 +102,19 @@ namespace EmcReportWebApi.Common
 
                     int rowNumber = (int)r.get_Information(WdInformation.wdStartOfRangeRowNumber);
                     int columnNumber = (int)r.get_Information(WdInformation.wdStartOfRangeColumnNumber);
-                    cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber));
                     int pageNumber = (int)r.get_Information(WdInformation.wdActiveEndPageNumber);
+                    cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber, pageNumber));
                     r.Select();
                     if (_wordApp.Selection.Bookmarks.Exists("photo"))
                         break;
-
-
-                    if (pageNumber >= 5 && pageNumber != pageIndex)
+                    
+                    if (pageNumber >=5 && pageNumber != pageIndex)
                     {
+                        
                         _wordApp.Selection.SplitTable();
 
 
-                        for (int j = 1; j <= 3; j++)
+                        for (int j = 1; j <= 4; j++)
                         {
                             TableContinueContent(table, j, cellList);
                         }
@@ -167,9 +167,9 @@ namespace EmcReportWebApi.Common
 
             if (tableNext.Cell(1, column).Range.Text.Equals("\r\a"))
             {
-                if (!cellText.Contains("续"))
-                    cellText = cellText.Replace("\r\a", "") + "续";
-                tableNext.Cell(1, column).Range.InsertAfter(cellText);
+                if (!cellText.Contains("续")&&column==1)
+                    cellText = "续\r\a"+ cellText.Replace("\r\a", "");
+                tableNext.Cell(1, column).Range.InsertAfter(cellText.Replace("\r\a", ""));
             }
 
         }
@@ -230,6 +230,7 @@ namespace EmcReportWebApi.Common
             table.Cell(1, 1).Select();
             _wordApp.Selection.InsertRowsBelow(1);
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
+            _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
             // Row newRow = table.Rows[2];
 
             //序号

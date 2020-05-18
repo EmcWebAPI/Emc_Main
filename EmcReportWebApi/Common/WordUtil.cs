@@ -107,10 +107,10 @@ namespace EmcReportWebApi.Common
                     r.Select();
                     if (_wordApp.Selection.Bookmarks.Exists("photo"))
                         break;
-                    
-                    if (pageNumber >=5 && pageNumber != pageIndex)
+
+                    if (pageNumber >= 5 && pageNumber != pageIndex)
                     {
-                        
+
                         _wordApp.Selection.SplitTable();
 
 
@@ -167,8 +167,8 @@ namespace EmcReportWebApi.Common
 
             if (tableNext.Cell(1, column).Range.Text.Equals("\r\a"))
             {
-                if (!cellText.Contains("续")&&column==1)
-                    cellText = "续\r\a"+ cellText.Replace("\r\a", "");
+                if (!cellText.Contains("续") && column == 1)
+                    cellText = "续\r\a" + cellText.Replace("\r\a", "");
                 tableNext.Cell(1, column).Range.InsertAfter(cellText.Replace("\r\a", ""));
             }
 
@@ -480,7 +480,7 @@ namespace EmcReportWebApi.Common
                     string content = arrStr[1];
                     if (!fileName.Equals(""))
                     {
-                        InlineShape image = AddPicture(fileName, _currentWord, currentCell.Range, tableWidth - 56, tableWidth - 280);
+                        InlineShape image = AddPictureForStandard(fileName, _currentWord, currentCell.Range, tableWidth - 40, tableWidth - 240);
                     }
                     string templateStr = frontStr + (i + 1).ToString();
                     CreateAndGoToNextParagraph(currentCell.Range, true, false);
@@ -500,6 +500,50 @@ namespace EmcReportWebApi.Common
             }
 
             return "创建成功";
+        }
+
+        private InlineShape AddPictureForStandard(string picFileName, Document doc, Range range, float width = 0, float height = 0)
+        {
+            InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+
+            float imageWidth = image.Width;
+            float imageHeight = image.Height;
+
+            if (width != 0 && imageWidth > width && imageWidth > imageHeight)
+            {
+
+                if (imageHeight * (width / imageWidth) > height)
+                {
+                    image.Height = height;
+                    image.Width = imageWidth * (height / imageHeight);
+                }
+                else {
+                    image.Width = width;
+                    image.Height = imageHeight * (width / imageWidth);
+                }
+               
+            }
+
+            else if (height != 0 && imageHeight > height && imageHeight >= imageWidth) {
+                if (imageWidth * (height / imageHeight) > width)
+                {
+                    image.Width = width;
+                    image.Height = imageHeight * (width / imageWidth);
+                }
+                else {
+                    image.Height = height;
+                    image.Width = imageWidth * (height / imageHeight);
+                }
+                
+            }
+
+
+            //if (width != 0 && height != 0)
+            //{
+            //    image.Width = width;
+            //    image.Height = height;
+            //}
+            return image;
         }
 
         /// <summary>

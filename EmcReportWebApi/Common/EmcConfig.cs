@@ -6,6 +6,7 @@
 using EmcReportWebApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -38,7 +39,7 @@ namespace EmcReportWebApi.Common
         /// <summary>
         /// 线程池任务信号量
         /// </summary>
-        public static SemaphoreSlim SemLim = new SemaphoreSlim(4);
+        public static SemaphoreSlim SemLim = new SemaphoreSlim(int.Parse(ConfigurationManager.AppSettings["TaskCount"].ToString()));
 
         /// <summary>
         /// 获取时间戳

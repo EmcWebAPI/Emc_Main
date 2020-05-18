@@ -502,6 +502,9 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
+        /// <summary>
+        /// 判断图片大小
+        /// </summary>
         private InlineShape AddPictureForStandard(string picFileName, Document doc, Range range, float width = 0, float height = 0)
         {
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);

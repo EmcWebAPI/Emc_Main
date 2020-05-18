@@ -401,7 +401,7 @@ namespace EmcReportWebApi.Common
         /// <summary>
         /// 添加附表
         /// </summary>
-        public string AddAttachTable(string title, List<string> list, string bookmark)
+        public string AddAttachTable(string title, JArray array, string bookmark)
         {
             try
             {
@@ -414,23 +414,27 @@ namespace EmcReportWebApi.Common
 
                 int rowIndex = 2;
 
-                foreach (var item in list)
+                for (int i = array.Count - 1; i >= 0; i--)
                 {
-                    string[] arrStr = item.Split(',');
-
-                    int arrCount = arrStr.Length;
-
+                    JObject item = (JObject)array[i];
                     table.Cell(rowIndex, 1).Select();
                     _wordApp.Selection.InsertRowsBelow(1);
                     Cell cell = table.Cell(rowIndex + 1, 1);
                     cell.Select();
+                    int itemCount = item["isTitle"] != null ? item.Count - 1 : item.Count;
                     if (rowIndex == 2)
-                        cell.Split(1, arrCount);
-                    for (int i = 1; i <= arrCount; i++)
                     {
-                        table.Cell(rowIndex + 1, i).Range.Text = arrStr[i - 1];
+                        cell.Split(1, itemCount);
                     }
-                    rowIndex++;
+                    int cellColumnIndex = 1;
+                    foreach (var item2 in item)
+                    {
+                        if (!item2.Key.ToString().Equals("isTitle"))
+                        {
+                            table.Cell(rowIndex + 1, cellColumnIndex).Range.Text = item2.Value.ToString();
+                            cellColumnIndex++;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -520,24 +524,27 @@ namespace EmcReportWebApi.Common
                     image.Height = height;
                     image.Width = imageWidth * (height / imageHeight);
                 }
-                else {
+                else
+                {
                     image.Width = width;
                     image.Height = imageHeight * (width / imageWidth);
                 }
-               
+
             }
 
-            else if (height != 0 && imageHeight > height && imageHeight >= imageWidth) {
+            else if (height != 0 && imageHeight > height && imageHeight >= imageWidth)
+            {
                 if (imageWidth * (height / imageHeight) > width)
                 {
                     image.Width = width;
                     image.Height = imageHeight * (width / imageWidth);
                 }
-                else {
+                else
+                {
                     image.Height = height;
                     image.Width = imageWidth * (height / imageHeight);
                 }
-                
+
             }
 
 

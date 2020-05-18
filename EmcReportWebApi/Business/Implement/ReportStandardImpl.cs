@@ -202,45 +202,7 @@ namespace EmcReportWebApi.Business.Implement
             {
                 string title = array[i]["header"].ToString();
                 JArray attachList = (JArray)array[i]["list"];
-
-                List<string> list = new List<string>();
-
-                JObject titleObj = (JObject)attachList.Where(p => bool.Parse(p["isTitle"].ToString())).FirstOrDefault();
-                string jTemp = "";
-                int iTemp = 0;
-                foreach (var item in titleObj)
-                {
-                    iTemp++;
-                    if (!item.Key.ToString().Equals("isTitle"))
-                    {
-                        if (iTemp != titleObj.Count)
-                            jTemp += (item.Value + ",");
-                        else
-                            jTemp += item.Value;
-                    }
-                }
-                if (!jTemp.Equals(""))
-                    list.Add(jTemp);
-
-                foreach (JObject attachItem in attachList.Where(p => !bool.Parse(p["isTitle"].ToString())))
-                {
-                    jTemp = "";
-                    iTemp = 0;
-                    foreach (var item2 in attachItem)
-                    {
-                        iTemp++;
-                        if (!item2.Key.ToString().Equals("isTitle"))
-                        {
-                            if (iTemp != attachItem.Count)
-                                jTemp += (item2.Value + ",");
-                            else
-                                jTemp += item2.Value;
-                        }
-                    }
-                    list.Add(jTemp);
-                }
-
-                result = wordUtil.AddAttachTable(title, list, bookmark);
+                result = wordUtil.AddAttachTable(title, attachList, bookmark);
             }
             return result;
         }

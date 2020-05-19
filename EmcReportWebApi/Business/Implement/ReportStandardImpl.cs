@@ -149,7 +149,11 @@ namespace EmcReportWebApi.Business.Implement
                     //标准内容
                     JArray standardArray = (JArray)mainObj["standard"];
                     wordUtil.TableSplit(standardArray, "standard");
+                    //添加续
+                    wordUtil.TableSplit("standard");
                 }
+
+               
 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
@@ -177,12 +181,12 @@ namespace EmcReportWebApi.Business.Implement
                 replaceDic.Add(3, valuePairs);//替换页眉
 
                 wordUtil.ReplaceWritten(replaceDic);
-
+                
             }
-            using (WordUtil wordUtil = new WordUtil(outfilePth))
-            {
-                wordUtil.TableSplit("standard");
-            }
+            //using (WordUtil wordUtil = new WordUtil(outfilePth))
+            //{
+            //    wordUtil.TableSplit("standard");
+            //}
             //删除中间件文件夹
             DelectDir(middleDir);
             DelectDir(reportFilesPath);

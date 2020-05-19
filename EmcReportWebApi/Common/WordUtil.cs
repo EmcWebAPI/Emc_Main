@@ -72,34 +72,24 @@ namespace EmcReportWebApi.Common
 
         public int TableSplit(string bookmark)
         {
-
-
-            //tableRange.Select();
-            //int count = 5;
-            //_wordApp.Selection.GoTo(WdGoToItem.wdGoToPage, WdGoToDirection.wdGoToAbsolute, count);
-            //_wordApp.Selection.GoTo(WdGoToItem.wdGoToLine, WdGoToDirection.wdGoToRelative, 1);
-            ////for (int i = 0; i < 10; i++)
-            ////{
-            ////    _wordApp.Selection.TypeParagraph();
-            ////}
-            //_wordApp.Selection.InsertAfter("111111111111111111111111111111");
-
-
             try
             {
                 List<CellInfo> cellList = new List<CellInfo>();
-
+                
                 int pageIndex = 0;
                 Range tableRange = GetBookmarkRank(_currentWord, bookmark);
                 Table table = tableRange.Tables[1];
-                for (int i = 1; i <= table.Range.Paragraphs.Count; i++)
+
+                Cells cells = table.Range.Cells;
+
+                foreach (Cell cell in cells)
                 {
-                    Range r = table.Range.Paragraphs[i].Range;
+                    
+                    Range r = cell.Range;
                     if (r.Text.Equals("\r\a"))
                     {
                         continue;
                     }
-
                     int rowNumber = (int)r.get_Information(WdInformation.wdStartOfRangeRowNumber);
                     int columnNumber = (int)r.get_Information(WdInformation.wdStartOfRangeColumnNumber);
                     int pageNumber = (int)r.get_Information(WdInformation.wdActiveEndPageNumber);
@@ -147,31 +137,9 @@ namespace EmcReportWebApi.Common
             int inoRow = table.Range.Paragraphs.Count;
 
             cellText = list.Where(p => p.ColumnNumber == column && !p.CellText.Equals("\r\a")).OrderByDescending(p => p.RowNumber).First().CellText;
-
-            //cellText = (from Paragraph e in table.Range.Paragraphs
-            //                         where e.Range.get_Information(WdInformation.wdStartOfRangeColumnNumber) ==column &&  !e.Range.Text.Equals("\r\a")
-            //                         select e.Range.Text).ToList().Last();
-            //while (cellText.Equals(""))
-            //{
-            //    inoRow--;
-            //    try
-            //    {
-            //        cellText = table.Cell(inoRow, column).Range.Text;
-            //    }
-            //    catch (Exception)
-            //    {
-
-            //    }
-
-            //}
-
-            if (tableNext.Cell(1, column).Range.Text.Equals("\r\a"))
-            {
-                if (!cellText.Contains("续") && column == 1)
-                    cellText = "续\r\a" + cellText.Replace("\r\a", "");
-                tableNext.Cell(1, column).Range.InsertAfter(cellText.Replace("\r\a", ""));
-            }
-
+            if (!cellText.Contains("续") && column == 1)
+                cellText = "续\r\a" + cellText.Replace("\r\a", "");
+            tableNext.Cell(1, column).Range.InsertAfter(cellText.Replace("\r\a", ""));
         }
 
         /// <summary>

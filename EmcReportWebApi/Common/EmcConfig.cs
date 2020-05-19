@@ -140,7 +140,7 @@ namespace EmcReportWebApi.Common
             { "dyrq","SampleReceiptDate"},//到样日期
             { "jyxm","Content"},//检验项目
             { "jyyj","SampleTestBasis"},//检验依据
-            { "jyjl",""},//检验结论
+            { "jyjl","Conclusion"},//检验结论
             { "bz","TestRemark"},//备注
             { "ypbh","SampleNumber"},//样品编号
             { "xhgg","SampleModelSpecification"},//型号规格
@@ -151,9 +151,9 @@ namespace EmcReportWebApi.Common
             { "ypsl","SampleQuantity"},//样品数量
             { "cyjs","SamplingBase"},//抽样技术
             { "jydd","AfterTreatmentMethod"},//检验地点
-            { "jyrq",""},//检验日期
-            { "ypms",""},//样品描述
-            { "xhgghqtsm",""}//型号规格及其他说明
+            { "jyrq","InspectionDate"},//检验日期
+            { "ypms","SampleDescription"},//样品描述
+            { "xhgghqtsm","OtherDescription"}//型号规格及其他说明
         };
         #endregion
     }

@@ -171,6 +171,25 @@ namespace EmcReportWebApi.Models.Repository
         /// </summary>
         public string SampleTrademark { get; set; }
 
+        /// <summary>
+        /// jyjl 检验结论
+        /// </summary>
+        public string Conclusion { get; set; }
+
+        /// <summary>
+        /// ypms 样品描述
+        /// </summary>
+        public string SampleDescription { get; set; }
+
+        /// <summary>
+        /// xhgghqtsm 型号规格及其他说明
+        /// </summary>
+        public string OtherDescription { get; set; }
+
+        /// <summary>
+        /// jyrq 检验日期
+        /// </summary>
+        public string InspectionDate { get; set; }
         #endregion
     }
 }

@@ -207,8 +207,8 @@ namespace EmcReportWebApi.Common
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
-            if (jObject["testResult"] != null && !jObject["testResult"].Equals(""))
-                table.Cell(2, 6).Range.Text = jObject["testResult"].ToString();
+            if (jObject["comment"] != null && !jObject["comment"].Equals(""))
+                table.Cell(2, 6).Range.Text = jObject["comment"].ToString();
             //备注
             if (jObject["reMark"] != null && !jObject["reMark"].Equals(""))
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();

@@ -115,5 +115,117 @@ namespace EmcReportWebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// word转pdf 只传文件
+        /// </summary>
+        /// <returns></returns>
+        public IHttpActionResult WordConvertPdf()
+        {
+            //下载文件到本地
+            ReportResult<string> result = new ReportResult<string>();
+            HttpRequest request = HttpContext.Current.Request;
+            HttpFileCollection filelist = HttpContext.Current.Request.Files;
+            string convertExtendName = ".pdf";
+            if (request["extendName"] != null)
+                convertExtendName = request["extendName"];
+            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
+            if (filelist != null && filelist.Count > 0)
+            {
+                for (int i = 0; i < filelist.Count; i++)
+                {
+                    try
+                    {
+                        HttpPostedFile file = filelist[i];
+                        string filename = file.FileName;
+                        if (filename.Equals(""))
+                        {
+                            EmcConfig.ErrorLog.Error("上传失败:上传的文件信息不存在！");
+                            result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
+                        }
+                        string filePath = currRoot + "Files\\WordConvert\\";
+                        string forceName = "upload";
+                        string extendName = FilterExtendName(filename);
+                        string newName = Guid.NewGuid().ToString();
+                        string templateFileName = forceName + newName + extendName;
+                        string outFileName = filePath + templateFileName;
+                        DirectoryInfo di = new DirectoryInfo(filePath);
+                        if (!di.Exists) { di.Create(); }
+
+                        file.SaveAs(outFileName);
+
+                        // result = SetReportResult<string>(string.Format("上传成功:{0}", filename), true, templateFileName);
+                        //EmcConfig.InfoLog.Info(result);
+
+                        string convertFileName = newName + convertExtendName;
+                        string convertFileFullName = filePath + convertFileName;
+                        //转pdf
+                        using (WordUtil wu = new WordUtil(convertFileFullName, outFileName))
+                        {
+
+                        }
+
+                        //result = SetReportResult<string>(string.Format("转化成功:{0}", templateFileName), true, convertFileName);
+                        //EmcConfig.InfoLog.Info(result);
+
+                        //写入文件流
+                        if (!FileUtil.FileExists(convertFileFullName))
+                        {
+                            throw new Exception(string.Format("文件{0},不存在", convertFileName));
+                        }
+                        var browser = String.Empty;
+                        HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+                        FileStream fileStream = File.OpenRead(convertFileFullName);
+                        httpResponseMessage.Content = new StreamContent(fileStream);
+                        httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                        httpResponseMessage.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                        {
+                            FileName =
+                                browser.Contains("FIREFOX")
+                                    ? Path.GetFileName(convertFileFullName)
+                                    : HttpUtility.UrlEncode(Path.GetFileName(convertFileFullName))
+                            //FileName = HttpUtility.UrlEncode(Path.GetFileName(filePath))
+                        };
+                        result = SetReportResult<string>(string.Format("转化成功:{0}", filename), true, convertFileName);
+                        EmcConfig.InfoLog.Info(result);
+                        return ResponseMessage(httpResponseMessage);
+                    }
+                    catch (Exception ex)
+                    {
+                        EmcConfig.ErrorLog.Error(ex.Message, ex);
+                        result = SetReportResult<string>(string.Format("转化失败：{0}", ex.Message), false, "");
+                    }
+                }
+            }
+            else
+            {
+                EmcConfig.ErrorLog.Error("转化失败:上传的文件信息不存在！");
+                result = SetReportResult<string>("转化失败:上传的文件信息不存在！", false, "");
+            }
+            return Json<ReportResult<string>>(result);
+        }
+
+
+        private static string FilterExtendName(string fileFullName)
+        {
+            int index = fileFullName.LastIndexOf('.');
+            string extendName = fileFullName.Substring(index, fileFullName.Length - index);
+
+            return extendName;
+        }
+
+
+        /// <summary>
+        /// 返回结果参数
+        /// </summary>
+        private ReportResult<T> SetReportResult<T>(string message, bool submitResult, T content)
+        {
+            Type type = content.GetType();
+            ReportResult<T> reportResult = new ReportResult<T>();
+            reportResult.Message = message;
+            reportResult.SumbitResult = submitResult;
+            reportResult.Content = content;
+            return reportResult;
+        }
+
     }
 }

@@ -229,6 +229,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Files\OutPut\" />
     <Folder Include="Files\TemplateMiddleware\" />
+    <Folder Include="Files\WordConvert\" />
     <Folder Include="Log\Error\" />
     <Folder Include="Log\Info\" />
     <Folder Include="Log\Params\" />

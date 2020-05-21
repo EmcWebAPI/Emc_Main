@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace EmcReportWebApi.Common
@@ -75,7 +76,7 @@ namespace EmcReportWebApi.Common
             try
             {
                 List<CellInfo> cellList = new List<CellInfo>();
-                
+
                 int pageIndex = 0;
                 Range tableRange = GetBookmarkRank(_currentWord, bookmark);
                 Table table = tableRange.Tables[1];
@@ -84,7 +85,7 @@ namespace EmcReportWebApi.Common
 
                 foreach (Cell cell in cells)
                 {
-                    
+
                     Range r = cell.Range;
                     if (r.Text.Equals("\r\a"))
                     {
@@ -479,11 +480,20 @@ namespace EmcReportWebApi.Common
         /// </summary>
         private InlineShape AddPictureForStandard(string picFileName, Document doc, Range range, float width = 0, float height = 0)
         {
-            InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+            float imageWidth = 0;
+            float imageHeight = 0;
+            using (FileStream fs = new FileStream(picFileName, FileMode.Open, FileAccess.Read))
+            {
+                System.Drawing.Image sourceImage = System.Drawing.Image.FromStream(fs);
+                imageWidth = float.Parse(sourceImage.Width.ToString());
+                imageHeight = float.Parse(sourceImage.Height.ToString());
+            }
 
-            float imageWidth = image.Width;
-            float imageHeight = image.Height;
+           InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
 
+            //float imageScaleWidth = image.ScaleWidth;
+            //float imageScaleHeight = image.ScaleHeight;
+            
             if (width != 0 && imageWidth > width && imageWidth > imageHeight)
             {
 
@@ -514,7 +524,7 @@ namespace EmcReportWebApi.Common
                 }
 
             }
-
+           
 
             //if (width != 0 && height != 0)
             //{

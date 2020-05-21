@@ -150,7 +150,7 @@ namespace EmcReportWebApi.Business.Implement
                     JArray standardArray = (JArray)mainObj["standard"];
                     wordUtil.TableSplit(standardArray, "standard");
                     //添加续
-                    wordUtil.TableSplit("standard");
+                    //wordUtil.TableSplit("standard");
                 }
 
                
@@ -183,10 +183,10 @@ namespace EmcReportWebApi.Business.Implement
                 wordUtil.ReplaceWritten(replaceDic);
                 
             }
-            //using (WordUtil wordUtil = new WordUtil(outfilePth))
-            //{
-            //    wordUtil.TableSplit("standard");
-            //}
+            using (WordUtil wordUtil = new WordUtil(outfilePth))
+            {
+                wordUtil.TableSplit("standard");
+            }
             //删除中间件文件夹
             DelectDir(middleDir);
             DelectDir(reportFilesPath);

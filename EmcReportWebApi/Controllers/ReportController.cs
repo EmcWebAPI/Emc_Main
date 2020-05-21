@@ -186,7 +186,7 @@ namespace EmcReportWebApi.Controllers
                             //FileName = HttpUtility.UrlEncode(Path.GetFileName(filePath))
                         };
                         result = SetReportResult<string>(string.Format("转化成功:{0}", filename), true, convertFileName);
-                        EmcConfig.InfoLog.Info(result);
+                        EmcConfig.InfoLog.Info(string.Format("转化成功:{0}", filename));
                         return ResponseMessage(httpResponseMessage);
                     }
                     catch (Exception ex)

@@ -136,7 +136,7 @@ namespace EmcReportWebApi.Controllers
                     try
                     {
                         HttpPostedFile file = filelist[i];
-                        string filename = file.FileName;
+                        string filename = request["fileName"].ToString();
                         if (filename.Equals(""))
                         {
                             EmcConfig.ErrorLog.Error("上传失败:上传的文件信息不存在！");

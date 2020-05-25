@@ -200,6 +200,9 @@ namespace EmcReportWebApi.Common
             _wordApp.Selection.InsertRowsBelow(1);
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
             _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
+            _wordApp.Selection.Font.NameFarEast = "宋体";
+            _wordApp.Selection.Font.NameAscii = "宋体";
+            _wordApp.Selection.Font.NameOther = "宋体";
             // Row newRow = table.Rows[2];
 
             //序号

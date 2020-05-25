@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -153,7 +152,7 @@ namespace EmcReportWebApi.Business.Implement
                     //wordUtil.TableSplit("standard");
                 }
 
-               
+
 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
@@ -171,6 +170,9 @@ namespace EmcReportWebApi.Business.Implement
                     wordUtil.RemovePhotoTable("photo");
                 }
 
+                if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
+                    wordUtil.TableSplit("standard");
+
                 //替换页眉内容
                 int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
@@ -181,12 +183,12 @@ namespace EmcReportWebApi.Business.Implement
                 replaceDic.Add(3, valuePairs);//替换页眉
 
                 wordUtil.ReplaceWritten(replaceDic);
-                
+
             }
-            using (WordUtil wordUtil = new WordUtil(outfilePth))
-            {
-                wordUtil.TableSplit("standard");
-            }
+            //using (WordUtil wordUtil = new WordUtil(outfilePth))
+            //{
+
+            //}
             //删除中间件文件夹
             DelectDir(middleDir);
             DelectDir(reportFilesPath);
@@ -197,7 +199,7 @@ namespace EmcReportWebApi.Business.Implement
 
             return srr;
         }
-        
+
         private string AddAttachTable(WordUtil wordUtil, JArray array, string bookmark)
         {
             string result = "";

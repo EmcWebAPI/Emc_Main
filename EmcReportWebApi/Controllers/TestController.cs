@@ -329,7 +329,8 @@ namespace EmcReportWebApi.Controllers
             }
             catch (Exception ex)
             {
-                string message = string.Format("报告生成失败,测试数据生成失败{0}", ex.Message);
+                EmcConfig.ErrorLog.Error(ex.Message, ex);
+                //string message = string.Format("报告生成失败,测试数据生成失败{0}", ex.Message);
                 throw ex;
             }
             finally {

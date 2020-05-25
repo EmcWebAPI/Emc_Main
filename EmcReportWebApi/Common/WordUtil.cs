@@ -87,7 +87,7 @@ namespace EmcReportWebApi.Common
                 {
 
                     Range r = cell.Range;
-                    if (r.Text.Equals("\r\a") && !r.Text.Contains("$$"))
+                    if (r.Text.Equals("\r\a"))
                     {
                         continue;
                     }
@@ -104,28 +104,16 @@ namespace EmcReportWebApi.Common
 
                         _wordApp.Selection.SplitTable();
 
-                        List<Cell> cellNextList = new List<Cell>();
-                        for (int j = 1; j <= 11; j++)
+
+                        for (int j = 1; j <= 4; j++)
                         {
-                            Cell cellNext = TableContinueContent(table, j, cellList, pageNumber);
-                            if (cellNext != null)
-                                cellNextList.Add(cellNext);
+                            TableContinueContent(table, j, cellList);
                         }
-
-                        HandleConclusion(table, cellList, cellNextList);
-
-                        //处理单项结论
 
                         _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
                         pageIndex = pageNumber;
                     }
                 }
-                //替换字符
-                Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("$$", "");//报告编号
-                replaceDic.Add(1, valuePairs);//替换全部内容
-                this.ReplaceWritten(replaceDic);
 
                 return 1;
             }
@@ -139,35 +127,13 @@ namespace EmcReportWebApi.Common
 
         }
 
-        private void HandleConclusion(Table table, List<CellInfo> cellList, List<Cell> nextCellList)
+        private void TableContinueContent(Table table, int column, List<CellInfo> list)
         {
 
-            //新的单项结论表格(第二个表格倒数第二行)
-            Cell nextCellInfo = nextCellList[nextCellList.Count - 2];
-
-            //找到最后一个带$$的单元格
-            CellInfo cellInfo = cellList.Where(p => p.CellText.Contains("$$")).LastOrDefault();
-            if (nextCellInfo.Range.Text.Equals("") || nextCellInfo.Range.Text.Equals("\r\a"))
-                nextCellInfo.Range.InsertAfter(cellInfo.CellText.Replace("\r\a", ""));
-
-        }
-
-        private Cell TableContinueContent(Table table, int column, List<CellInfo> list, int pageIndex)
-        {
-            Cell cellInfo = null;
             Range range = table.Range.GoToNext(WdGoToItem.wdGoToTable);
             Table tableNext = range.Tables[1];
-            try
-            {
-                cellInfo = tableNext.Cell(1, column);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            if (!tableNext.Cell(1, column).Range.Text.Equals("\r\a")||column>4)
-                return cellInfo;
-            
+            if (!tableNext.Cell(1, column).Range.Text.Equals("\r\a"))
+                return;
             string cellText = "";
             int inoRow = table.Range.Paragraphs.Count;
 
@@ -175,7 +141,6 @@ namespace EmcReportWebApi.Common
             if (!cellText.Contains("续") && column == 1)
                 cellText = "续\r\a" + cellText.Replace("\r\a", "");
             tableNext.Cell(1, column).Range.InsertAfter(cellText.Replace("\r\a", ""));
-            return cellInfo;
         }
 
         /// <summary>
@@ -243,8 +208,8 @@ namespace EmcReportWebApi.Common
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
-            if (jObject["comment"] != null)
-                table.Cell(2, 6).Range.Text = "$$" + jObject["comment"].ToString();
+            if (jObject["comment"] != null && !jObject["comment"].Equals(""))
+                table.Cell(2, 6).Range.Text = jObject["comment"].ToString();
             //备注
             if (jObject["reMark"] != null && !jObject["reMark"].Equals(""))
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
@@ -524,11 +489,11 @@ namespace EmcReportWebApi.Common
                 imageHeight = float.Parse(sourceImage.Height.ToString());
             }
 
-            InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+           InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
 
             //float imageScaleWidth = image.ScaleWidth;
             //float imageScaleHeight = image.ScaleHeight;
-
+            
             if (width != 0 && imageWidth > width && imageWidth > imageHeight)
             {
 
@@ -559,7 +524,7 @@ namespace EmcReportWebApi.Common
                 }
 
             }
-
+           
 
             //if (width != 0 && height != 0)
             //{

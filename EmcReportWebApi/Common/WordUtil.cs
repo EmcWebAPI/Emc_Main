@@ -87,7 +87,7 @@ namespace EmcReportWebApi.Common
                 {
 
                     Range r = cell.Range;
-                    if (r.Text.Equals("\r\a"))
+                    if (r.Text.Equals("\r\a") && !r.Text.Contains("$$"))
                     {
                         continue;
                     }
@@ -104,22 +104,32 @@ namespace EmcReportWebApi.Common
 
                         _wordApp.Selection.SplitTable();
 
-
-                        for (int j = 1; j <= 4; j++)
+                        List<Cell> cellNextList = new List<Cell>();
+                        for (int j = 1; j <= 11; j++)
                         {
-                            TableContinueContent(table, j, cellList);
+                            Cell cellNext = TableContinueContent(table, j, cellList, pageNumber);
+                            if (cellNext != null)
+                                cellNextList.Add(cellNext);
                         }
 
+                         //处理单项结论
+                        HandleConclusion(table, cellList, cellNextList);
+                        
                         _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
                         pageIndex = pageNumber;
                     }
                 }
+                //替换字符
+                Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
+                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
+                valuePairs.Add("$$", "");//报告编号
+                replaceDic.Add(1, valuePairs);//替换全部内容
+                this.ReplaceWritten(replaceDic);
 
                 return 1;
             }
             catch (Exception ex)
             {
-
                 _needWrite = false;
                 Dispose();
                 throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
@@ -127,13 +137,35 @@ namespace EmcReportWebApi.Common
 
         }
 
-        private void TableContinueContent(Table table, int column, List<CellInfo> list)
+        private void HandleConclusion(Table table, List<CellInfo> cellList, List<Cell> nextCellList)
         {
 
+            //新的单项结论表格(第二个表格倒数第二行)
+            Cell nextCellInfo = nextCellList[nextCellList.Count - 2];
+
+            //找到最后一个带$$的单元格
+            CellInfo cellInfo = cellList.Where(p => p.CellText.Contains("$$")).LastOrDefault();
+            if (nextCellInfo.Range.Text.Equals("") || nextCellInfo.Range.Text.Equals("\r\a"))
+                nextCellInfo.Range.InsertAfter(cellInfo.CellText.Replace("\r\a", ""));
+
+        }
+
+        private Cell TableContinueContent(Table table, int column, List<CellInfo> list, int pageIndex)
+        {
+
+            Cell cellInfo = null;
             Range range = table.Range.GoToNext(WdGoToItem.wdGoToTable);
             Table tableNext = range.Tables[1];
-            if (!tableNext.Cell(1, column).Range.Text.Equals("\r\a"))
-                return;
+            try
+            {
+                cellInfo = tableNext.Cell(1, column);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            if (!tableNext.Cell(1, column).Range.Text.Equals("\r\a") || column > 4)
+                return cellInfo;
             string cellText = "";
             int inoRow = table.Range.Paragraphs.Count;
 
@@ -141,6 +173,7 @@ namespace EmcReportWebApi.Common
             if (!cellText.Contains("续") && column == 1)
                 cellText = "续\r\a" + cellText.Replace("\r\a", "");
             tableNext.Cell(1, column).Range.InsertAfter(cellText.Replace("\r\a", ""));
+            return cellInfo;
         }
 
         /// <summary>
@@ -211,8 +244,8 @@ namespace EmcReportWebApi.Common
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
-            if (jObject["comment"] != null && !jObject["comment"].Equals(""))
-                table.Cell(2, 6).Range.Text = jObject["comment"].ToString();
+            if (jObject["comment"] != null)
+                table.Cell(2, 6).Range.Text = "$$" + jObject["comment"].ToString();
             //备注
             if (jObject["reMark"] != null && !jObject["reMark"].Equals(""))
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
@@ -1686,11 +1719,8 @@ namespace EmcReportWebApi.Common
             catch (Exception ex)
             {
                 _needWrite = false;
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
-            }
-            finally
-            {
                 Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
 
             return "替换成功";

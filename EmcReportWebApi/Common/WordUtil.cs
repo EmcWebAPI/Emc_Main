@@ -414,6 +414,9 @@ namespace EmcReportWebApi.Common
                 Table table = tableRange.Tables[1];
                 table.Cell(1, 1).Select();
                 _wordApp.Selection.InsertRowsBelow(1);
+                _wordApp.Selection.Font.NameFarEast = "宋体";
+                _wordApp.Selection.Font.NameAscii = "宋体";
+                _wordApp.Selection.Font.NameOther = "宋体";
                 _wordApp.Selection.Cells.Merge();
                 _wordApp.Selection.Range.Text = title;
 
@@ -424,6 +427,9 @@ namespace EmcReportWebApi.Common
                     JObject item = (JObject)array[i];
                     table.Cell(rowIndex, 1).Select();
                     _wordApp.Selection.InsertRowsBelow(1);
+                    _wordApp.Selection.Font.NameFarEast = "宋体";
+                    _wordApp.Selection.Font.NameAscii = "宋体";
+                    _wordApp.Selection.Font.NameOther = "宋体";
                     Cell cell = table.Cell(rowIndex + 1, 1);
                     cell.Select();
                     int itemCount = item["isTitle"] != null ? item.Count - 1 : item.Count;

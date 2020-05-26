@@ -30,7 +30,24 @@ namespace EmcReportWebApi.Models.Repository
         /// <summary>
         /// "Main_jylb" 检验类别
         /// </summary>
-        public string DetectType { get; set; }
+        private string detectType;
+        public string DetectType
+        {
+            get {
+                if (detectType.Equals("GYJ", StringComparison.OrdinalIgnoreCase)&& !SampleNumber.Equals("")&&SampleNumber.Contains("-")) {
+
+                    string[] stringSplit = SampleNumber.Split('-');
+                    if (stringSplit.Length > 0)
+                    {
+                        string stringFirst = stringSplit[0];
+                        detectType = stringFirst.Substring(stringFirst.Length - 4, 4)+ "年国家医疗器械抽检";
+                    }
+                }
+
+                return detectType; }
+            set { detectType = value; }
+        }
+
 
         /// <summary>
         /// "main_ypmc" 样品名称

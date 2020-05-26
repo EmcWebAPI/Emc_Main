@@ -184,7 +184,7 @@ namespace EmcReportWebApi.Models.Repository
         public string AfterTreatmentMethod { get; set; }
 
         /// <summary>
-        /// "ypms" 样品描述
+        /// "sb" 商标
         /// </summary>
         public string SampleTrademark { get; set; }
 

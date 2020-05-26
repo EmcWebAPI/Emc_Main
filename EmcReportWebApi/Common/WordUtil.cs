@@ -584,17 +584,16 @@ namespace EmcReportWebApi.Common
         public string RemovePhotoTable(string bookmark)
         {
             Range range = GetBookmarkRank(_currentWord, bookmark);
+            
             Table table = range.Tables[1];
             table.Select();
+            _wordApp.Selection.Sections[1].Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary].LinkToPrevious = true;
             table.Delete();
             _wordApp.Selection.TypeBackspace();
             _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
-            _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
             return "成功";
         }
-
-
-
+        
         #endregion
 
         #region emc报告业务相关 

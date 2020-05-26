@@ -13,7 +13,7 @@ namespace EmcReportWebApi.Business.Implement
     public class ReportBase
     {
         //设置首页内容
-        protected string InsertContentToWord(WordUtil wordUtil, JObject jo1)
+        public virtual string InsertContentToWord(WordUtil wordUtil, JObject jo1)
         {
             foreach (var item in jo1)
             {
@@ -28,7 +28,7 @@ namespace EmcReportWebApi.Business.Implement
             return "保存成功";
         }
         //首页内容特殊处理
-        protected string CheckFirstPage(string itemValue)
+        public virtual string CheckFirstPage(string itemValue)
         {
             int fontCount = 38;
             int valueCount = System.Text.Encoding.Default.GetBytes(itemValue).Length;

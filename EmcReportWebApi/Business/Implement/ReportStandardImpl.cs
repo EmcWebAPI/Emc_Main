@@ -200,6 +200,40 @@ namespace EmcReportWebApi.Business.Implement
             return srr;
         }
 
+        //设置首页内容
+        public override string InsertContentToWord(WordUtil wordUtil, JObject jo1)
+        {
+            foreach (var item in jo1)
+            {
+                string key = item.Key.ToString();
+                string value = item.Value.ToString();
+                if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
+                {
+                    value = CheckFirstPage(value);
+                    wordUtil.InsertContentToWordByBookmark(value, key, true);
+                }
+                else
+                    wordUtil.InsertContentToWordByBookmark(value, key);
+            }
+            return "保存成功";
+        }
+        //首页内容特殊处理
+        public override string CheckFirstPage(string itemValue)
+        {
+            int fontCount = 38;
+            int valueCount = System.Text.Encoding.Default.GetBytes(itemValue).Length;
+            if (fontCount > valueCount)
+            {
+                int spaceCount = (fontCount - valueCount) / 2;
+                for (int i = 0; i < spaceCount; i++)
+                {
+                    itemValue = " " + itemValue + " ";
+                }
+            }
+
+            return itemValue;
+        }
+
         private string AddAttachTable(WordUtil wordUtil, JArray array, string bookmark)
         {
             string result = "";

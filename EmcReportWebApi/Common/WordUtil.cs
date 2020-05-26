@@ -1605,7 +1605,7 @@ namespace EmcReportWebApi.Common
         /// 根据书签向word中插入内容
         /// </summary>
         /// <returns></returns>
-        public string InsertContentToWordByBookmark(string content, string bookmark)
+        public string InsertContentToWordByBookmark(string content, string bookmark,bool isUnderLine=false)
         {
             try
             {
@@ -1614,6 +1614,8 @@ namespace EmcReportWebApi.Common
                     return "未找到书签:" + bookmark;
                 range.Select();
                 range.Text = content;
+                if (isUnderLine)
+                    range.Underline = WdUnderline.wdUnderlineSingle;
             }
             catch (Exception ex)
             {

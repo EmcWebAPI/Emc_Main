@@ -117,6 +117,7 @@ namespace EmcReportWebApi.Controllers
 
         /// <summary>
         /// word转pdf 只传文件
+        /// 参数:signAndIssue:1为写入签发日期
         /// </summary>
         /// <returns></returns>
         public IHttpActionResult WordConvertPdf()
@@ -136,7 +137,7 @@ namespace EmcReportWebApi.Controllers
                     try
                     {
                         HttpPostedFile file = filelist[i];
-                        string filename = request["fileName"].ToString();
+                        string filename = request["fileName"]!=null? request["fileName"].ToString():file.FileName;
                         if (filename.Equals(""))
                         {
                             EmcConfig.ErrorLog.Error("上传失败:上传的文件信息不存在！");
@@ -161,7 +162,11 @@ namespace EmcReportWebApi.Controllers
                         //转pdf
                         using (WordUtil wu = new WordUtil(convertFileFullName, outFileName))
                         {
-
+                            if (request["signAndIssue"]!=null&&request["signAndIssue"].ToString().Equals("1")) {
+                                string signStr = wu.InsertContentToWordByBookmark(DateTime.Now.ToString("yyyy年MM月dd日"), "qfrq");
+                                if (signStr.Contains("未找到书签"))
+                                    EmcConfig.ErrorLog.Error(filename+"错误消息:" + signStr);
+                            }
                         }
 
                         //result = SetReportResult<string>(string.Format("转化成功:{0}", templateFileName), true, convertFileName);

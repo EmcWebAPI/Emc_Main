@@ -141,6 +141,9 @@ namespace EmcReportWebApi.Common
         {
 
             //新的单项结论表格(第二个表格倒数第二行)
+            if (nextCellList.Count < 2) {
+                return;
+            }
             Cell nextCellInfo = nextCellList[nextCellList.Count - 2];
 
             //找到最后一个带$$的单元格

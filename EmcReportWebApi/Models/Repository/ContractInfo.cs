@@ -207,6 +207,11 @@ namespace EmcReportWebApi.Models.Repository
         /// jyrq 检验日期
         /// </summary>
         public string InspectionDate { get; set; }
+
+        /// <summary>
+        /// zjgcs  主检工程师(检验)
+        /// </summary>
+        public string ChiefInspection { get; set; }
         #endregion
     }
 }

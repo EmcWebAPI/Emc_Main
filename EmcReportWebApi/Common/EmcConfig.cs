@@ -153,7 +153,8 @@ namespace EmcReportWebApi.Common
             { "jydd","AfterTreatmentMethod"},//检验地点
             { "jyrq","InspectionDate"},//检验日期
             { "ypms","SampleDescription"},//样品描述
-            { "xhgghqtsm","OtherDescription"}//型号规格及其他说明
+            { "xhgghqtsm","OtherDescription"},//型号规格及其他说明
+            { "zjgcs","ChiefInspection"}//主检工程师(检验)
         };
         #endregion
     }

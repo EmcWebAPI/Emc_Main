@@ -347,24 +347,24 @@ namespace EmcReportWebApi.Common
 
                         Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
-                        tempCell.Range.Text = secondItems[i]["itemContent"].ToString();
-                        if (secondItems[i]["reMark"] != null && !secondItems[i]["reMark"].Equals(""))
+                        tempCell.Range.Text = secondItem["stdItmNo"]!=null? secondItem["stdItmNo"].ToString()+ secondItem["itemContent"].ToString(): secondItem["itemContent"].ToString();
+                        if (secondItem["reMark"] != null && !secondItem["reMark"].Equals(""))
                         {
                             try
                             {
-                                table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItems[i]["reMark"].ToString();
+                                table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItem["reMark"].ToString();
                             }
                             catch (Exception)
                             {
-                                table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItems[i]["reMark"].ToString();
+                                table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItem["reMark"].ToString();
                             }
 
                         }
                         //检验结果
-                        if (secondItems[i]["controls"] != null && !secondItems[i]["controls"].Equals("") && (secondItems[i]["list"] == null || ((JArray)secondItems[i]["list"]).Count == 0))
+                        if (secondItem["controls"] != null && !secondItem["controls"].Equals("") && (secondItem["list"] == null || ((JArray)secondItem["list"]).Count == 0))
                         {
                             Cell resultCell = table.Cell(cRow + i + resultIndex, cCol + 2);
-                            JArray resultList = JArray.Parse(secondItems[i]["controls"].ToString());
+                            JArray resultList = JArray.Parse(secondItem["controls"].ToString());
                             int resultCount = resultList.Count;
                             if (resultCount > 1)
                             {

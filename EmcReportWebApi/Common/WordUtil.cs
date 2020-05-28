@@ -1537,7 +1537,23 @@ namespace EmcReportWebApi.Common
         {
             return _currentWord.ComputeStatistics(WdStatistic.wdStatisticPages, ref _missing);
         }
-
+        /// <summary>
+        /// 添加环绕型图片
+        /// </summary>
+        public int AddPictureToWord(string pictureFullName, string bookmark, float width = 0, float height = 0)
+        {
+            try
+            {
+                this.AddShapePicture(pictureFullName, _currentWord, GetBookmarkRank(_currentWord, bookmark), width, height);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+            return 1;
+        }
         /// <summary>
         /// 复制其他文件的表格到当前word
         /// </summary>
@@ -2040,7 +2056,23 @@ namespace EmcReportWebApi.Common
         /// <returns></returns>
         private InlineShape AddPicture(string picFileName, Document doc, Range range, float width = 0, float height = 0)
         {
+            range.Select();
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+            if (width != 0 && height != 0)
+            {
+                image.Width = width;
+                image.Height = height;
+            }
+            return image;
+        }
+
+        /// <summary>
+        /// 当前word插入图片(环绕型)
+        /// </summary>
+        private Shape AddShapePicture(string picFileName, Document doc, Range range, float width = 0, float height = 0)
+        {
+            range.Select();
+            Shape image = doc.Shapes.AddPicture(picFileName, ref _missing, ref _missing, range);
             if (width != 0 && height != 0)
             {
                 image.Width = width;

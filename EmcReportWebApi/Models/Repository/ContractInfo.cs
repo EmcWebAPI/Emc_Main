@@ -34,13 +34,13 @@ namespace EmcReportWebApi.Models.Repository
         public string DetectType
         {
             get {
-                if (detectType.Equals("GYJ", StringComparison.OrdinalIgnoreCase)&& !SampleNumber.Equals("")&&SampleNumber.Contains("-")) {
+                if (detectType.Equals("GYJ", StringComparison.OrdinalIgnoreCase) && !SampleNumber.Equals("") && SampleNumber.Contains("-")) {
 
                     string[] stringSplit = SampleNumber.Split('-');
                     if (stringSplit.Length > 0)
                     {
                         string stringFirst = stringSplit[0];
-                        detectType = stringFirst.Substring(stringFirst.Length - 4, 4)+ "年国家医疗器械抽检";
+                        detectType = stringFirst.Substring(stringFirst.Length - 4, 4) + "年国家医疗器械抽检";
                     }
                 }
 
@@ -122,7 +122,7 @@ namespace EmcReportWebApi.Models.Repository
                 {
                     return _sampleReceiptDate;
                 }
-             }
+            }
             set { _sampleReceiptDate = value; }
         }
 
@@ -212,6 +212,64 @@ namespace EmcReportWebApi.Models.Repository
         /// zjgcs  主检工程师(检验)
         /// </summary>
         public string ChiefInspection { get; set; }
+
+        
+        private string _sampleAcquisitionMode;
+        /// <summary>
+        /// 抽样送样类型  1.送样syxz 2.抽样cyxz
+        /// </summary>
+        public string SampleAcquisitionMode {
+            get
+            {
+                return _sampleAcquisitionMode;
+            }
+
+            set { _sampleAcquisitionMode = value; }
+        }
+
+        /// <summary>
+        /// 送样
+        /// </summary>
+
+        private string _sampleAcquisitionModeSy;
+
+        public string SampleAcquisitionModeSy
+        {
+            get {
+                if (_sampleAcquisitionMode.Equals("1"))
+                {
+                    this._sampleAcquisitionModeSy = "送样（√）";
+                }
+                else
+                {
+                    this._sampleAcquisitionModeSy = "送样（/）";
+                }
+
+                return _sampleAcquisitionModeSy; }
+            set { _sampleAcquisitionModeSy = value; }
+        }
+
+
+        /// <summary>
+        /// 抽样
+        /// </summary>
+        private string _sampleAcquisitionModeCy;
+
+        public string SampleAcquisitionModeCy
+        {
+            get {
+                if (_sampleAcquisitionMode.Equals("1"))
+                {
+                    this._sampleAcquisitionModeCy = "抽样（/）";
+                }
+                else
+                {
+                    this._sampleAcquisitionModeCy = "抽样（√）";
+                }
+                return _sampleAcquisitionModeCy; }
+            set { _sampleAcquisitionModeCy = value; }
+        }
+
         #endregion
     }
 }

@@ -154,7 +154,9 @@ namespace EmcReportWebApi.Common
             { "jyrq","InspectionDate"},//检验日期
             { "ypms","SampleDescription"},//样品描述
             { "xhgghqtsm","OtherDescription"},//型号规格及其他说明
-            { "zjgcs","ChiefInspection"}//主检工程师(检验)
+            { "zjgcs","ChiefInspection"},//主检工程师(检验)
+            { "syxz","SampleAcquisitionModeSy"},//送样选中
+            { "cyxz","SampleAcquisitionModeCy"}//抽样选中
         };
         #endregion
     }

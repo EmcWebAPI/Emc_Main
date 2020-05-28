@@ -174,7 +174,7 @@ namespace EmcReportWebApi.Business.Implement
                     wordUtil.TableSplit("standard");
 
                 //替换页眉内容
-                int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
+                int pageCount = wordUtil.GetDocumnetPageCount() - 2;//获取文件页数(首页不算)
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
                 Dictionary<string, string> valuePairs = new Dictionary<string, string>();
                 valuePairs.Add("bgbh", reportStr);//报告编号

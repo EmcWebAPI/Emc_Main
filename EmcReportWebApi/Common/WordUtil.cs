@@ -492,7 +492,7 @@ namespace EmcReportWebApi.Common
                     _wordApp.Selection.InsertRowsBelow(1);
                     rowIndex = rowIndex + i + 1;
                     Cell currentCell = table.Cell(rowIndex, 1);
-                    currentCell.SetHeight(288.603f, WdRowHeightRule.wdRowHeightAtLeast);
+                    currentCell.SetHeight(270.603f, WdRowHeightRule.wdRowHeightAtLeast);
                     string[] arrStr = list[i].Split(',');
                     string fileName = arrStr[0];
                     string content = arrStr[1];

@@ -71,6 +71,8 @@ namespace EmcReportWebApi.Common
 
         #region 标准报告业务相关
 
+        private Dictionary<Cell, string> lowerRightCornerCells = new Dictionary<Cell, string>();
+
         public int TableSplit(string bookmark)
         {
             try
@@ -201,6 +203,17 @@ namespace EmcReportWebApi.Common
                 table.Cell(1, 1).Select();
                 _wordApp.Selection.Rows.HeadingFormat = -1;
                 ClearTableFormat(table);
+
+                if (lowerRightCornerCells.Count > 0)
+                {
+                    foreach (var item in lowerRightCornerCells)
+                    {
+                        Cell cell = item.Key;
+                        string content = item.Value;
+                        this.AddCellLowerRightCornerContent(cell, content);
+                    }
+                }
+
                 return 1;
             }
             catch (Exception ex)
@@ -254,7 +267,7 @@ namespace EmcReportWebApi.Common
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
 
             JArray firstItems = (JArray)jObject["list"];
-
+            
             if (firstItems.Count != 0)
             {
                 int firstItemsCount = firstItems.Count;
@@ -285,11 +298,12 @@ namespace EmcReportWebApi.Common
                     cellCol4Dic.Add(firstItem, (2 + i).ToString() + "," + 4.ToString());
 
                 }
+                
                 //遍历节点拆分单元格
                 bool whilebool = true;
                 while (whilebool)
                 {
-                    cellCol4Dic = AddCellAndSplit(table, cellCol4Dic);
+                    cellCol4Dic = AddCellAndSplit(table, cellCol4Dic, lowerRightCornerCells);
                     whilebool = (cellCol4Dic.Count != 0);
                 }
             }
@@ -300,7 +314,7 @@ namespace EmcReportWebApi.Common
         /// 遍历节点拆分单元格
         /// </summary>
         /// <returns></returns>
-        private Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic)
+        private Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic, Dictionary<Cell, string> lowerRightCornerCells)
         {
             Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
             int incr = 0;
@@ -353,7 +367,8 @@ namespace EmcReportWebApi.Common
                         tempCell.Range.Text = secondItem["stdItmNo"]!=null? secondItem["stdItmNo"].ToString()+ secondItem["itemContent"].ToString(): secondItem["itemContent"].ToString();
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals("")) {
-                            this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
+                            //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
+                            lowerRightCornerCells.Add(tempCell, secondItem["rightContent"].ToString());
                         }
 
                         if (secondItem["reMark"] != null && !secondItem["reMark"].Equals(""))

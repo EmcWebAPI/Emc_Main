@@ -119,6 +119,7 @@
   <ItemGroup>
     <Content Include="Document\20200514183752926.txt" />
     <Content Include="Document\20200515104103476.txt" />
+    <Content Include="Document\QRCode.txt" />
     <Content Include="Files\ReportFiles\Test\image1.jpg" />
     <Content Include="Files\ReportFiles\Test\image2.jpg" />
     <Content Include="Files\ReportFiles\Test\index1.html" />
@@ -215,11 +216,10 @@
     <Content Include="Document\对应表.xlsx" />
     <Content Include="Document\生成报告接口文档.docx" />
     <Content Include="Document\buglist.xlsx" />
-    <Content Include="Files\标准模板.docx" />
     <Content Include="Files\ReportFiles\Test\testResult.json" />
     <Content Include="Files\ExperimentTemplate\传导发射.docx" />
     <Content Include="Files\ExperimentTemplate\辐射发射.docx" />
-    <Content Include="Files\标准模板%28新%29.docx" />
+    <Content Include="Files\标准模板.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

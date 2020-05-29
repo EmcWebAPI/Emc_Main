@@ -318,11 +318,6 @@ namespace EmcReportWebApi.Business.Implement
         /// <returns></returns>
         private string CallbackReqSuccess(string filePath, string reportCode, string message, string url, string original)
         {
-            // string url = @"http://192.168.30.10:9081/hydra/std/readXls";
-            //string url = para.CallbackUrl;
-            //string reportId = para.ReportId;
-            //string contractId = para.ContractId;
-
             string fileName = reportCode + ".docx";
 
             try

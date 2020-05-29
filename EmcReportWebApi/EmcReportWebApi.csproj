@@ -95,6 +95,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="ThoughtWorks.QRCode, Version=1.0.4778.30637, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ThoughtWorks.QRCode.1.1.0\lib\ThoughtWorks.QRCode.dll</HintPath>
+    </Reference>
     <Reference Include="WebActivator, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivator.1.5.1\lib\net40\WebActivator.dll</HintPath>
     </Reference>
@@ -153,6 +156,7 @@
     <Compile Include="Common\CompressContentAttribute.cs" />
     <Compile Include="Common\FileUtil.cs" />
     <Compile Include="Common\HiddenApiFilter.cs" />
+    <Compile Include="Common\QRCodeUtil.cs" />
     <Compile Include="Common\SyncHttpHelper.cs" />
     <Compile Include="Common\MD5Helper.cs" />
     <Compile Include="Common\EmcConfig.cs" />

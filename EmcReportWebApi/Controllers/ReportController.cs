@@ -117,7 +117,9 @@ namespace EmcReportWebApi.Controllers
 
         /// <summary>
         /// word转pdf 只传文件
-        /// 参数:signAndIssue:1为写入签发日期
+        /// 参数:signAndIssue:1为写入签发日期<br/>
+        ///      qrCodeStr:二维码字符串 不传值不生成<br/>
+        ///      auditor:审核人
         /// </summary>
         /// <returns></returns>
         public IHttpActionResult WordConvertPdf()
@@ -157,15 +159,34 @@ namespace EmcReportWebApi.Controllers
                         // result = SetReportResult<string>(string.Format("上传成功:{0}", filename), true, templateFileName);
                         //EmcConfig.InfoLog.Info(result);
 
+                        string outPictureFullName = "";
+                        //如果有二维码字符串先生成二维码
+                        if (request["qrCodeStr"] != null && !request["qrCodeStr"].ToString().Equals(""))
+                        {
+                            string qrCodeStr = request["qrCodeStr"].ToString();
+                            outPictureFullName = filePath + newName + ".jpg";
+                            QRCodeUtil.QRCode(outPictureFullName, qrCodeStr);
+                        }
+
                         string convertFileName = newName + convertExtendName;
                         string convertFileFullName = filePath + convertFileName;
                         //转pdf
                         using (WordUtil wu = new WordUtil(convertFileFullName, outFileName))
                         {
+                            //签发日期
                             if (request["signAndIssue"]!=null&&request["signAndIssue"].ToString().Equals("1")) {
                                 string signStr = wu.InsertContentToWordByBookmark(DateTime.Now.ToString("yyyy年MM月dd日"), "qfrq");
                                 if (signStr.Contains("未找到书签"))
                                     EmcConfig.ErrorLog.Error(filename+"错误消息:" + signStr);
+                            }
+                            if (!outPictureFullName.Equals("")) {
+                                wu.AddPictureToWord(outPictureFullName, "main_qrcode",630f,60f, 80f, 80f);
+                            }
+                            //审核人
+                            if (request["auditor"] != null && !request["auditor"].ToString().Equals("")) {
+                                string signStr = wu.InsertContentToWordByBookmark(request["auditor"].ToString(), "shry");
+                                if (signStr.Contains("未找到书签"))
+                                    EmcConfig.ErrorLog.Error(filename + "错误消息:" + signStr);
                             }
                         }
 

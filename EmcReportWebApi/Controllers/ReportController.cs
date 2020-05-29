@@ -117,8 +117,8 @@ namespace EmcReportWebApi.Controllers
 
         /// <summary>
         /// word转pdf 只传文件
-        /// 参数:signAndIssue:1为写入签发日期<br/>
-        ///      qrCodeStr:二维码字符串 不传值不生成<br/>
+        /// 参数:signAndIssue:1为写入签发日期|
+        ///      qrCodeStr:二维码字符串 不传值不生成|
         ///      auditor:审核人
         /// </summary>
         /// <returns></returns>

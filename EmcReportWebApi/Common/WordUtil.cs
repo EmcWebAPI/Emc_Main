@@ -351,6 +351,11 @@ namespace EmcReportWebApi.Common
                         Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
                         tempCell.Range.Text = secondItem["stdItmNo"]!=null? secondItem["stdItmNo"].ToString()+ secondItem["itemContent"].ToString(): secondItem["itemContent"].ToString();
+
+                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals("")) {
+                            this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
+                        }
+
                         if (secondItem["reMark"] != null && !secondItem["reMark"].Equals(""))
                         {
                             try
@@ -404,6 +409,30 @@ namespace EmcReportWebApi.Common
             }
 
             return cellCol7Dic;
+        }
+
+        /// <summary>
+        /// 单元格加段 加内容
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="content"></param>
+        public void AddCellLowerRightCornerContent(Cell cell, string content) {
+            try
+            {
+                cell.Range.Select();
+                object unite = WdUnits.wdLine;
+                _wordApp.Selection.EndKey(ref unite, ref _missing);
+                _wordApp.Selection.TypeParagraph();
+                _wordApp.Selection.TypeText(content);
+                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphRight;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+            }
+          
         }
 
         /// <summary>

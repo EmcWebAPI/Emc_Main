@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EmcReportWebApi.Models.Repository
+namespace EmcReportWebApi.Models
 {
     public class ContractInfo
     {

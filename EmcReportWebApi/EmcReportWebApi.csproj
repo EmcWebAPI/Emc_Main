@@ -128,14 +128,6 @@
     <Content Include="Files\ReportFiles\Test\re1.jpg" />
     <Content Include="Files\ReportFiles\Test\re2.jpg" />
     <Content Include="Files\ReportFiles\Test\reljt.jpg" />
-    <Content Include="Files\Upload\Image\image1.jpg" />
-    <Content Include="Files\Upload\Image\image2.jpg" />
-    <Content Include="Files\Upload\Image\model1.jpg" />
-    <Content Include="Files\Upload\Image\model2.jpg" />
-    <Content Include="Files\Upload\Image\re1.jpg" />
-    <Content Include="Files\Upload\Image\re2.jpg" />
-    <Content Include="Files\Upload\Image\reljt.jpg" />
-    <Content Include="Files\Upload\Rtf\index1.html" />
     <Content Include="Global.asax" />
     <Content Include="RtfConfig.xml">
       <SubType>Designer</SubType>
@@ -173,20 +165,14 @@
     <Compile Include="Models\FileParams.cs" />
     <Compile Include="Models\ReportParams.cs" />
     <Compile Include="Models\ReportResult.cs" />
-    <Compile Include="Models\Repository\ContractInfo.cs" />
+    <Compile Include="Models\ContractInfo.cs" />
     <Compile Include="Models\RtfTableInfo.cs" />
     <Compile Include="Models\StandardReportParams.cs" />
     <Compile Include="Models\StandardReportResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\Implement\ReportStandardInfos.cs" />
-    <Compile Include="Repository\IReportStandardInfos.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Files\报告模板.docx" />
-    <Content Include="Files\Upload\Rtf\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />
-    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L.Rtf" />
-    <Content Include="Files\Upload\Rtf\ZC2018-308 裂隙灯显微镜 波动.rtf" />
-    <Content Include="Files\Upload\Rtf\ZC2018-308 裂隙灯显微镜 谐波.rtf" />
     <Content Include="Files\ExperimentTemplate\传导发射实验.docx" />
     <Content Include="Files\ExperimentTemplate\电压暂降和短时中断.docx" />
     <Content Include="Files\ExperimentTemplate\射频场感应的传导骚扰.docx" />
@@ -198,9 +184,6 @@
     <Content Include="Files\ExperimentTemplate\辐射发射试验.docx" />
     <Content Include="Files\ExperimentTemplate\静电放电.docx" />
     <Content Include="Files\ExperimentTemplate\高频手术设备干扰抗扰度试验.docx" />
-    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE N.Rtf" />
-    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE N - 副本.Rtf" />
-    <Content Include="Files\Upload\Rtf\ZC2018-128  生物安全柜 模式1 CE L - 副本.Rtf" />
     <Content Include="Files\ExperimentTemplate\RTFTemplate.docx" />
     <Content Include="Files\ReportFiles\Test\0505 电磁兼容资料审查表0802.docx" />
     <Content Include="Files\ReportFiles\Test\QW2018-2065 冷冻射频肿瘤治疗系统   RE.Rtf" />

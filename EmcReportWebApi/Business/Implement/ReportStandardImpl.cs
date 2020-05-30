@@ -1,7 +1,5 @@
 ﻿using EmcReportWebApi.Common;
 using EmcReportWebApi.Models;
-using EmcReportWebApi.Models.Repository;
-using EmcReportWebApi.Repository;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -16,10 +14,9 @@ namespace EmcReportWebApi.Business.Implement
 {
     public class ReportStandardImpl : ReportBase, IReportStandard
     {
-        private IReportStandardInfos _reportStandardInfos;
-        public ReportStandardImpl(IReportStandardInfos reportStandardInfos)
+        public ReportStandardImpl()
         {
-            _reportStandardInfos = reportStandardInfos;
+
         }
 
         /// <summary>

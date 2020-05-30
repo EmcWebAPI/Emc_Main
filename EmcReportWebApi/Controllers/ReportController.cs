@@ -1,15 +1,10 @@
 ﻿using EmcReportWebApi.Business;
-using EmcReportWebApi.Business.Implement;
-using EmcReportWebApi.Common;
+using EmcReportWebApi.Config;
 using EmcReportWebApi.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using EmcReportWebApi.Utils;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;

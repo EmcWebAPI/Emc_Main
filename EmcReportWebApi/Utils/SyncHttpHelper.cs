@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace EmcReportWebApi.Common
+namespace EmcReportWebApi.Utils
 {
     public class SyncHttpHelper
     {

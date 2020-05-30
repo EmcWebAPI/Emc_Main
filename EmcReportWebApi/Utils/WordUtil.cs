@@ -7,29 +7,57 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace EmcReportWebApi.Common
+namespace EmcReportWebApi.Utils
 {
     public class WordUtil : IDisposable
     {
-        private Application _wordApp;//word用程序
-        private Document _currentWord;//当前操作的word
-        private bool _disposed;
-        private bool _needWrite = false;
-        private bool _isSaveAs = false;
-        private string _outFilePath = "";
+        /// <summary>
+        /// word应用程序
+        /// </summary>
+        protected Application _wordApp;
+        /// <summary>
+        /// 当前操作的word
+        /// </summary>
+        protected Document _currentWord;
+        /// <summary>
+        /// 资源回收标记
+        /// </summary>
+        protected bool _disposed;
+        /// <summary>
+        /// 是否需要写入文件
+        /// </summary>
+        protected bool _needWrite = false;
+        /// <summary>
+        /// 是否保存
+        /// </summary>
+        protected bool _isSaveAs = false;
+        /// <summary>
+        /// 保存路径
+        /// </summary>
+        protected string _outFilePath = "";
 
-        private object _missing = System.Reflection.Missing.Value;
-        private object _objFalse = false;
-        private object _objTrue = true;
-        private object wdReplaceAll = WdReplace.wdReplaceAll;//替换所有文字
-        private object wdReplaceOne = WdReplace.wdReplaceOne;//替换第一个文字
+        /// <summary>
+        /// office component 代表空
+        /// </summary>
+        protected object _missing = System.Reflection.Missing.Value;
+        /// <summary>
+        /// false对象
+        /// </summary>
+        protected object _objFalse = false;
+        /// <summary>
+        /// true对象
+        /// </summary>
+        protected object _objTrue = true;
 
-        private Dictionary<string, Document> _fileDic;
+        /// <summary>
+        /// 所有打开文件的集合
+        /// </summary>
+        protected Dictionary<string, Document> _fileDic;
 
-        public WordUtil()
-        {
-
-        }
+        /// <summary>
+        /// 打开现有文件操作
+        /// </summary>
+        /// <param name="fileFullName">需保存文件的路径</param>
         public WordUtil(string fileFullName)
         {
             if (fileFullName.Equals(""))
@@ -71,9 +99,9 @@ namespace EmcReportWebApi.Common
 
         #region 标准报告业务相关
 
-        private Dictionary<Cell, string> lowerRightCornerCells = new Dictionary<Cell, string>();
+        protected Dictionary<Cell, string> lowerRightCornerCells = new Dictionary<Cell, string>();
 
-        public int TableSplit(string bookmark)
+        public virtual int TableSplit(string bookmark)
         {
             try
             {
@@ -114,9 +142,9 @@ namespace EmcReportWebApi.Common
                                 cellNextList.Add(cellNext);
                         }
 
-                         //处理单项结论
+                        //处理单项结论
                         HandleConclusion(table, cellList, cellNextList);
-                        
+
                         _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
                         pageIndex = pageNumber;
                     }
@@ -126,7 +154,7 @@ namespace EmcReportWebApi.Common
                 Dictionary<string, string> valuePairs = new Dictionary<string, string>();
                 valuePairs.Add("$$", "");//报告编号
                 replaceDic.Add(1, valuePairs);//替换全部内容
-                this.ReplaceWritten(replaceDic);
+                ReplaceWritten(replaceDic);
 
                 return 1;
             }
@@ -139,11 +167,12 @@ namespace EmcReportWebApi.Common
 
         }
 
-        private void HandleConclusion(Table table, List<CellInfo> cellList, List<Cell> nextCellList)
+        protected virtual void HandleConclusion(Table table, List<CellInfo> cellList, List<Cell> nextCellList)
         {
 
             //新的单项结论表格(第二个表格倒数第二行)
-            if (nextCellList.Count < 2) {
+            if (nextCellList.Count < 2)
+            {
                 return;
             }
             Cell nextCellInfo = nextCellList[nextCellList.Count - 2];
@@ -155,7 +184,7 @@ namespace EmcReportWebApi.Common
 
         }
 
-        private Cell TableContinueContent(Table table, int column, List<CellInfo> list, int pageIndex)
+        protected virtual Cell TableContinueContent(Table table, int column, List<CellInfo> list, int pageIndex)
         {
 
             Cell cellInfo = null;
@@ -187,7 +216,7 @@ namespace EmcReportWebApi.Common
         /// <param name="array">拆分数组</param>
         /// <param name="bookmark">书签</param>
         /// <returns></returns>
-        public int TableSplit(JArray array, string bookmark)
+        public virtual int TableSplit(JArray array, string bookmark)
         {
             try
             {
@@ -210,7 +239,7 @@ namespace EmcReportWebApi.Common
                     {
                         Cell cell = item.Key;
                         string content = item.Value;
-                        this.AddCellLowerRightCornerContent(cell, content);
+                        AddCellLowerRightCornerContent(cell, content);
                     }
                 }
 
@@ -225,7 +254,7 @@ namespace EmcReportWebApi.Common
 
         }
 
-        private void ClearTableFormat(Table table)
+        protected virtual void ClearTableFormat(Table table)
         {
             table.Select();
             _wordApp.Selection.ParagraphFormat.SpaceBeforeAuto = 0;
@@ -242,7 +271,7 @@ namespace EmcReportWebApi.Common
         /// <param name="xuhao">序号</param>
         /// <param name="table">需拆分表格</param>
         /// <returns></returns>
-        public int TableSplit(JObject jObject, int xuhao, Table table)
+        public virtual int TableSplit(JObject jObject, int xuhao, Table table)
         {
 
             table.Cell(1, 1).Select();
@@ -267,7 +296,7 @@ namespace EmcReportWebApi.Common
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
 
             JArray firstItems = (JArray)jObject["list"];
-            
+
             if (firstItems.Count != 0)
             {
                 int firstItemsCount = firstItems.Count;
@@ -298,7 +327,7 @@ namespace EmcReportWebApi.Common
                     cellCol4Dic.Add(firstItem, (2 + i).ToString() + "," + 4.ToString());
 
                 }
-                
+
                 //遍历节点拆分单元格
                 bool whilebool = true;
                 while (whilebool)
@@ -314,7 +343,7 @@ namespace EmcReportWebApi.Common
         /// 遍历节点拆分单元格
         /// </summary>
         /// <returns></returns>
-        private Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic, Dictionary<Cell, string> lowerRightCornerCells)
+        protected virtual Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic, Dictionary<Cell, string> lowerRightCornerCells)
         {
             Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
             int incr = 0;
@@ -364,9 +393,10 @@ namespace EmcReportWebApi.Common
 
                         Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
-                        tempCell.Range.Text = secondItem["stdItmNo"]!=null? secondItem["stdItmNo"].ToString()+ secondItem["itemContent"].ToString(): secondItem["itemContent"].ToString();
+                        tempCell.Range.Text = secondItem["stdItmNo"] != null ? secondItem["stdItmNo"].ToString() + secondItem["itemContent"].ToString() : secondItem["itemContent"].ToString();
 
-                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals("")) {
+                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
+                        {
                             //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
                             lowerRightCornerCells.Add(tempCell, secondItem["rightContent"].ToString());
                         }
@@ -431,7 +461,8 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="cell"></param>
         /// <param name="content"></param>
-        public void AddCellLowerRightCornerContent(Cell cell, string content) {
+        public virtual void AddCellLowerRightCornerContent(Cell cell, string content)
+        {
             try
             {
                 cell.Range.Select();
@@ -447,13 +478,13 @@ namespace EmcReportWebApi.Common
                 Dispose();
                 throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
-          
+
         }
 
         /// <summary>
         /// 添加附表
         /// </summary>
-        public string AddAttachTable(string title, JArray array, string bookmark)
+        public virtual string AddAttachTable(string title, JArray array, string bookmark)
         {
             try
             {
@@ -510,7 +541,7 @@ namespace EmcReportWebApi.Common
         /// <param name="list"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string InsertPhotoToWord(List<string> list, string bookmark)
+        public virtual string InsertPhotoToWord(List<string> list, string bookmark)
         {
             try
             {
@@ -567,7 +598,7 @@ namespace EmcReportWebApi.Common
         /// <summary>
         /// 判断图片大小
         /// </summary>
-        private InlineShape AddPictureForStandard(string picFileName, Document doc, Range range, float width = 0, float height = 0)
+        protected virtual InlineShape AddPictureForStandard(string picFileName, Document doc, Range range, float width = 0, float height = 0)
         {
             float imageWidth = 0;
             float imageHeight = 0;
@@ -578,11 +609,11 @@ namespace EmcReportWebApi.Common
                 imageHeight = float.Parse(sourceImage.Height.ToString());
             }
 
-           InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+            InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
 
             //float imageScaleWidth = image.ScaleWidth;
             //float imageScaleHeight = image.ScaleHeight;
-            
+
             if (width != 0 && imageWidth > width && imageWidth > imageHeight)
             {
 
@@ -613,7 +644,7 @@ namespace EmcReportWebApi.Common
                 }
 
             }
-           
+
 
             //if (width != 0 && height != 0)
             //{
@@ -628,10 +659,10 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string RemovePhotoTable(string bookmark)
+        public virtual string RemovePhotoTable(string bookmark)
         {
             Range range = GetBookmarkRank(_currentWord, bookmark);
-            
+
             Table table = range.Tables[1];
             table.Select();
             _wordApp.Selection.Sections[1].Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary].LinkToPrevious = true;
@@ -640,7 +671,7 @@ namespace EmcReportWebApi.Common
             _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
             return "成功";
         }
-        
+
         #endregion
 
         #region emc报告业务相关 
@@ -649,7 +680,7 @@ namespace EmcReportWebApi.Common
         /// 将html内容导入模板
         /// </summary>
         /// <returns></returns>
-        public string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark, bool isNeedBreak, bool isCloseTheFile, bool isCloseTemplateFile)
+        public virtual string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark, bool isNeedBreak, bool isCloseTheFile, bool isCloseTemplateFile)
         {
             try
             {
@@ -695,7 +726,7 @@ namespace EmcReportWebApi.Common
         /// 在书签位置插入内容
         /// </summary>
         /// <returns></returns>
-        public string InsertContentInBookmark(string fileFullPath, string content, string bookmark, bool isCloseTheFile = true)
+        public virtual string InsertContentInBookmark(string fileFullPath, string content, string bookmark, bool isCloseTheFile = true)
         {
             try
             {
@@ -721,7 +752,7 @@ namespace EmcReportWebApi.Common
         /// <param name="list"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string InsertListToTable(List<string> list, string bookmark)
+        public virtual string InsertListToTable(List<string> list, string bookmark)
         {
             Range range = GetBookmarkRank(_currentWord, bookmark);
             Table table = range.Tables[1];
@@ -755,7 +786,7 @@ namespace EmcReportWebApi.Common
         /// <param name="mergeColumn">需要合并的列</param>
         /// <param name="isNeedNumber">是否需要添加序号</param>
         /// <returns></returns>
-        public string InsertListToTable(List<string> list, string bookmark, int mergeColumn, bool isNeedNumber = true)
+        public virtual string InsertListToTable(List<string> list, string bookmark, int mergeColumn, bool isNeedNumber = true)
         {
             if (mergeColumn < 1)
             {
@@ -873,7 +904,7 @@ namespace EmcReportWebApi.Common
         /// 样品连接图
         /// </summary>
         /// <returns></returns>
-        public string InsertImageToWord(List<string> list, string bookmark)
+        public virtual string InsertImageToWord(List<string> list, string bookmark)
         {
             try
             {
@@ -907,7 +938,7 @@ namespace EmcReportWebApi.Common
         /// <param name="list"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public string InsertImageToWordSample(List<string> list, string bookmark)
+        public virtual string InsertImageToWordSample(List<string> list, string bookmark)
         {
             try
             {
@@ -963,7 +994,7 @@ namespace EmcReportWebApi.Common
         /// 将图片插入模板文件
         /// </summary>
         /// <returns></returns>
-        public string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
+        public virtual string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
         {
             try
             {
@@ -1038,7 +1069,7 @@ namespace EmcReportWebApi.Common
         /// <param name="isNewBookmark"></param>
         /// <param name="isCloseTheFile"></param>
         /// <returns></returns>
-        public string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
+        public virtual string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
         {
             string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff").ToString();
             try
@@ -1085,7 +1116,7 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="intbackspace"></param>
         /// <returns></returns>
-        public string FormatCurrentWord(int intbackspace)
+        public virtual string FormatCurrentWord(int intbackspace)
         {
             intbackspace = intbackspace - 1;
             _currentWord.Content.Select();
@@ -1113,7 +1144,7 @@ namespace EmcReportWebApi.Common
         /// <param name="wordBookmark">需要插入内容的书签</param>
         /// <param name="isCloseTheFile">是否关闭新打开的文件</param>
         /// <returns></returns>
-        public string CopyOtherFileTableForCol(string copyFileFullPath, int copyFileTableIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTheFile)
+        public virtual string CopyOtherFileTableForCol(string copyFileFullPath, int copyFileTableIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTheFile)
         {
             try
             {
@@ -1157,12 +1188,12 @@ namespace EmcReportWebApi.Common
 
             return "创建成功";
         }
-        public string CreateTableToWord(List<string> contentList, string bookmark, bool isNeedBreak)
+        public virtual string CreateTableToWord(List<string> contentList, string bookmark, bool isNeedBreak)
         {
             return CreateTableToWord(_currentWord, contentList, bookmark, isNeedBreak);
         }
 
-        public string CreateTableToWord(string otherFileFullName, List<string> contentList, string bookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        public virtual string CreateTableToWord(string otherFileFullName, List<string> contentList, string bookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
         {
             Document otherFileDoc = OpenWord(otherFileFullName);
             if (isCloseTemplateFile)
@@ -1170,7 +1201,7 @@ namespace EmcReportWebApi.Common
             return CreateTableToWord(otherFileDoc, contentList, bookmark, isNeedBreak, isCloseTheFile);
         }
 
-        public string CreateTableToWord(Document doc, List<string> contentList, string bookmark, bool isNeedBreak, bool isCloseTheFile = true)
+        public virtual string CreateTableToWord(Document doc, List<string> contentList, string bookmark, bool isNeedBreak, bool isCloseTheFile = true)
         {
             Range table = GetBookmarkRank(doc, bookmark);
             table.Select();
@@ -1231,7 +1262,7 @@ namespace EmcReportWebApi.Common
         /// <param name="wordBookmark">需要插入内容的书签</param>
         /// <param name="isCloseTheFile">是否关闭新打开的文件</param>
         /// <returns></returns>
-        public string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak, bool isCloseTheFile = true)
+        public virtual string CopyOtherFileTableForColByTableIndex(string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak, bool isCloseTheFile = true)
         {
             string result = "创建成功";
             try
@@ -1253,7 +1284,7 @@ namespace EmcReportWebApi.Common
         }
 
 
-        public string CopyOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        public virtual string CopyOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
         {
             string result = "创建成功";
             try
@@ -1278,7 +1309,7 @@ namespace EmcReportWebApi.Common
         }
 
 
-        private string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
+        protected virtual string CopyOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
         {
             try
             {
@@ -1368,7 +1399,7 @@ namespace EmcReportWebApi.Common
         }
 
 
-        public string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
+        public virtual string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
         {
             string result = "创建失败";
             try
@@ -1401,7 +1432,7 @@ namespace EmcReportWebApi.Common
         /// <param name="workBookmark">插入文件的书签位置</param>
         /// <param name="isCloseTheFile">是否关闭其他文件</param>
         /// <returns></returns>
-        public string CopyOtherFilePictureToWord(string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
+        public virtual string CopyOtherFilePictureToWord(string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
         {
             string result = "创建失败";
             try
@@ -1420,7 +1451,7 @@ namespace EmcReportWebApi.Common
             return "创建成功";
         }
 
-        public string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isPage)
+        public virtual string CopyOtherFilePictureToWord(Document fileDoc, Document copyFileDoc, int copyFilePictureStartIndex, string workBookmark, bool isNeedBreak, bool isPage)
         {
             try
             {
@@ -1588,7 +1619,7 @@ namespace EmcReportWebApi.Common
         {
             try
             {
-                this.AddShapePicture(pictureFullName, _currentWord, GetBookmarkRank(_currentWord, bookmark), top, left, width, height);
+                AddShapePicture(pictureFullName, _currentWord, GetBookmarkRank(_currentWord, bookmark), top, left, width, height);
             }
             catch (Exception ex)
             {
@@ -1673,7 +1704,7 @@ namespace EmcReportWebApi.Common
         /// 根据书签向word中插入内容
         /// </summary>
         /// <returns></returns>
-        public string InsertContentToWordByBookmark(string content, string bookmark,bool isUnderLine=false)
+        public string InsertContentToWordByBookmark(string content, string bookmark, bool isUnderLine = false)
         {
             try
             {
@@ -1913,13 +1944,13 @@ namespace EmcReportWebApi.Common
         #endregion
 
         #region 私有方法
-        private void NewApp()
+        protected void NewApp()
         {
             _wordApp = new Application();
         }
 
         //关闭application
-        private void CloseApp()
+        protected void CloseApp()
         {
             object wdSaveOptions = WdSaveOptions.wdDoNotSaveChanges;
             foreach (Document item in _wordApp.Documents)
@@ -1931,7 +1962,7 @@ namespace EmcReportWebApi.Common
         }
 
         //创建一个新的word
-        private Document CreatWord()
+        protected Document CreatWord()
         {
             if (_wordApp == null)
                 NewApp();
@@ -1939,7 +1970,7 @@ namespace EmcReportWebApi.Common
         }
 
         //打开word
-        private Document OpenWord(string fileFullPath, bool isOtherFormat = false)
+        protected Document OpenWord(string fileFullPath, bool isOtherFormat = false)
         {
             if (_wordApp == null)
                 NewApp();
@@ -1981,7 +2012,7 @@ namespace EmcReportWebApi.Common
         }
 
         //关闭word
-        private void CloseWord(Document doc, string fileFulleName = "")
+        protected void CloseWord(Document doc, string fileFulleName = "")
         {
             doc.Close(ref _objFalse, ref _missing, ref _missing);
             if (fileFulleName != null)
@@ -1989,13 +2020,13 @@ namespace EmcReportWebApi.Common
         }
 
         //保存word
-        private void SaveWord(Document doc)
+        protected void SaveWord(Document doc)
         {
             doc.Save();
         }
 
         //另存word
-        private void SaveAsWord(Document doc, string outFileFullName)
+        protected void SaveAsWord(Document doc, string outFileFullName)
         {
             //筛选保存格式
             object defFormat = FilterExtendName(outFileFullName);
@@ -2025,7 +2056,7 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="fileFullName"></param>
         /// <returns></returns>
-        private object FilterExtendName(string fileFullName)
+        protected object FilterExtendName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('.');
             string extendName = fileFullName.Substring(index, fileFullName.Length - index);
@@ -2054,7 +2085,7 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="fileFullName"></param>
         /// <returns></returns>
-        private string FilterFileName(string fileFullName)
+        protected string FilterFileName(string fileFullName)
         {
             int index = fileFullName.LastIndexOf('\\');
             return fileFullName.Substring(index, fileFullName.Length - index);
@@ -2062,7 +2093,7 @@ namespace EmcReportWebApi.Common
 
 
         //在application内插入文件(合并word)
-        private void InsertWord(string fileName, bool ifBreakPage = false)
+        protected void InsertWord(string fileName, bool ifBreakPage = false)
         {
             if (ifBreakPage)
                 InsertBreakPage(true);
@@ -2079,7 +2110,7 @@ namespace EmcReportWebApi.Common
         /// 为当前选中区域添加分页符
         /// </summary>
         /// <param name="isPage"></param>
-        private void InsertBreakPage(bool isPage)
+        protected void InsertBreakPage(bool isPage)
         {
             object unite = WdUnits.wdStory;
             _wordApp.Selection.EndKey(ref unite, ref _missing);
@@ -2098,7 +2129,7 @@ namespace EmcReportWebApi.Common
         /// 当前word插入图片
         /// </summary>
         /// <returns></returns>
-        private InlineShape AddPicture(string picFileName, Document doc, Range range, float width = 0, float height = 0)
+        protected InlineShape AddPicture(string picFileName, Document doc, Range range, float width = 0, float height = 0)
         {
             range.Select();
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
@@ -2137,7 +2168,7 @@ namespace EmcReportWebApi.Common
         /// <param name="word"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        private Range GetBookmarkRank(Document word, string bookmark)
+        protected Range GetBookmarkRank(Document word, string bookmark)
         {
             object bk = bookmark;
             Range bookmarkRank = null;
@@ -2155,7 +2186,7 @@ namespace EmcReportWebApi.Common
         /// <param name="word"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        private Range GetBookmarkReturnNull(Document word, string bookmark)
+        protected Range GetBookmarkReturnNull(Document word, string bookmark)
         {
             object bk = bookmark;
             Range bookmarkRank = null;
@@ -2171,7 +2202,7 @@ namespace EmcReportWebApi.Common
         /// word清除域代码格式
         /// </summary>
         /// <returns></returns>
-        private int ClearWordCodeFormat()
+        protected int ClearWordCodeFormat()
         {
             _currentWord.Select();
             ClearCode();
@@ -2181,7 +2212,7 @@ namespace EmcReportWebApi.Common
         /// <summary>
         /// 域代码转文本
         /// </summary>
-        private void ClearCode()
+        protected void ClearCode()
         {
             ShowCodesAndUnlink(_currentWord.Content);
             for (int i = 1; i <= _wordApp.Selection.Sections.Count; i++)
@@ -2205,15 +2236,17 @@ namespace EmcReportWebApi.Common
         /// 将域代码替换为文本域值
         /// </summary>
         /// <param name="range"></param>
-        private void ShowCodesAndUnlink(Range range)
+        protected void ShowCodesAndUnlink(Range range)
         {
             range.Fields.ToggleShowCodes();
             range.Fields.Unlink();
         }
 
         //全文替换文本 1.文本 2. 页脚 3. 页眉
-        private void Replace(int type, string oldWord, string newWord, int replaceType)
+        protected void Replace(int type, string oldWord, string newWord, int replaceType)
         {
+            object wdReplaceAll = WdReplace.wdReplaceAll;//替换所有文字
+            object wdReplaceOne = WdReplace.wdReplaceOne;//替换第一个文字
             object repalceTypObj = replaceType == 1 ? wdReplaceOne : wdReplaceAll;
             switch (type)
             {
@@ -2334,7 +2367,7 @@ namespace EmcReportWebApi.Common
         /// <param name="startColumn">首单元格的列</param>
         /// <param name="endRow">尾单元格的行</param>
         /// <param name="endColumn">尾单元格的列</param>
-        private void MergeCell(Table table, int startRow, int startColumn, int endRow, int endColumn)
+        protected void MergeCell(Table table, int startRow, int startColumn, int endRow, int endColumn)
         {
             MergeCell(table.Cell(startRow, startColumn), table.Cell(endRow, endColumn));
         }
@@ -2344,7 +2377,7 @@ namespace EmcReportWebApi.Common
         /// </summary>
         /// <param name="startCell">首单元格</param>
         /// <param name="endCell">尾单元格</param>
-        private void MergeCell(Cell startCell, Cell endCell)
+        protected void MergeCell(Cell startCell, Cell endCell)
         {
             startCell.Merge(endCell);
         }
@@ -2352,7 +2385,7 @@ namespace EmcReportWebApi.Common
         /// <summary>
         /// 当前选中文字加粗居左
         /// </summary>
-        private void FontBoldLeft()
+        protected void FontBoldLeft()
         {
             _wordApp.Selection.Font.Bold = (int)WdConstants.wdToggle;
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
@@ -2363,7 +2396,7 @@ namespace EmcReportWebApi.Common
         /// 设置表格添加边框
         /// </summary>
         /// <param name="table"></param>
-        private void SetTabelFormat(Table table)
+        protected void SetTabelFormat(Table table)
         {
             table.Select();
             table.Borders.Enable = (int)WdLineStyle.wdLineStyleSingle;
@@ -2375,7 +2408,7 @@ namespace EmcReportWebApi.Common
         /// <param name="table">表格</param>
         /// <param name="columnNumber">添加序号的列</param>
         /// <param name="isTitle">是否有表头</param>
-        private void AddTableNumber(Table table, int columnNumber, bool isTitle = true)
+        protected void AddTableNumber(Table table, int columnNumber, bool isTitle = true)
         {
             table.Select();
             table.Cell(1, columnNumber).Select();
@@ -2403,7 +2436,7 @@ namespace EmcReportWebApi.Common
         /// <summary>
         /// 创建并移动到下一个段落
         /// </summary>
-        private void CreateAndGoToNextParagraph(Range range, bool isCreateParagraph, bool isMove)
+        protected void CreateAndGoToNextParagraph(Range range, bool isCreateParagraph, bool isMove)
         {
             range.Select();
             if (isCreateParagraph)
@@ -2422,7 +2455,7 @@ namespace EmcReportWebApi.Common
         /// 插入段落
         /// </summary>
         /// <param name="range"></param>
-        private void InsertParagraph(Range range)
+        protected void InsertParagraph(Range range)
         {
             object contLine = 1;
             object WdLine = WdUnits.wdLine;//换一行;
@@ -2434,7 +2467,7 @@ namespace EmcReportWebApi.Common
         /// 设置table格式
         /// </summary>
         /// <param name="table"></param>
-        private void ClearFormatTable(Table table)
+        protected void ClearFormatTable(Table table)
         {
             table.Select();
             if (table.Rows.Count > 0)
@@ -2461,7 +2494,7 @@ namespace EmcReportWebApi.Common
         /// 设置table除表头之外的单元格等高
         /// </summary>
         /// <param name="table"></param>
-        private void SetDistributeTable(Table table)
+        protected void SetDistributeTable(Table table)
         {
             int tableRows = table.Rows.Count;
             if (tableRows >= 2)
@@ -2480,7 +2513,7 @@ namespace EmcReportWebApi.Common
         /// 根据windows大小设置表格大小
         /// </summary>
         /// <param name="table"></param>
-        private void SetAutoFitContentForTable(Table table)
+        protected void SetAutoFitContentForTable(Table table)
         {
             table.Select();
             _wordApp.Selection.Tables[1].AutoFitBehavior(WdAutoFitBehavior.wdAutoFitContent);

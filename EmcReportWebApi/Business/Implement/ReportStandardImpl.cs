@@ -1,4 +1,5 @@
-﻿using EmcReportWebApi.Common;
+﻿using EmcReportWebApi.Config;
+using EmcReportWebApi.Utils;
 using EmcReportWebApi.Models;
 using Newtonsoft.Json.Linq;
 using System;
@@ -9,16 +10,15 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using EmcReportWebApi.Business.ImplWordUtil;
 
 namespace EmcReportWebApi.Business.Implement
 {
+    /// <summary>
+    /// 标准报告实现类
+    /// </summary>
     public class ReportStandardImpl : ReportBase, IReportStandard
     {
-        public ReportStandardImpl()
-        {
-
-        }
-
         /// <summary>
         /// 生成标准报告
         /// </summary>
@@ -44,7 +44,7 @@ namespace EmcReportWebApi.Business.Implement
                 sw.Start();
                 string reportId = para.OriginalRecord;
                 //获取zip文件 
-                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrRoot));
+                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, Guid.NewGuid().ToString());
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
                 {
@@ -58,7 +58,7 @@ namespace EmcReportWebApi.Business.Implement
                         return result;
                     }
                     //解压zip文件
-                    ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
+                    FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 }
 
                 //生成报告
@@ -114,7 +114,7 @@ namespace EmcReportWebApi.Business.Implement
             string result = "保存成功1";
             string reportStr = "";
             //生成报告
-            using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
+            using (ReportStandardHandleWord wordUtil = new ReportStandardHandleWord(outfilePth, filePath))
             {
                 //首页内容 object
                 ContractData contractInfo = mainObj["firstPage"].ToObject<ContractData>();
@@ -182,7 +182,7 @@ namespace EmcReportWebApi.Business.Implement
                 wordUtil.ReplaceWritten(replaceDic);
 
             }
-            //using (WordUtil wordUtil = new WordUtil(outfilePth))
+            //using (ReportStandardHandleWord wordUtil = new ReportStandardHandleWord(outfilePth))
             //{
 
             //}
@@ -197,8 +197,10 @@ namespace EmcReportWebApi.Business.Implement
             return srr;
         }
 
-        //设置首页内容
-        public override string InsertContentToWord(WordUtil wordUtil, JObject jo1)
+        /// <summary>
+        /// 设置首页内容
+        /// </summary>
+        private string InsertContentToWord(ReportStandardHandleWord wordUtil, JObject jo1)
         {
             foreach (var item in jo1)
             {
@@ -214,8 +216,10 @@ namespace EmcReportWebApi.Business.Implement
             }
             return "保存成功";
         }
-        //首页内容特殊处理
-        public override string CheckFirstPage(string itemValue)
+        /// <summary>
+        /// 首页内容特殊处理
+        /// </summary>
+        private string CheckFirstPage(string itemValue)
         {
             int fontCount = 38;
             int valueCount = System.Text.Encoding.Default.GetBytes(itemValue).Length;
@@ -231,7 +235,7 @@ namespace EmcReportWebApi.Business.Implement
             return itemValue;
         }
 
-        private string AddAttachTable(WordUtil wordUtil, JArray array, string bookmark)
+        private string AddAttachTable(ReportStandardHandleWord wordUtil, JArray array, string bookmark)
         {
             string result = "";
 
@@ -247,7 +251,7 @@ namespace EmcReportWebApi.Business.Implement
         /// <summary>
         /// 照片和说明
         /// </summary>
-        private string InsertImageToWordYptp(WordUtil wordUtil, JArray array, string reportFilesPath)
+        private string InsertImageToWordYptp(ReportStandardHandleWord wordUtil, JArray array, string reportFilesPath)
         {
             List<string> list = new List<string>();
             foreach (JObject item in array)

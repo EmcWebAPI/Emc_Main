@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Http.Filters;
 
-namespace EmcReportWebApi.Common
+namespace EmcReportWebApi.Config
 {
     public class CompressContentAttribute : ActionFilterAttribute
     {

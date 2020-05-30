@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Xml.Linq;
 
-namespace EmcReportWebApi.Common
+namespace EmcReportWebApi.Config
 {
     public static class EmcConfig
     {

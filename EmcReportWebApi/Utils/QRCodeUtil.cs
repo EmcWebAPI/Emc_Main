@@ -6,8 +6,11 @@ using System.Text;
 using System.Web;
 using ThoughtWorks.QRCode.Codec;
 
-namespace EmcReportWebApi.Common
+namespace EmcReportWebApi.Utils
 {
+    /// <summary>
+    /// 生成二维码操作类
+    /// </summary>
     public static class QRCodeUtil 
     {
         /// <summary>

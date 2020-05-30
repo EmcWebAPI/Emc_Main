@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Web.Http.Description;
 
-namespace EmcReportWebApi.Common
+namespace EmcReportWebApi.Config
 {
 
     /// <summary>

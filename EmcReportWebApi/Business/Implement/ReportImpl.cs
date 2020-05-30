@@ -1,4 +1,5 @@
-﻿using EmcReportWebApi.Common;
+﻿using EmcReportWebApi.Config;
+using EmcReportWebApi.Utils;
 using EmcReportWebApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,9 +11,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using EmcReportWebApi.Business.ImplWordUtil;
 
 namespace EmcReportWebApi.Business.Implement
 {
+    /// <summary>
+    /// 报告实现类
+    /// </summary>
     public class ReportImpl: ReportBase,IReport
     {
         /// <summary>
@@ -38,7 +43,7 @@ namespace EmcReportWebApi.Business.Implement
                 sw.Start();
                 string reportId = para.ReportId;
                 //获取zip文件 
-                string reportFilesPath = FileUtil.CreateReportDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
+                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, Guid.NewGuid().ToString());
                 string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + EmcConfig.GetTimestamp(DateTime.Now);
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
@@ -54,7 +59,7 @@ namespace EmcReportWebApi.Business.Implement
                     return result;
                 }
                 //解压zip文件
-                ZipFileHelper.DecompressionZip(reportZipFilesPath, reportFilesPath);
+                FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 //生成报告
                 string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
                 sw.Stop();
@@ -78,6 +83,9 @@ namespace EmcReportWebApi.Business.Implement
             return result;
         }
 
+        /// <summary>
+        /// Json格式转成word文件
+        /// </summary>
         public string JsonToWord(string reportId, string jsonStr, string reportFilesPath)
         {
             //解析json字符串
@@ -89,7 +97,7 @@ namespace EmcReportWebApi.Business.Implement
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             string result = "保存成功1";
             //生成报告
-            using (WordUtil wordUtil = new WordUtil(outfilePth, filePath))
+            using (ReportHandleWord wordUtil = new ReportHandleWord(outfilePth, filePath))
             {
                 //审查表 //测试数据
                 string scbWord = reportFilesPath + "\\" + (string)mainObj["scbWord"];
@@ -201,8 +209,45 @@ namespace EmcReportWebApi.Business.Implement
 
         #region 生成报表方法
 
+        /// <summary>
+        /// 设置首页内容
+        /// </summary>
+        private string InsertContentToWord(ReportHandleWord wordUtil, JObject jo1)
+        {
+            foreach (var item in jo1)
+            {
+                string key = item.Key.ToString();
+                string value = item.Value.ToString();
+                if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
+                {
+                    value = CheckFirstPage(value);
+                }
+                wordUtil.InsertContentToWordByBookmark(value, key);
+            }
+            return "保存成功";
+        }
+        /// <summary>
+        /// 首页内容特殊处理
+        /// </summary>
+        private string CheckFirstPage(string itemValue)
+        {
+            int fontCount = 38;
+            int valueCount = System.Text.Encoding.Default.GetBytes(itemValue).Length;
+            if (fontCount > valueCount)
+            {
+                int spaceCount = (fontCount - valueCount) / 2;
+                for (int i = 0; i < spaceCount; i++)
+                {
+                    itemValue = " " + itemValue + " ";
+                }
+            }
+
+            return itemValue;
+        }
+
+
         //测试工具
-        private string InsertListIntoTable(WordUtil wordUtil, JArray array, int mergeColumn, string bookmark, bool isNeedNumber = true)
+        private string InsertListIntoTable(ReportHandleWord wordUtil, JArray array, int mergeColumn, string bookmark, bool isNeedNumber = true)
         {
             List<string> list = new List<string>();
 
@@ -227,13 +272,13 @@ namespace EmcReportWebApi.Business.Implement
         }
 
         //从审查表中取table数据
-        private void GetTableFromReview(WordUtil wordUtil, string bookmark, string scbWordPath, int tableIndex, bool isCloseTheFile)
+        private void GetTableFromReview(ReportHandleWord wordUtil, string bookmark, string scbWordPath, int tableIndex, bool isCloseTheFile)
         {
             wordUtil.CopyTableToWord(scbWordPath, bookmark, tableIndex, isCloseTheFile);
         }
 
         //从审查表中取连接图
-        private void GetImageFomReview(WordUtil wordUtil, string bookmark, string scbWordPath, bool isCloseTheFile)
+        private void GetImageFomReview(ReportHandleWord wordUtil, string bookmark, string scbWordPath, bool isCloseTheFile)
         {
             wordUtil.CopyImageToWord(scbWordPath, bookmark, isCloseTheFile);
         }
@@ -243,7 +288,7 @@ namespace EmcReportWebApi.Business.Implement
         /// </summary>
         /// <param name="funType">1.传导发射实验,辐射发射实验 2.谐波失真 3.其他html表单实验</param>
         /// <returns>新建的书签供下个实验使用</returns>
-        private string SetEmissionCommon(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, int funType, bool isNewBookmark)
+        private string SetEmissionCommon(ReportHandleWord wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, int funType, bool isNewBookmark)
         {
             string templateName = jObject["name"].ToString();
             string templateFullPath = CreateTemplateMiddle(middleDir, "experiment", GetTemplatePath(templateName + ".docx"));
@@ -430,7 +475,7 @@ namespace EmcReportWebApi.Business.Implement
         }
 
         //电快速瞬变脉冲群 电压暂降和短时中断
-        private string SetPulseEmission(WordUtil wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, bool isNewBookmark)
+        private string SetPulseEmission(ReportHandleWord wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, bool isNewBookmark)
         {
 
             string templateName = jObject["name"].ToString();
@@ -579,7 +624,7 @@ namespace EmcReportWebApi.Business.Implement
         }
 
         //样品图片
-        private string InsertImageToWordYptp(WordUtil wordUtil, JArray array, string reportFilesPath)
+        private string InsertImageToWordYptp(ReportHandleWord wordUtil, JArray array, string reportFilesPath)
         {
             List<string> list = new List<string>();
             foreach (JObject item in array)

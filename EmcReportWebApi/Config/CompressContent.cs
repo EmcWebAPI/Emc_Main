@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace EmcReportWebApi.Common
+namespace EmcReportWebApi.Config
 {
     /// <summary>
     /// 压缩内容

@@ -2,7 +2,7 @@ using System.Web.Http;
 using WebActivatorEx;
 using EmcReportWebApi;
 using Swashbuckle.Application;
-using EmcReportWebApi.Common;
+using EmcReportWebApi.Config;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 

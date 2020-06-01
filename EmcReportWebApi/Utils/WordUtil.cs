@@ -284,15 +284,14 @@ namespace EmcReportWebApi.Utils
             // Row newRow = table.Rows[2];
 
             //序号
-            table.Cell(2, 1).Range.Text = jObject["idxNo"].ToString();
-
+            table.Cell(2, 1).Range.Text = jObject["idxNo"].ToString().Trim();
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
             if (jObject["comment"] != null)
                 table.Cell(2, 6).Range.Text = "$$" + jObject["comment"].ToString();
             //备注
-            if (jObject["reMark"] != null && !jObject["reMark"].Equals(""))
+            if (jObject["reMark"] != null && !jObject["reMark"].ToString().Equals(""))
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
 
             JArray firstItems = (JArray)jObject["list"];

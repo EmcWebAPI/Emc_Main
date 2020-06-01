@@ -54,7 +54,7 @@ namespace EmcReportWebApi.Business.Implement
                     if (fileBytes.Length <= 0)
                     {
                         result = SetReportResult<string>("请求报告文件失败", false, para.OriginalRecord.ToString());
-                        EmcConfig.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.OriginalRecord));
+                        EmcConfig.ErrorLog.Error(string.Format("请求报告文件失败,报告id:{0}", para.OriginalRecord));
                         return result;
                     }
                     //解压zip文件
@@ -76,8 +76,8 @@ namespace EmcReportWebApi.Business.Implement
             }
             catch (Exception ex)
             {
-                EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
                 string message = string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.OriginalRecord, ex.Message);
+                EmcConfig.ErrorLog.Error(message, ex);//设置错误信息
                 result = SetReportResult<string>(message, false, "");
                 CallbackReqFail(message, para.CallbackUrl, para.OriginalRecord);
                 return result;

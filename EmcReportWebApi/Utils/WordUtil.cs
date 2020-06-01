@@ -117,14 +117,14 @@ namespace EmcReportWebApi.Utils
                 {
 
                     Range r = cell.Range;
-                    if (r.Text.Equals("\r\a") && !r.Text.Contains("$$"))
-                    {
-                        continue;
-                    }
                     int rowNumber = (int)r.get_Information(WdInformation.wdStartOfRangeRowNumber);
                     int columnNumber = (int)r.get_Information(WdInformation.wdStartOfRangeColumnNumber);
                     int pageNumber = (int)r.get_Information(WdInformation.wdActiveEndPageNumber);
                     cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber, pageNumber));
+                    if (r.Text.Equals("\r\a") && !r.Text.Contains("$$"))
+                    {
+                        continue;
+                    }
                     r.Select();
                     if (_wordApp.Selection.Bookmarks.Exists("photo"))
                         break;
@@ -203,7 +203,7 @@ namespace EmcReportWebApi.Utils
             string cellText = "";
             int inoRow = table.Range.Paragraphs.Count;
 
-            cellText = list.Where(p => p.ColumnNumber == column && !p.CellText.Equals("\r\a")).OrderByDescending(p => p.RowNumber).First().CellText;
+            cellText = list.Where(p => p.ColumnNumber == column).OrderByDescending(p => p.RowNumber).First().CellText;
             if (!cellText.Contains("续") && column == 1)
                 cellText = "续\r\a" + cellText.Replace("\r\a", "");
             tableNext.Cell(1, column).Range.InsertAfter(cellText.Replace("\r\a", ""));

@@ -255,20 +255,23 @@ namespace EmcReportWebApi.Models
         /// </summary>
         private string _sampleAcquisitionModeCy;
 
+        /// <summary>
+        /// 抽样
+        /// </summary>
         public string SampleAcquisitionModeCy
         {
-            get {
-                if (_sampleAcquisitionMode.Equals("1"))
-                {
-                    this._sampleAcquisitionModeCy = "抽样（/）";
-                }
-                else
-                {
-                    this._sampleAcquisitionModeCy = "抽样（√）";
-                }
-                return _sampleAcquisitionModeCy; }
-            set { _sampleAcquisitionModeCy = value; }
+            get
+            {
+                this._sampleAcquisitionModeCy = _sampleAcquisitionMode.Equals("1") ? "抽样（/）" : "抽样（√）";
+                return _sampleAcquisitionModeCy;
+            }
+            set => _sampleAcquisitionModeCy = value;
         }
+
+        /// <summary>
+        /// 抽样单编号
+        /// </summary>
+        public string SamplingNumber { get; set; }
 
         #endregion
     }

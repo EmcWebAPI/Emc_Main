@@ -366,7 +366,7 @@ namespace EmcReportWebApi.Utils
                     table.Cell(cRow, cCol).Split(secondItemsCount, 2);
                     for (int i = 0; i < secondItemsCount; i++)
                     {
-                        table.Cell(cRow + i, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);
+                        table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
 
                         //table.Cell(cRow+i, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
                         //table.Cell(cRow+i, cCol).PreferredWidth = 40f;
@@ -421,7 +421,7 @@ namespace EmcReportWebApi.Utils
                                 {
                                     //序号列的单元格
                                     Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
-                                    xuhaoCell.SetWidth(25f, WdRulerStyle.wdAdjustFirstColumn);
+                                    xuhaoCell.SetWidth(26f, WdRulerStyle.wdAdjustFirstColumn);
                                     //设置序号列宽度
                                     //xuhaoCell.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
                                     //xuhaoCell.PreferredWidth = 25f;

@@ -13,12 +13,20 @@ using System.Web.Http;
 
 namespace EmcReportWebApi.Controllers
 {
+    /// <summary>
+    /// 报告操作接口
+    /// </summary>
     public class ReportController : ApiController
     {
 
-        private IReport _report;
-        private IReportStandard _reportStandard;
+        private readonly IReport _report;
+        private readonly IReportStandard _reportStandard;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="report">报告接口</param>
+        /// <param name="reportStandard">标准报告接口</param>
         public ReportController(IReport report, IReportStandard reportStandard)
         {
             _report = report;
@@ -34,7 +42,7 @@ namespace EmcReportWebApi.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "Emc", "生成报告" };
+            return new [] { "Emc", "生成报告" };
         }
 
         /// <summary>
@@ -46,7 +54,7 @@ namespace EmcReportWebApi.Controllers
         public IHttpActionResult CreateReport(ReportParams para)
         {
             ReportResult<string> result = _report.CreateReport(para);
-            return Json<ReportResult<string>>(result);
+            return Json(result);
         }
 
         /// <summary>
@@ -58,7 +66,7 @@ namespace EmcReportWebApi.Controllers
         public IHttpActionResult CreateStandardReport(StandardReportParams para)
         {
             ReportResult<string> result = _reportStandard.CreateReportStandard(para);
-            return Json<ReportResult<string>>(result);
+            return Json(result);
         }
 
         /// <summary>
@@ -79,10 +87,10 @@ namespace EmcReportWebApi.Controllers
                 {
                     browser = HttpContext.Current.Request.UserAgent.ToUpper();
                 }
-                string fileFullName = string.Format(@"{0}Files\OutPut\{1}", EmcConfig.CurrRoot, fileName);
+                string fileFullName = $@"{EmcConfig.CurrRoot}Files\OutPut\{fileName}";
                 if (!FileUtil.FileExists(fileFullName))
                 {
-                    throw new Exception(string.Format("文件{0},不存在", fileName));
+                    throw new Exception($"文件{fileName},不存在");
                 }
 
                 HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
@@ -104,9 +112,9 @@ namespace EmcReportWebApi.Controllers
             {
                 ReportResult<string> result = new ReportResult<string>();
                 EmcConfig.ErrorLog.Error(ex.Message, ex);
-                result.Message = string.Format("下载失败,错误信息:{0}", ex.Message);
+                result.Message = $"下载失败,错误信息:{ex.Message}";
                 result.SumbitResult = false;
-                return Json<ReportResult<string>>(result);
+                return Json(result);
             }
         }
 
@@ -122,25 +130,25 @@ namespace EmcReportWebApi.Controllers
             //下载文件到本地
             ReportResult<string> result = new ReportResult<string>();
             HttpRequest request = HttpContext.Current.Request;
-            HttpFileCollection filelist = HttpContext.Current.Request.Files;
+            HttpFileCollection fileCollection = HttpContext.Current.Request.Files;
             string convertExtendName = ".pdf";
             if (request["extendName"] != null)
                 convertExtendName = request["extendName"];
-            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
-            if (filelist != null && filelist.Count > 0)
+            if (fileCollection.Count > 0)
             {
-                for (int i = 0; i < filelist.Count; i++)
+                for (int i = 0; i < fileCollection.Count; i++)
                 {
                     try
                     {
-                        HttpPostedFile file = filelist[i];
-                        string filename = request["fileName"]!=null? request["fileName"].ToString():file.FileName;
+                        HttpPostedFile file = fileCollection[i];
+                        string filename = request["fileName"] ?? file.FileName;
                         if (filename.Equals(""))
                         {
                             EmcConfig.ErrorLog.Error("上传失败:上传的文件信息不存在！");
-                            result = SetReportResult<string>("下载失败:上传的文件信息不存在！", false, "");
+                            result = SetReportResult("下载失败:上传的文件信息不存在！", false, "");
+                            return Json(result);
                         }
-                        string filePath = currRoot + "Files\\WordConvert\\";
+                        string filePath = EmcConfig.CurrRoot + "Files\\WordConvert\\";
                         string forceName = "upload";
                         string extendName = FilterExtendName(filename);
                         string newName = Guid.NewGuid().ToString();
@@ -150,15 +158,11 @@ namespace EmcReportWebApi.Controllers
                         if (!di.Exists) { di.Create(); }
 
                         file.SaveAs(outFileName);
-
-                        // result = SetReportResult<string>(string.Format("上传成功:{0}", filename), true, templateFileName);
-                        //EmcConfig.InfoLog.Info(result);
-
                         string outPictureFullName = "";
                         //如果有二维码字符串先生成二维码
-                        if (request["qrCodeStr"] != null && !request["qrCodeStr"].ToString().Equals(""))
+                        if (request["qrCodeStr"] != null && !request["qrCodeStr"].Equals(""))
                         {
-                            string qrCodeStr = request["qrCodeStr"].ToString();
+                            string qrCodeStr = request["qrCodeStr"];
                             outPictureFullName = filePath + newName + ".jpg";
                             QRCodeUtil.QRCode(outPictureFullName, qrCodeStr);
                         }
@@ -169,7 +173,7 @@ namespace EmcReportWebApi.Controllers
                         using (WordUtil wu = new WordUtil(convertFileFullName, outFileName))
                         {
                             //签发日期
-                            if (request["signAndIssue"]!=null&&request["signAndIssue"].ToString().Equals("1")) {
+                            if (request["signAndIssue"]!=null&&request["signAndIssue"].Equals("1")) {
                                 string signStr = wu.InsertContentToWordByBookmark(DateTime.Now.ToString("yyyy年MM月dd日"), "qfrq");
                                 if (signStr.Contains("未找到书签"))
                                     EmcConfig.ErrorLog.Error(filename+"错误消息:" + signStr);
@@ -178,8 +182,8 @@ namespace EmcReportWebApi.Controllers
                                 wu.AddPictureToWord(outPictureFullName, "main_qrcode",630f,60f, 80f, 80f);
                             }
                             //审核人
-                            if (request["auditor"] != null && !request["auditor"].ToString().Equals("")) {
-                                string signStr = wu.InsertContentToWordByBookmark(request["auditor"].ToString(), "shry");
+                            if (request["auditor"] != null && !request["auditor"].Equals("")) {
+                                string signStr = wu.InsertContentToWordByBookmark(request["auditor"], "shry");
                                 if (signStr.Contains("未找到书签"))
                                     EmcConfig.ErrorLog.Error(filename + "错误消息:" + signStr);
                             }
@@ -191,7 +195,7 @@ namespace EmcReportWebApi.Controllers
                         //写入文件流
                         if (!FileUtil.FileExists(convertFileFullName))
                         {
-                            throw new Exception(string.Format("文件{0},不存在", convertFileName));
+                            throw new Exception($"文件{convertFileName},不存在");
                         }
                         var browser = String.Empty;
                         HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
@@ -206,23 +210,23 @@ namespace EmcReportWebApi.Controllers
                                     : HttpUtility.UrlEncode(Path.GetFileName(convertFileFullName))
                             //FileName = HttpUtility.UrlEncode(Path.GetFileName(filePath))
                         };
-                        result = SetReportResult<string>(string.Format("转化成功:{0}", filename), true, convertFileName);
-                        EmcConfig.InfoLog.Info(string.Format("转化成功:{0}", filename));
+                        result = SetReportResult($"转化成功:{filename}", true, convertFileName);
+                        EmcConfig.InfoLog.Info($"{result.Message},目标文件:{result.Content}");
                         return ResponseMessage(httpResponseMessage);
                     }
                     catch (Exception ex)
                     {
                         EmcConfig.ErrorLog.Error(ex.Message, ex);
-                        result = SetReportResult<string>(string.Format("转化失败：{0}", ex.Message), false, "");
+                        result = SetReportResult($"转化失败：{ex.Message}", false, "");
                     }
                 }
             }
             else
             {
                 EmcConfig.ErrorLog.Error("转化失败:上传的文件信息不存在！");
-                result = SetReportResult<string>("转化失败:上传的文件信息不存在！", false, "");
+                result = SetReportResult("转化失败:上传的文件信息不存在！", false, "");
             }
-            return Json<ReportResult<string>>(result);
+            return Json(result);
         }
 
 
@@ -240,7 +244,6 @@ namespace EmcReportWebApi.Controllers
         /// </summary>
         private ReportResult<T> SetReportResult<T>(string message, bool submitResult, T content)
         {
-            Type type = content.GetType();
             ReportResult<T> reportResult = new ReportResult<T>();
             reportResult.Message = message;
             reportResult.SumbitResult = submitResult;

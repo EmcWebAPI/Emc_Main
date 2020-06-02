@@ -34,7 +34,7 @@ namespace EmcReportWebApi.Utils
         /// <summary>
         /// 保存路径
         /// </summary>
-        protected string _outFilePath = "";
+        protected string _outFilePath;
 
         /// <summary>
         /// office component 代表空
@@ -83,12 +83,7 @@ namespace EmcReportWebApi.Utils
         {
             if (outFileFullName.Equals(""))
                 throw new Exception("输出文件路径不能为空");
-            if (fileFullName.Equals(""))
-                _currentWord = CreatWord();
-            else
-            {
-                _currentWord = OpenWord(fileFullName);
-            }
+            _currentWord = fileFullName.Equals("") ? CreatWord() : OpenWord(fileFullName);
 
             _outFilePath = outFileFullName;
             _isSaveAs = isSaveAs;

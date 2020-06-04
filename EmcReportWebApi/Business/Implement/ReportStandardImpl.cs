@@ -182,10 +182,6 @@ namespace EmcReportWebApi.Business.Implement
                 wordUtil.ReplaceWritten(replaceDic);
 
             }
-            //using (ReportStandardHandleWord wordUtil = new ReportStandardHandleWord(outfilePth))
-            //{
-
-            //}
             //删除中间件文件夹
             DelectDir(middleDir);
             DelectDir(reportFilesPath);

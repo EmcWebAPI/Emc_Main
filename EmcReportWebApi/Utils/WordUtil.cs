@@ -112,10 +112,10 @@ namespace EmcReportWebApi.Utils
                 {
 
                     Range r = cell.Range;
-                    int rowNumber = (int)r.get_Information(WdInformation.wdStartOfRangeRowNumber);
-                    int columnNumber = (int)r.get_Information(WdInformation.wdStartOfRangeColumnNumber);
-                    int pageNumber = (int)r.get_Information(WdInformation.wdActiveEndPageNumber);
-                    cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber, pageNumber));
+                    int rowNumber = (int)r.Information[WdInformation.wdStartOfRangeRowNumber];
+                    int columnNumber = (int)r.Information[WdInformation.wdStartOfRangeColumnNumber];
+                    int pageNumber = (int)r.Information[WdInformation.wdActiveEndPageNumber];
+                    cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber, pageNumber,cell));
                     if (r.Text.Equals("\r\a") && !r.Text.Contains("$$"))
                     {
                         continue;
@@ -124,9 +124,20 @@ namespace EmcReportWebApi.Utils
                     if (_wordApp.Selection.Bookmarks.Exists("photo"))
                         break;
 
-                    if (pageNumber >= 5 && pageNumber != pageIndex)
+                    if (pageNumber >= 6 && pageNumber != pageIndex)
                     {
-
+                        //判断第一列最后一个单元格 的高度
+                        CellInfo cellInfo = cellList.LastOrDefault(p => p.ColumnNumber == 1);
+                        if (cellInfo != null)
+                        {
+                            Cell firstLastCell = cellInfo.RealCell;
+                            if (HandleFirstColumnCellAddRow(firstLastCell, pageNumber, table, cellList))
+                            {
+                                pageIndex = pageNumber;
+                                continue;
+                            }
+                        }
+                        r.Select();
                         _wordApp.Selection.SplitTable();
 
                         List<Cell> cellNextList = new List<Cell>();
@@ -146,8 +157,8 @@ namespace EmcReportWebApi.Utils
                 }
                 //替换字符
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("$$", "");//报告编号
+                Dictionary<string, string> valuePairs = new Dictionary<string, string> { { "$$", "" } };
+                //报告编号
                 replaceDic.Add(1, valuePairs);//替换全部内容
                 ReplaceWritten(replaceDic);
 
@@ -157,9 +168,37 @@ namespace EmcReportWebApi.Utils
             {
                 _needWrite = false;
                 Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw new Exception($"错误信息:{ex.StackTrace.ToString()}.{ex.Message}");
             }
 
+        }
+
+        /// <summary>
+        /// 处理上一页第一列最后一个单元格
+        /// </summary>
+        protected virtual bool HandleFirstColumnCellAddRow(Cell firstLastCell, int pageNumber, Table table, List<CellInfo> cellList)
+        {
+            firstLastCell.Select();
+            float cellPositionTop =
+                (float)firstLastCell.Range.Information[WdInformation.wdVerticalPositionRelativeToPage];
+            float pageHeight = firstLastCell.Range.PageSetup.PageHeight;
+            bool result = pageHeight - cellPositionTop < 190;
+            if (result)
+            {
+                _wordApp.Selection.InsertRowsAbove(1);
+                _wordApp.Selection.Cells.Merge();
+                _wordApp.Selection.Borders[WdBorderType.wdBorderLeft].LineStyle = WdLineStyle.wdLineStyleNone;
+                _wordApp.Selection.Borders[WdBorderType.wdBorderRight].LineStyle = WdLineStyle.wdLineStyleNone;
+                _wordApp.Selection.Borders[WdBorderType.wdBorderBottom].LineStyle = WdLineStyle.wdLineStyleNone;
+                Cell secondLastCell = _wordApp.Selection.Cells[1];
+
+                while ((int)firstLastCell.Range.Information[WdInformation.wdActiveEndPageNumber] != pageNumber)
+                {
+                    secondLastCell.SetHeight(secondLastCell.Height + 1, WdRowHeightRule.wdRowHeightAtLeast);
+                }
+            }
+
+            return result;
         }
 
         protected virtual void HandleConclusion(Table table, List<CellInfo> cellList, List<Cell> nextCellList)

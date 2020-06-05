@@ -94,7 +94,7 @@ namespace EmcReportWebApi.Utils
 
         #region 标准报告业务相关
 
-        protected Dictionary<Cell, string> lowerRightCornerCells = new Dictionary<Cell, string>();
+        protected Dictionary<string, string> lowerRightCornerCells = new Dictionary<string, string>();
 
         public virtual int TableSplit(string bookmark)
         {
@@ -271,9 +271,9 @@ namespace EmcReportWebApi.Utils
                 {
                     foreach (var item in lowerRightCornerCells)
                     {
-                        Cell cell = item.Key;
+                        string newBookmark = item.Key;
                         string content = item.Value;
-                        AddCellLowerRightCornerContent(cell, content);
+                        AddCellLowerRightCornerContent(newBookmark, content);
                     }
                 }
 
@@ -365,7 +365,7 @@ namespace EmcReportWebApi.Utils
                 bool whilebool = true;
                 while (whilebool)
                 {
-                    cellCol4Dic = AddCellAndSplit(table, cellCol4Dic, lowerRightCornerCells);
+                    cellCol4Dic = AddCellAndSplit(table, cellCol4Dic);
                     whilebool = (cellCol4Dic.Count != 0);
                 }
             }
@@ -376,7 +376,7 @@ namespace EmcReportWebApi.Utils
         /// 遍历节点拆分单元格
         /// </summary>
         /// <returns></returns>
-        protected virtual Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic, Dictionary<Cell, string> lowerRightCornerCells)
+        protected virtual Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic)
         {
             Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
             int incr = 0;
@@ -438,10 +438,13 @@ namespace EmcReportWebApi.Utils
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
                         {
                             //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
-                            lowerRightCornerCells.Add(tempCell, secondItem["rightContent"].ToString());
+                            
+                            string newBookmark = "cellBookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff")+new Random().Next(999);
+                            _wordApp.Selection.Bookmarks.Add(newBookmark, tempCell.Range);
+                            lowerRightCornerCells.Add(newBookmark, secondItem["rightContent"].ToString());
                         }
 
-                        if (secondItem["reMark"] != null && !secondItem["reMark"].Equals(""))
+                        if (secondItem["reMark"] != null && !secondItem["reMark"].ToString().Equals(""))
                         {
                             try
                             {
@@ -499,13 +502,14 @@ namespace EmcReportWebApi.Utils
         /// <summary>
         /// 单元格加段 加内容
         /// </summary>
-        /// <param name="cell"></param>
+        /// <param name="bookmark"></param>
         /// <param name="content"></param>
-        public virtual void AddCellLowerRightCornerContent(Cell cell, string content)
+        public virtual void AddCellLowerRightCornerContent(string bookmark, string content)
         {
             try
             {
-                cell.Range.Select();
+                Range range= this.GetBookmarkRank(_currentWord, bookmark);
+                range.Select();
                 object unite = WdUnits.wdLine;
                 _wordApp.Selection.EndKey(ref unite, ref _missing);
                 _wordApp.Selection.TypeParagraph();
@@ -1111,7 +1115,7 @@ namespace EmcReportWebApi.Utils
         /// <returns></returns>
         public virtual string CopyOtherFileContentToWordReturnBookmark(string filePath, string bookmark, bool isNewBookmark, bool isCloseTheFile = true)
         {
-            string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff").ToString();
+            string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
             try
             {
                 Document htmldoc = OpenWord(filePath);

@@ -392,14 +392,21 @@ namespace EmcReportWebApi.Utils
                 int secondItemsCount = secondItems.Count;
                 if (secondItemsCount > 0)
                 {
-
-                    if (secondItemsCount != 1)
+                    try
                     {
-                        //检验结果列拆分
-                        table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
-                        //备注列拆分
-                        table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
+                        if (secondItemsCount != 1)
+                        {
+                            //检验结果列拆分
+                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
+                            //备注列拆分
+                            table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
+                        }
                     }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                   
 
                     table.Cell(cRow, cCol).Select();
                     table.Cell(cRow, cCol).Split(secondItemsCount, 2);

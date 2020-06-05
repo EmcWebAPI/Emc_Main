@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace EmcReportWebApi.Utils
 {
@@ -128,6 +129,14 @@ namespace EmcReportWebApi.Utils
                     {
                         //判断第一列最后一个单元格 的高度
                         CellInfo cellInfo = cellList.LastOrDefault(p => p.ColumnNumber == 1);
+
+                        if (cellInfo != null && (int)cellInfo.RealCell.Range.Information[WdInformation.wdActiveEndPageNumber] ==
+                            pageNumber)
+                        {
+                            pageIndex = pageNumber;
+                            continue;
+                        }
+
                         if (cellInfo != null)
                         {
                             Cell firstLastCell = cellInfo.RealCell;
@@ -310,7 +319,7 @@ namespace EmcReportWebApi.Utils
 
             table.Cell(1, 1).Select();
             _wordApp.Selection.InsertRowsBelow(1);
-            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
+            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
             _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
             _wordApp.Selection.Font.NameFarEast = "宋体";
             _wordApp.Selection.Font.NameAscii = "宋体";
@@ -357,7 +366,7 @@ namespace EmcReportWebApi.Utils
                     Cell tempCell = table.Cell(2 + i, 4);
                     JObject firstItem = (JObject)firstItems[i];
                     tempCell.Range.Text = firstItem["stdName"].ToString();
-                    cellCol4Dic.Add(firstItem, (2 + i).ToString() + "," + 4.ToString());
+                    cellCol4Dic.Add(firstItem, (2 + i) + "," + 4);
 
                 }
 
@@ -397,7 +406,15 @@ namespace EmcReportWebApi.Utils
                         if (secondItemsCount != 1)
                         {
                             //检验结果列拆分
-                            table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
+                           // table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
+
+                            for (int i = 0; i < secondItemsCount-1; i++)
+                            {
+                                table.Cell(cRow, cCol + 1).Select();
+                                table.Cell(cRow, cCol + 1).Split(2, 1);
+                            }
+                            
+
                             //备注列拆分
                             table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
                         }
@@ -434,7 +451,7 @@ namespace EmcReportWebApi.Utils
                         Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
                         tempCell.Range.Text = secondItem["stdItmNo"] != null ? secondItem["stdItmNo"].ToString() + secondItem["itemContent"].ToString() : secondItem["itemContent"].ToString();
-
+                        
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
                         {
                             //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
@@ -457,7 +474,7 @@ namespace EmcReportWebApi.Utils
 
                         }
                         //检验结果
-                        if (secondItem["controls"] != null && !secondItem["controls"].Equals("") && (secondItem["list"] == null || ((JArray)secondItem["list"]).Count == 0))
+                        if (secondItem["controls"] != null && !secondItem["controls"].ToString().Equals("") && (secondItem["list"] == null || ((JArray)secondItem["list"]).Count == 0))
                         {
                             Cell resultCell = table.Cell(cRow + i + resultIndex, cCol + 2);
                             JArray resultList = JArray.Parse(secondItem["controls"].ToString());

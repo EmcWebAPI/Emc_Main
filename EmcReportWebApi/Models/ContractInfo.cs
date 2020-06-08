@@ -55,7 +55,7 @@ namespace EmcReportWebApi.Models
         public string SampleName { get; set; }
 
         /// <summary>
-        /// "main_xhgg" 规格型号
+        /// "main_xhgg" 规格型号/批号
         /// </summary>
         public string SampleModelSpecification { get; set; }
 
@@ -272,6 +272,16 @@ namespace EmcReportWebApi.Models
         /// 抽样单编号
         /// </summary>
         public string SamplingNumber { get; set; }
+
+        /// <summary>
+        /// 型号规格
+        /// </summary>
+        public string SampleModelSpecificationGYJ { get; set; }
+
+        /// <summary>
+        /// 产品编号/批号
+        /// </summary>
+        public string BatchNumberGYJ { get; set; }
 
         #endregion
     }

@@ -391,7 +391,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     {
                         Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
                         JObject secondItem = (JObject)secondItems[i];
-                        tempCell.Range.Text = secondItem["stdItmNo"] != null ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString() : secondItem["itemContent"].ToString();
+                        string itemContent = secondItem["stdItmNo"] != null
+                            ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
+                            : secondItem["itemContent"].ToString();
+
+                        tempCell.Range.Text = itemContent;
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
                         {
@@ -441,7 +445,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             }
                             else
                             {
-                                resultCell.Range.Text = resultList.First["result"].ToString();
+
+                                if (resultList.First["result"].ToString().Equals("@"))
+                                {
+                                    resultCell.Merge(table.Cell(cRow + i + resultIndex, cCol + 1));
+                                }
+                                else
+                                {
+                                    resultCell.Range.Text = resultList.First["result"].ToString();
+
+                                }
                             }
 
                         }

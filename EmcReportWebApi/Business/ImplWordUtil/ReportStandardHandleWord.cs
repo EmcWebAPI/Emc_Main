@@ -265,7 +265,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             _wordApp.Selection.InsertRowsBelow(1);
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
             _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
-           
+
             _wordApp.Selection.Font.NameFarEast = "宋体";
             _wordApp.Selection.Font.NameAscii = "宋体";
             _wordApp.Selection.Font.NameOther = "宋体";
@@ -273,7 +273,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             for (int i = 5; i <= 7; i++)
             {
-                this.CellAlignCenter(table.Cell(2,i));
+                CellAlignCenter(table.Cell(2, i));
             }
 
             //序号
@@ -370,7 +370,13 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
 
                     table.Cell(cRow, cCol).Select();
+                    var splitCellText = table.Cell(cRow, cCol).Range.Text;
                     table.Cell(cRow, cCol).Split(secondItemsCount, 2);
+                    //拆分之后重新赋值
+                    int splitCellLength = splitCellText.Length;
+                    if (!splitCellText.Equals("\r\a")&& !splitCellText.Equals(""))
+                        table.Cell(cRow, cCol).Range.Text = splitCellText.Substring(splitCellLength - 2, 2).Equals("\r\a") ?
+                            splitCellText.Substring(0, splitCellLength-2) : splitCellText;
                     for (int i = 0; i < secondItemsCount; i++)
                     {
                         table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
@@ -395,22 +401,27 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
                             : secondItem["itemContent"].ToString();
 
-                        
+
 
                         tempCell.Range.Text = itemContent;
 
                         if (tempCell.Range.Text.Contains("<avg>"))
                         {
                             tempCell.Range.Select();
-                            tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a","");
-                            this.ReplaceAvg("<avg>", "\u0060", "Symbol");
+                            tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
+                            ReplaceAvg("<avg>", "\u0060", "Symbol");
                         }
 
                         //if (itemContent.Contains("\n"))
                         //{
+                        //    var cellText = tempCell.Range.Text;
+                        //    cellText = cellText.Replace("\r\a", "");
+                        //    cellText = cellText.Replace("\r", "\r\a");
+                        //    tempCell.Range.Text=(cellText); 
                         //    tempCell.Range.Select();
-                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("\r", "\r\a");
-                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("\a\a", "\a");
+                        //    object unite = WdUnits.wdLine;
+                        //    _wordApp.Selection.EndKey(ref unite, ref _missing);
+                        //    _wordApp.Selection.TypeParagraph();
                         //}
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
@@ -636,7 +647,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
 
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
-            
+
             if (width != 0 && imageWidth > width && imageWidth > imageHeight)
             {
 
@@ -687,10 +698,10 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return "成功";
         }
 
-        public void ReplaceAvg(string oldWord, string newWord,string fontName)
+        public void ReplaceAvg(string oldWord, string newWord, string fontName)
         {
             object wdReplaceAll = WdReplace.wdReplaceAll;//替换所有文字
-            
+
             _wordApp.Selection.Find.Replacement.ClearFormatting();
             _wordApp.Selection.Find.ClearFormatting();
             _wordApp.Selection.Find.Text = oldWord;//需要被替换的文本

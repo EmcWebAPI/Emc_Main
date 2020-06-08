@@ -33,8 +33,10 @@ namespace EmcReportWebApi.Models
         private string detectType;
         public string DetectType
         {
-            get {
-                if (detectType.Equals("GYJ", StringComparison.OrdinalIgnoreCase) && !SampleNumber.Equals("") && SampleNumber.Contains("-")) {
+            get
+            {
+                if (detectType.Equals("GYJ", StringComparison.OrdinalIgnoreCase) && !SampleNumber.Equals("") && SampleNumber.Contains("-"))
+                {
 
                     string[] stringSplit = SampleNumber.Split('-');
                     if (stringSplit.Length > 0)
@@ -44,7 +46,8 @@ namespace EmcReportWebApi.Models
                     }
                 }
 
-                return detectType; }
+                return detectType;
+            }
             set { detectType = value; }
         }
 
@@ -112,7 +115,8 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SampleReceiptDate
         {
-            get {
+            get
+            {
                 DateTime dtTime;
                 if (DateTime.TryParse(_sampleReceiptDate, out dtTime))
                 {
@@ -153,7 +157,8 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SampleProductionDate
         {
-            get {
+            get
+            {
                 DateTime dtTime;
                 if (DateTime.TryParse(_sampleProductionDate, out dtTime))
                 {
@@ -213,12 +218,13 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string ChiefInspection { get; set; }
 
-        
+
         private string _sampleAcquisitionMode;
         /// <summary>
         /// 抽样送样类型  1.送样syxz 2.抽样cyxz
         /// </summary>
-        public string SampleAcquisitionMode {
+        public string SampleAcquisitionMode
+        {
             get
             {
                 return _sampleAcquisitionMode;
@@ -235,17 +241,19 @@ namespace EmcReportWebApi.Models
 
         public string SampleAcquisitionModeSy
         {
-            get {
+            get
+            {
                 if (_sampleAcquisitionMode.Equals("1"))
                 {
-                    this._sampleAcquisitionModeSy = "送样（√）";
+                    _sampleAcquisitionModeSy = "送样（√）";
                 }
                 else
                 {
-                    this._sampleAcquisitionModeSy = "送样（/）";
+                    _sampleAcquisitionModeSy = "送样（/）";
                 }
 
-                return _sampleAcquisitionModeSy; }
+                return _sampleAcquisitionModeSy;
+            }
             set { _sampleAcquisitionModeSy = value; }
         }
 
@@ -262,7 +270,7 @@ namespace EmcReportWebApi.Models
         {
             get
             {
-                this._sampleAcquisitionModeCy = _sampleAcquisitionMode.Equals("1") ? "抽样（/）" : "抽样（√）";
+                _sampleAcquisitionModeCy = _sampleAcquisitionMode.Equals("1") ? "抽样（/）" : "抽样（√）";
                 return _sampleAcquisitionModeCy;
             }
             set => _sampleAcquisitionModeCy = value;
@@ -273,15 +281,39 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SamplingNumber { get; set; }
 
+
         /// <summary>
         /// 型号规格
         /// </summary>
-        public string SampleModelSpecificationGYJ { get; set; }
+        private string sampleModelSpecificationGYJ;
+
+        public string SampleModelSpecificationGYJ
+        {
+            get
+            {
+                return sampleModelSpecificationGYJ ?? SampleModelSpecification;
+
+            }
+            set { sampleModelSpecificationGYJ = value; }
+        }
+
+
 
         /// <summary>
         /// 产品编号/批号
         /// </summary>
-        public string BatchNumberGYJ { get; set; }
+        private string batchNumberGYJ;
+
+        public string BatchNumberGYJ
+        {
+            get
+            {
+                return batchNumberGYJ ?? SampleModelSpecification;
+
+            }
+            set { batchNumberGYJ = value; }
+        }
+
 
         #endregion
     }

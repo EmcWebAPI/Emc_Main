@@ -265,10 +265,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             _wordApp.Selection.InsertRowsBelow(1);
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
             _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
+           
             _wordApp.Selection.Font.NameFarEast = "宋体";
             _wordApp.Selection.Font.NameAscii = "宋体";
             _wordApp.Selection.Font.NameOther = "宋体";
             // Row newRow = table.Rows[2];
+
+            for (int i = 5; i <= 7; i++)
+            {
+                this.CellAlignCenter(table.Cell(2,i));
+            }
 
             //序号
             table.Cell(2, 1).Range.Text = jObject["idxNo"].ToString().Trim();

@@ -1940,6 +1940,17 @@ namespace EmcReportWebApi.Utils
         }
 
         /// <summary>
+        /// 设置单元格内容居中
+        /// </summary>
+        protected void CellAlignCenter(Cell cell)
+        {
+            cell.Select();
+            //设置居中
+            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+            _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+        }
+
+        /// <summary>
         /// 根据文件名称结束word进程
         /// </summary>
         /// <param name="fileName">word文件名称</param>
@@ -1972,7 +1983,7 @@ namespace EmcReportWebApi.Utils
                 pro.Kill();
             }
         }
-
+        
         #endregion
 
         #region 资源回收

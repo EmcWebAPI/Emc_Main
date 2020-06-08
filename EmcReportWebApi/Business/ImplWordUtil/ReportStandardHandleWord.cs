@@ -395,7 +395,23 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
                             : secondItem["itemContent"].ToString();
 
+                        
+
                         tempCell.Range.Text = itemContent;
+
+                        if (tempCell.Range.Text.Contains("<avg>"))
+                        {
+                            tempCell.Range.Select();
+                            tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a","");
+                            this.ReplaceAvg("<avg>", "\u0060", "Symbol");
+                        }
+
+                        //if (itemContent.Contains("\n"))
+                        //{
+                        //    tempCell.Range.Select();
+                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("\r", "\r\a");
+                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("\a\a", "\a");
+                        //}
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
                         {
@@ -669,6 +685,32 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             _wordApp.Selection.TypeBackspace();
             _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
             return "成功";
+        }
+
+        public void ReplaceAvg(string oldWord, string newWord,string fontName)
+        {
+            object wdReplaceAll = WdReplace.wdReplaceAll;//替换所有文字
+            
+            _wordApp.Selection.Find.Replacement.ClearFormatting();
+            _wordApp.Selection.Find.ClearFormatting();
+            _wordApp.Selection.Find.Text = oldWord;//需要被替换的文本
+            _wordApp.Selection.Find.Replacement.Font.Name = fontName;
+            _wordApp.Selection.Find.Replacement.Text = newWord;//替换文本 
+            try
+            {
+                //执行替换操作
+                _wordApp.Selection.Find.Execute(
+                ref _missing, ref _missing, ref _missing,
+                ref _missing, ref _missing, ref _missing,
+                ref _missing, ref _missing, ref _missing,
+                ref _missing, ref wdReplaceAll,// 指定要执行替换的个数：一个、全部或者不替换。 可以是任何WdReplace常量:wdReplaceAll wdReplaceNone wdReplaceOne
+                ref _missing, ref _missing, ref _missing,
+                ref _missing);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         #endregion

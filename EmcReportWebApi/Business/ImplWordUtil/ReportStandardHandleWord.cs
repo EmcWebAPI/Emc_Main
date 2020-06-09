@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace EmcReportWebApi.Business.ImplWordUtil
 {
@@ -404,12 +405,13 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
 
                         tempCell.Range.Text = itemContent;
-
-                        if (tempCell.Range.Text.Contains("<avg>"))
+                        
+                        if (tempCell.Range.Text.Contains("</avg>"))
                         {
                             tempCell.Range.Select();
                             tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
-                            ReplaceAvg("<avg>", "\u0060", "Symbol");
+                            string avgStr = Regex.Match(tempCell.Range.Text, @"<avg[^>]*>", RegexOptions.IgnoreCase).Value;
+                            ReplaceAvg(avgStr, "\u0060", "Symbol");
                         }
 
                         //if (itemContent.Contains("\n"))

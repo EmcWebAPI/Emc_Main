@@ -728,6 +728,17 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 throw ex;
             }
         }
+        /// <summary>
+        /// 样品名称添加一行
+        /// </summary>
+        public void TableAddRowForY(string bookmark,string value)
+        {
+            Range range = GetBookmarkRank(_currentWord,bookmark);
+            Cell cell = range.Cells[1];
+            cell.Select();
+            _wordApp.Selection.InsertRowsBelow(1);
+            _wordApp.Selection.Cells[2].Range.Text = value;
+        }
 
         #endregion
 

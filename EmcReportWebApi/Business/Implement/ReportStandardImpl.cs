@@ -202,13 +202,25 @@ namespace EmcReportWebApi.Business.Implement
             {
                 string key = item.Key.ToString();
                 string value = item.Value.ToString();
-                if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
+                //if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
+                //{
+                //    value = CheckFirstPage(value);
+                //    wordUtil.InsertContentToWordByBookmark(value, key, true);
+                //}
+                //else
+                if (key.Equals("main_ypmc"))
                 {
-                    value = CheckFirstPage(value);
-                    wordUtil.InsertContentToWordByBookmark(value, key, true);
+                    string[] values = value.Split('\n');
+                    if (values.Length > 1)
+                    {
+                        value = values[0];
+                        var tempValue = values[1];
+                        wordUtil.TableAddRowForY("main_ypmc",tempValue);
+                    }
+                    //wordUtil.InsertContentToWordByBookmark(value, key);
+
                 }
-                else
-                    wordUtil.InsertContentToWordByBookmark(value, key);
+                wordUtil.InsertContentToWordByBookmark(value, key);
             }
             return "保存成功";
         }

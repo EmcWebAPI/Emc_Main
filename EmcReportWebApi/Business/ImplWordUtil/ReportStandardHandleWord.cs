@@ -475,6 +475,9 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                                 if (resultList.First["result"].ToString().Equals("@"))
                                 {
+                                    resultCell.Select();
+                                    _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                                    _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
                                     resultCell.Merge(table.Cell(cRow + i + resultIndex, cCol + 1));
                                 }
                                 else

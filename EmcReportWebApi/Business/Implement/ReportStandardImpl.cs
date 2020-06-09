@@ -214,8 +214,13 @@ namespace EmcReportWebApi.Business.Implement
                     if (values.Length > 1)
                     {
                         value = values[0];
-                        var tempValue = values[1];
-                        wordUtil.TableAddRowForY("main_ypmc",tempValue);
+                        
+                        for (int i = values.Length-1; i <= 1; i++)
+                        {
+                            var tempValue = values[i];
+                            wordUtil.TableAddRowForY("main_ypmc", tempValue);
+                        }
+                        
                     }
                     //wordUtil.InsertContentToWordByBookmark(value, key);
 

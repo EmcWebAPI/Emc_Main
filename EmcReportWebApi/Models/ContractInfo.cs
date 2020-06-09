@@ -30,25 +30,28 @@ namespace EmcReportWebApi.Models
         /// <summary>
         /// "Main_jylb" 检验类别
         /// </summary>
-        private string detectType;
+        private string _detectType;
+        /// <summary>
+        /// 检验类别
+        /// </summary>
         public string DetectType
         {
             get
             {
-                if (detectType.Equals("GYJ", StringComparison.OrdinalIgnoreCase) && !SampleNumber.Equals("") && SampleNumber.Contains("-"))
+                if (_detectType.Equals("GYJ", StringComparison.OrdinalIgnoreCase) && !SampleNumber.Equals("") && SampleNumber.Contains("-"))
                 {
 
                     string[] stringSplit = SampleNumber.Split('-');
                     if (stringSplit.Length > 0)
                     {
                         string stringFirst = stringSplit[0];
-                        detectType = stringFirst.Substring(stringFirst.Length - 4, 4) + "年国家医疗器械抽检";
+                        _detectType = stringFirst.Substring(stringFirst.Length - 4, 4) + "年国家医疗器械抽检";
                     }
                 }
 
-                return detectType;
+                return _detectType;
             }
-            set { detectType = value; }
+            set => _detectType = value;
         }
 
 
@@ -57,6 +60,20 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SampleName { get; set; }
 
+        /// <summary>
+        /// 产品编号/批号
+        /// </summary>
+        private string sampleNameRPT;
+
+        public string SampleNameRPT
+        {
+            get
+            {
+                return sampleNameRPT ?? SampleName;
+            }
+            set => sampleNameRPT = value;
+        }
+        
         /// <summary>
         /// "main_xhgg" 规格型号/批号
         /// </summary>
@@ -127,7 +144,7 @@ namespace EmcReportWebApi.Models
                     return _sampleReceiptDate;
                 }
             }
-            set { _sampleReceiptDate = value; }
+            set => _sampleReceiptDate = value;
         }
 
 
@@ -285,16 +302,16 @@ namespace EmcReportWebApi.Models
         /// <summary>
         /// 型号规格
         /// </summary>
-        private string sampleModelSpecificationGYJ;
+        private string sampleModelSpecificationRPT;
 
-        public string SampleModelSpecificationGYJ
+        public string SampleModelSpecificationRPT
         {
             get
             {
-                return sampleModelSpecificationGYJ ?? SampleModelSpecification;
+                return sampleModelSpecificationRPT ?? SampleModelSpecification;
 
             }
-            set { sampleModelSpecificationGYJ = value; }
+            set { sampleModelSpecificationRPT = value; }
         }
 
 
@@ -302,16 +319,16 @@ namespace EmcReportWebApi.Models
         /// <summary>
         /// 产品编号/批号
         /// </summary>
-        private string batchNumberGYJ;
+        private string batchNumberRPT;
 
-        public string BatchNumberGYJ
+        public string BatchNumberRPT
         {
             get
             {
-                return batchNumberGYJ ?? SampleModelSpecification;
+                return batchNumberRPT ?? SampleModelSpecification;
 
             }
-            set { batchNumberGYJ = value; }
+            set { batchNumberRPT = value; }
         }
 
 

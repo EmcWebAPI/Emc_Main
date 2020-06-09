@@ -126,8 +126,8 @@ namespace EmcReportWebApi.Config
             { "bgbh","ReportCode" },//报告编号
             { "main_wtf","ContractClient"},//委托方
             { "main_jylb","DetectType"},//检验类别
-            { "main_ypmc","SampleName"},//样品名称
-            { "main_xhgg","SampleModelSpecificationGYJ"},//型号规格
+            { "main_ypmc","SampleNameRPT"},//样品名称
+            { "main_xhgg","SampleModelSpecificationRPT"},//型号规格
             { "ypmc","SampleName"},//样品名称
             { "sb","SampleTrademark"},//商标
             { "wtf","ContractClient"},//委托方
@@ -143,9 +143,9 @@ namespace EmcReportWebApi.Config
             { "jyjl","Conclusion"},//检验结论
             { "bz","TestRemark"},//备注
             { "ypbh","SampleNumber"},//样品编号
-            { "xhgg","SampleModelSpecificationGYJ"},//型号规格
+            { "xhgg","SampleModelSpecificationRPT"},//型号规格
             { "jylb","DetectType"},//检验类别
-            { "cpbhph","BatchNumberGYJ"},//产品编号/批号
+            { "cpbhph","BatchNumberRPT"},//产品编号/批号
             { "cydbh","SamplingNumber"},//抽样单编号
             { "scrq","SampleProductionDate"},//生产日期
             { "ypsl","SampleQuantity"},//样品数量

@@ -373,11 +373,26 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     table.Cell(cRow, cCol).Select();
                     var splitCellText = table.Cell(cRow, cCol).Range.Text;
                     table.Cell(cRow, cCol).Split(secondItemsCount, 2);
-                    //拆分之后重新赋值
-                    int splitCellLength = splitCellText.Length;
-                    if (!splitCellText.Equals("\r\a")&& !splitCellText.Equals(""))
-                        table.Cell(cRow, cCol).Range.Text = splitCellText.Substring(splitCellLength - 2, 2).Equals("\r\a") ?
-                            splitCellText.Substring(0, splitCellLength-2) : splitCellText;
+
+                    table.Cell(cRow, cCol).Range.Select();
+                    if (_wordApp.Selection.OMaths.Count <= 0)
+                    {
+                        //拆分之后重新赋值
+                        int splitCellLength = splitCellText.Length;
+                        if (!splitCellText.Equals("\r\a") && !splitCellText.Equals(""))
+                        {
+                            try
+                            {
+                                table.Cell(cRow, cCol).Range.Text = splitCellText.Substring(splitCellLength - 2, 2).Equals("\r\a") ?
+                                    splitCellText.Substring(0, splitCellLength - 2) : splitCellText;
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
+                        }
+                    }
+
                     for (int i = 0; i < secondItemsCount; i++)
                     {
                         table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);

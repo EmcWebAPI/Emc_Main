@@ -158,6 +158,17 @@ namespace EmcReportWebApi.Config
             { "syxz","SampleAcquisitionModeSy"},//送样选中
             { "cyxz","SampleAcquisitionModeCy"}//抽样选中
         };
+
+        /// <summary>
+        /// 公式的集合
+        /// </summary>
+        public static IList<string> FormulaType= new List<string>
+        {
+            "avg",
+            "absFv",
+            "absFc"
+        };
+
         #endregion
     }
 }

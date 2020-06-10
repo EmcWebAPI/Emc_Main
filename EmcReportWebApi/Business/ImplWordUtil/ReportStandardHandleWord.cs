@@ -406,25 +406,15 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                         tempCell.Range.Text = itemContent;
                         
-                        if (tempCell.Range.Text.Contains("</avg>"))
-                        {
-                            tempCell.Range.Select();
-                            tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
-                            string avgStr = Regex.Match(tempCell.Range.Text, @"<avg[^>]*>", RegexOptions.IgnoreCase).Value;
-                            ReplaceAvg(avgStr, "\u0060", "Symbol");
-                        }
-
-                        //if (itemContent.Contains("\n"))
+                        //if (tempCell.Range.Text.Contains("</avg>"))
                         //{
-                        //    var cellText = tempCell.Range.Text;
-                        //    cellText = cellText.Replace("\r\a", "");
-                        //    cellText = cellText.Replace("\r", "\r\a");
-                        //    tempCell.Range.Text=(cellText); 
                         //    tempCell.Range.Select();
-                        //    object unite = WdUnits.wdLine;
-                        //    _wordApp.Selection.EndKey(ref unite, ref _missing);
-                        //    _wordApp.Selection.TypeParagraph();
+                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
+                        //    string avgStr = Regex.Match(tempCell.Range.Text, @"<avg[^>]*>", RegexOptions.IgnoreCase).Value;
+                        //    ReplaceAvg(avgStr, "\u0060", "Symbol");
                         //}
+
+                        this.FindHtmlLabel(tempCell.Range);
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
                         {

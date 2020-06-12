@@ -169,26 +169,31 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SampleNumber { get; set; }
 
-        private string _sampleProductionDate;
-        /// <summary>
-        ///  "scrq" 生产日期
-        /// </summary>
-        public string SampleProductionDate
-        {
-            get
-            {
-                DateTime dtTime;
-                if (DateTime.TryParse(_sampleProductionDate, out dtTime))
-                {
-                    return dtTime.ToString("yyyy年MM月dd日");
-                }
-                else
-                {
-                    return _sampleProductionDate;
-                }
-            }
-            set { _sampleProductionDate = value; }
-        }
+        //private string _sampleProductionDate;
+        ///// <summary>
+        /////  "scrq" 生产日期
+        ///// </summary>
+        //public string SampleProductionDate
+        //{
+        //    get
+        //    {
+        //        DateTime dtTime;
+        //        if (DateTime.TryParse(_sampleProductionDate, out dtTime))
+        //        {
+        //            return dtTime.ToString("yyyy年MM月dd日");
+        //        }
+        //        else
+        //        {
+        //            return _sampleProductionDate;
+        //        }
+        //    }
+        //    set { _sampleProductionDate = value; }
+        //}
+
+        ///// <summary>
+        /////  "scrq" 生产日期
+        ///// </summary>
+        public string SampleProductionDate { get; set; }
 
         public string SampleUnit { get; set; }
 

@@ -480,7 +480,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             else
                             {
 
-                                if (resultList.First["result"].ToString().Equals("@"))
+                                if (resultList.First["result"].ToString().Equals("@", StringComparison.OrdinalIgnoreCase))
                                 {
                                     resultCell.Select();
                                     //_wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
@@ -501,7 +501,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                     resultCell.Range.Text = resultList.First["result"].ToString();
                                     if (previous != null)
                                     {
-                                        if (previous.Range.Text.Contains("$"))
+                                        string previousText = previous.Range.Text;
+                                        if (previousText.Replace("\r\a","").Equals("$",StringComparison.OrdinalIgnoreCase))
                                         {
                                             previous.Range.Text = "";
                                             

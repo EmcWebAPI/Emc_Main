@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace EmcReportWebApi.Models
 {
@@ -189,11 +190,17 @@ namespace EmcReportWebApi.Models
             set { _sampleProductionDate = value; }
         }
 
+        public string SampleUnit { get; set; }
 
+        private string _sampleQuantity;
         /// <summary>
         /// "ypsl" /抽样数量
         /// </summary>
-        public string SampleQuantity { get; set; }
+        public string SampleQuantity
+        {
+            get => SampleUnit.Equals("")?_sampleQuantity: _sampleQuantity+SampleUnit;
+            set => _sampleQuantity = value;
+        }
 
         /// <summary>
         /// "cyjs" 抽样基数
@@ -320,7 +327,7 @@ namespace EmcReportWebApi.Models
         /// 产品编号/批号
         /// </summary>
         private string batchNumberRPT;
-
+        
         public string BatchNumberRPT
         {
             get

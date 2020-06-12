@@ -44,7 +44,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 表格拆分合并 添加"续"
         /// </summary>
-        public virtual int TableSplit(string bookmark)
+        public virtual int TableSplit(string bookmark,bool hasPhoto)
         {
             try
             {
@@ -117,6 +117,38 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 //报告编号
                 replaceDic.Add(1, valuePairs);//替换全部内容
                 ReplaceWritten(replaceDic);
+
+                #region 此处空白
+                table.Select();
+                Cell lastCellOrDefault = table.Range.Cells.Cast<Cell>().LastOrDefault();
+                if (lastCellOrDefault != null)
+                {
+                    lastCellOrDefault.Select();
+                    float cellPositionTop =
+                        (float) lastCellOrDefault.Range.Information[WdInformation.wdVerticalPositionRelativeToPage];
+                    float pageHeight = lastCellOrDefault.Range.PageSetup.PageHeight;
+                    //页眉高度大约62.37
+                    float cellToPageBottom = pageHeight - cellPositionTop;
+                    bool result = cellToPageBottom > 100;
+                    if (result)
+                    {
+                        lastCellOrDefault.Select();
+                        _wordApp.Selection.InsertRowsBelow(1);
+                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                        _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
+
+                        _wordApp.Selection.Font.NameFarEast = "宋体";
+                        _wordApp.Selection.Font.NameAscii = "宋体";
+                        _wordApp.Selection.Font.NameOther = "宋体";
+
+                        _wordApp.Selection.Cells.Merge();
+                        //_wordApp.Selection.Cells[1]
+                        //    .SetHeight(cellToPageBottom - 100, WdRowHeightRule.wdRowHeightAtLeast);
+                        _wordApp.Selection.Cells[1].Range.Text = hasPhoto ? "此处空白" : "以下空白";
+                    }
+                }
+
+                #endregion
 
                 return 1;
             }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -168,7 +169,7 @@ namespace EmcReportWebApi.Business.Implement
                 }
 
                 if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
-                    wordUtil.TableSplit("standard");
+                    wordUtil.TableSplit("standard", mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals("")&& ((JArray)mainObj["yptp"]).Count>0);
 
                 //替换页眉内容
                 int pageCount = wordUtil.GetDocumnetPageCount() - 2;//获取文件页数(首页不算)

@@ -312,7 +312,11 @@ namespace EmcReportWebApi.Models
         /// <summary>
         /// 抽样单编号
         /// </summary>
-        public string SamplingNumber { get; set; }
+        public string SamplingNumber
+        {
+            get => _samplingNumber.Length==13? $"{_samplingNumber.Substring(0, 2)}-{_samplingNumber.Substring(2, 2)}-{_samplingNumber.Substring(4, 5)}-{_samplingNumber.Substring(9, 2)}-{_samplingNumber.Substring(11, 2)}": _samplingNumber;
+            set => _samplingNumber = value;
+        }
 
 
         /// <summary>
@@ -338,6 +342,7 @@ namespace EmcReportWebApi.Models
         private string batchNumberRPT;
 
         private string _samplingBase;
+        private string _samplingNumber;
 
         public string BatchNumberRPT
         {

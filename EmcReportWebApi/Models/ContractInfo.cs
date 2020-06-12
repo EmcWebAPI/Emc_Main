@@ -210,7 +210,11 @@ namespace EmcReportWebApi.Models
         /// <summary>
         /// "cyjs" 抽样基数
         /// </summary>
-        public string SamplingBase { get; set; }
+        public string SamplingBase
+        {
+            get => SampleUnit.Equals("") ? _samplingBase : _samplingBase + SampleUnit;
+            set => _samplingBase = value;
+        }
 
         /// <summary>
         /// "jydd" 检验地点
@@ -332,7 +336,9 @@ namespace EmcReportWebApi.Models
         /// 产品编号/批号
         /// </summary>
         private string batchNumberRPT;
-        
+
+        private string _samplingBase;
+
         public string BatchNumberRPT
         {
             get

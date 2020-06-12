@@ -64,7 +64,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     int columnNumber = (int)r.Information[WdInformation.wdStartOfRangeColumnNumber];
                     int pageNumber = (int)r.Information[WdInformation.wdActiveEndPageNumber];
                     cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber, pageNumber, cell));
-                    if (r.Text.Equals("\r\a") && !r.Text.Contains("$$"))
+                    if (r.Text.Equals("\r\a") && !r.Text.Contains("^^"))
                     {
                         continue;
                     }
@@ -113,7 +113,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 }
                 //替换字符
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> valuePairs = new Dictionary<string, string> { { "$$", "" } };
+                Dictionary<string, string> valuePairs = new Dictionary<string, string> { { "^^", "" } };
                 //报告编号
                 replaceDic.Add(1, valuePairs);//替换全部内容
                 ReplaceWritten(replaceDic);
@@ -167,8 +167,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
             Cell nextCellInfo = nextCellList[nextCellList.Count - 2];
 
-            //找到最后一个带$$的单元格
-            CellInfo cellInfo = cellList.LastOrDefault(p => p.CellText.Contains("$$"));
+            //找到最后一个带^^的单元格
+            CellInfo cellInfo = cellList.LastOrDefault(p => p.CellText.Contains("^^"));
             if (nextCellInfo.Range.Text.Equals("") || nextCellInfo.Range.Text.Equals("\r\a"))
                 if (cellInfo != null)
                     nextCellInfo.Range.InsertAfter(cellInfo.CellText.Replace("\r\a", ""));
@@ -283,7 +283,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
             if (jObject["comment"] != null)
-                table.Cell(2, 6).Range.Text = "$$" + jObject["comment"];
+                table.Cell(2, 6).Range.Text = "^^" + jObject["comment"];
             //备注
             if (jObject["reMark"] != null && !jObject["reMark"].ToString().Equals(""))
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
@@ -489,8 +489,26 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 }
                                 else
                                 {
+                                    Cell previous = null;
+                                    try
+                                    {
+                                        previous = table.Cell(cRow + i + resultIndex - 1, cCol + 2);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        //resultCell.Range.Text = resultList.First["result"].ToString();
+                                    }
                                     resultCell.Range.Text = resultList.First["result"].ToString();
-
+                                    if (previous != null)
+                                    {
+                                        if (previous.Range.Text.Contains("$"))
+                                        {
+                                            previous.Range.Text = "";
+                                            
+                                            previous.Select();
+                                            previous.Merge(resultCell);
+                                        }
+                                    }
                                 }
                             }
 

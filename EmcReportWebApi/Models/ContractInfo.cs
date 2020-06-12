@@ -117,7 +117,7 @@ namespace EmcReportWebApi.Models
                 DateTime dtTime;
                 if (DateTime.TryParse(_samplingDate, out dtTime))
                 {
-                    return dtTime.ToString("yyyy年MM月dd日");
+                    return dtTime.ToString("yyyy年M月d日");
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace EmcReportWebApi.Models
                 DateTime dtTime;
                 if (DateTime.TryParse(_sampleReceiptDate, out dtTime))
                 {
-                    return dtTime.ToString("yyyy年MM月dd日");
+                    return dtTime.ToString("yyyy年M月d日");
                 }
                 else
                 {
@@ -180,7 +180,7 @@ namespace EmcReportWebApi.Models
         //        DateTime dtTime;
         //        if (DateTime.TryParse(_sampleProductionDate, out dtTime))
         //        {
-        //            return dtTime.ToString("yyyy年MM月dd日");
+        //            return dtTime.ToString("yyyy年M月d日");
         //        }
         //        else
         //        {

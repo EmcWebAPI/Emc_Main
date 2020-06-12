@@ -174,7 +174,7 @@ namespace EmcReportWebApi.Controllers
                         {
                             //签发日期
                             if (request["signAndIssue"]!=null&&request["signAndIssue"].Equals("1")) {
-                                string signStr = wu.InsertContentToWordByBookmark(DateTime.Now.ToString("yyyy年MM月dd日"), "qfrq");
+                                string signStr = wu.InsertContentToWordByBookmark(DateTime.Now.ToString("yyyy年M月d日"), "qfrq");
                                 if (signStr.Contains("未找到书签"))
                                     EmcConfig.ErrorLog.Error(filename+"错误消息:" + signStr);
                             }

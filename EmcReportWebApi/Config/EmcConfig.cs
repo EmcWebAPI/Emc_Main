@@ -166,7 +166,9 @@ namespace EmcReportWebApi.Config
         {
             "avg",
             "absFv",
-            "absFc"
+            "absFc",
+            "uva",
+            "uvb"
         };
 
         #endregion

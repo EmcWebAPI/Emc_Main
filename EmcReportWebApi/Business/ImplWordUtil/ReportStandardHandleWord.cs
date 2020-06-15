@@ -142,8 +142,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         _wordApp.Selection.Font.NameOther = "宋体";
 
                         _wordApp.Selection.Cells.Merge();
-                        //_wordApp.Selection.Cells[1]
-                        //    .SetHeight(cellToPageBottom - 100, WdRowHeightRule.wdRowHeightAtLeast);
+                        _wordApp.Selection.Cells[1]
+                            .SetHeight(cellToPageBottom - 100, WdRowHeightRule.wdRowHeightAtLeast);
                         _wordApp.Selection.Cells[1].Range.Text = hasPhoto ? "此处空白" : "以下空白";
                     }
                 }

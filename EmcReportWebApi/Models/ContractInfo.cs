@@ -203,7 +203,7 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SampleQuantity
         {
-            get => SampleUnit.Equals("")?_sampleQuantity: _sampleQuantity+SampleUnit;
+            get => _sampleQuantity==null||_sampleQuantity.Equals("") || SampleUnit.Equals("") ?_sampleQuantity: _sampleQuantity+SampleUnit;
             set => _sampleQuantity = value;
         }
 
@@ -212,7 +212,7 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SamplingBase
         {
-            get => SampleUnit.Equals("") ? _samplingBase : _samplingBase + SampleUnit;
+            get => _samplingBase==null||_samplingBase.Equals("")|| SampleUnit.Equals("") ? _samplingBase : _samplingBase + SampleUnit;
             set => _samplingBase = value;
         }
 

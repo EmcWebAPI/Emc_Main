@@ -1113,6 +1113,15 @@ namespace EmcReportWebApi.Utils
                     _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                     _wordApp.Selection.InsertAfter("UVB");
                     break;
+                case "lamv":
+                    _wordApp.Selection.OMaths[1].Functions
+                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.InsertSymbol(-8442, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertAfter("V");
+                    break;
             }
         }
 
@@ -1229,6 +1238,10 @@ namespace EmcReportWebApi.Utils
                 if (range == null)
                     return "未找到书签:" + bookmark;
                 range.Select();
+                if (string.IsNullOrEmpty(content))
+                {
+                    content = "/";
+                }
                 range.Text = content;
                 if (isUnderLine)
                     range.Underline = WdUnderline.wdUnderlineSingle;

@@ -243,7 +243,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 Range tableRange = GetBookmarkRank(_currentWord, bookmark);
 
                 Table table = tableRange.Tables[1];
-
+                
                 for (int i = array.Count - 1; i >= 0; i--)
                 {
                     TableSplit((JObject)array[i], i + 1, table);
@@ -310,7 +310,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
 
             //序号
-            table.Cell(2, 1).Range.Text = jObject["idxNo"].ToString().Trim();
+            table.Cell(2, 1).Range.Text = serialNumber.ToString();
+
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论

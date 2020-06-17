@@ -119,10 +119,13 @@ namespace EmcReportWebApi.Controllers
         }
 
         /// <summary>
-        /// word转pdf 只传文件
-        /// 参数:signAndIssue:1为写入签发日期|
-        ///      qrCodeStr:二维码字符串 不传值不生成|
-        ///      auditor:审核人
+        /// 参数:signAndIssue:1为写入签发日期
+        /// 
+        /// qrCodeStr:二维码字符串 不传值不生成
+        /// 
+        /// auditor:审核人
+        /// 
+        /// 结果:response.headers上获取批准人高度比例 关键字approver.vertical.proportion
         /// </summary>
         /// <returns></returns>
         public IHttpActionResult WordConvertPdf()
@@ -207,7 +210,7 @@ namespace EmcReportWebApi.Controllers
 
                         if (approverHeightProportion != 0)
                         {
-                            httpResponseMessage.Headers.Add("approver.height.proportion", approverHeightProportion.ToString());
+                            httpResponseMessage.Headers.Add("approver.vertical.proportion", approverHeightProportion.ToString());
                         }
 
                         httpResponseMessage.Content = new StreamContent(fileStream);

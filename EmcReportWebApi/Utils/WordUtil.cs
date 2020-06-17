@@ -1468,9 +1468,32 @@ namespace EmcReportWebApi.Utils
             }
             catch (Exception ex)
             {
-                throw ex;
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
         }
+        /// <summary>
+        /// 查看书签高度比例
+        /// </summary>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        public double GetBookmarkHeightProportion(string bookmark)
+        {
+            try
+            {
+                Range range = this.GetBookmarkRank(_currentWord, bookmark);
+                float rangePositionTop = (float)range.Information[WdInformation.wdVerticalPositionRelativeToPage];
+                return rangePositionTop / range.PageSetup.PageHeight;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace.ToString()}.{ex.Message}");
+            }
+        }
+
         #endregion
 
         #region 私有方法

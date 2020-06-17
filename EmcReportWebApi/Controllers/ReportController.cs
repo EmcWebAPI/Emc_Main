@@ -169,6 +169,8 @@ namespace EmcReportWebApi.Controllers
 
                         string convertFileName = newName + convertExtendName;
                         string convertFileFullName = filePath + convertFileName;
+
+                        double approverHeightProportion = 0;
                         //转pdf
                         using (WordUtil wu = new WordUtil(convertFileFullName, outFileName))
                         {
@@ -187,6 +189,8 @@ namespace EmcReportWebApi.Controllers
                                 if (signStr.Contains("未找到书签"))
                                     EmcConfig.ErrorLog.Error(filename + "错误消息:" + signStr);
                             }
+
+                            approverHeightProportion= wu.GetBookmarkHeightProportion("shry");
                         }
 
                         //result = SetReportResult<string>(string.Format("转化成功:{0}", templateFileName), true, convertFileName);
@@ -200,6 +204,12 @@ namespace EmcReportWebApi.Controllers
                         var browser = String.Empty;
                         HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
                         FileStream fileStream = File.OpenRead(convertFileFullName);
+
+                        if (approverHeightProportion != 0)
+                        {
+                            httpResponseMessage.Headers.Add("approver.height.proportion", approverHeightProportion.ToString());
+                        }
+
                         httpResponseMessage.Content = new StreamContent(fileStream);
                         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                         httpResponseMessage.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")

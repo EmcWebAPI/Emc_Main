@@ -119,10 +119,13 @@ namespace EmcReportWebApi.Controllers
         }
 
         /// <summary>
-        /// word转pdf 只传文件
-        /// 参数:signAndIssue:1为写入签发日期|
-        ///      qrCodeStr:二维码字符串 不传值不生成|
-        ///      auditor:审核人
+        /// 参数:signAndIssue:1为写入签发日期
+        /// 
+        /// qrCodeStr:二维码字符串 不传值不生成
+        /// 
+        /// auditor:审核人
+        /// 
+        /// 结果:response.headers上获取批准人高度比例 关键字approver.vertical.proportion
         /// </summary>
         /// <returns></returns>
         public IHttpActionResult WordConvertPdf()
@@ -169,12 +172,14 @@ namespace EmcReportWebApi.Controllers
 
                         string convertFileName = newName + convertExtendName;
                         string convertFileFullName = filePath + convertFileName;
+
+                        double approverHeightProportion = 0;
                         //转pdf
                         using (WordUtil wu = new WordUtil(convertFileFullName, outFileName))
                         {
                             //签发日期
                             if (request["signAndIssue"]!=null&&request["signAndIssue"].Equals("1")) {
-                                string signStr = wu.InsertContentToWordByBookmark(DateTime.Now.ToString("yyyy年MM月dd日"), "qfrq");
+                                string signStr = wu.InsertContentToWordByBookmark(DateTime.Now.ToString("yyyy年M月d日"), "qfrq");
                                 if (signStr.Contains("未找到书签"))
                                     EmcConfig.ErrorLog.Error(filename+"错误消息:" + signStr);
                             }
@@ -187,6 +192,8 @@ namespace EmcReportWebApi.Controllers
                                 if (signStr.Contains("未找到书签"))
                                     EmcConfig.ErrorLog.Error(filename + "错误消息:" + signStr);
                             }
+
+                            approverHeightProportion= wu.GetBookmarkHeightProportion("shry");
                         }
 
                         //result = SetReportResult<string>(string.Format("转化成功:{0}", templateFileName), true, convertFileName);
@@ -200,6 +207,12 @@ namespace EmcReportWebApi.Controllers
                         var browser = String.Empty;
                         HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
                         FileStream fileStream = File.OpenRead(convertFileFullName);
+
+                        if (approverHeightProportion != 0)
+                        {
+                            httpResponseMessage.Headers.Add("approver.vertical.proportion", approverHeightProportion.ToString());
+                        }
+
                         httpResponseMessage.Content = new StreamContent(fileStream);
                         httpResponseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                         httpResponseMessage.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")

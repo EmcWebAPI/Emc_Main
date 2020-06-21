@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -168,7 +169,7 @@ namespace EmcReportWebApi.Business.Implement
                 }
 
                 if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
-                    wordUtil.TableSplit("standard");
+                    wordUtil.TableSplit("standard", mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals("")&& ((JArray)mainObj["yptp"]).Count>0);
 
                 //替换页眉内容
                 int pageCount = wordUtil.GetDocumnetPageCount() - 2;//获取文件页数(首页不算)
@@ -202,13 +203,30 @@ namespace EmcReportWebApi.Business.Implement
             {
                 string key = item.Key.ToString();
                 string value = item.Value.ToString();
-                if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
+                //if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
+                //{
+                //    value = CheckFirstPage(value);
+                //    wordUtil.InsertContentToWordByBookmark(value, key, true);
+                //}
+                //else
+                if (key.Equals("main_ypmc"))
                 {
-                    value = CheckFirstPage(value);
-                    wordUtil.InsertContentToWordByBookmark(value, key, true);
+                    string[] values = value.Split('\n');
+                    if (values.Length > 1)
+                    {
+                        value = values[0];
+                        
+                        for (int i = values.Length-1; i <= 1; i++)
+                        {
+                            var tempValue = values[i];
+                            wordUtil.TableAddRowForY("main_ypmc", tempValue);
+                        }
+                        
+                    }
+                    //wordUtil.InsertContentToWordByBookmark(value, key);
+
                 }
-                else
-                    wordUtil.InsertContentToWordByBookmark(value, key);
+                wordUtil.InsertContentToWordByBookmark(value, key);
             }
             return "保存成功";
         }

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using EmcReportWebApi.Config;
 
 namespace EmcReportWebApi.Utils
 {
@@ -94,6 +95,112 @@ namespace EmcReportWebApi.Utils
         }
         
         
+
+        #region 运算公式
+
+        protected void FindHtmlLabel(Range range)
+        {
+            range.Select();
+            string rangeText = range.Text;
+            string pattern = @"<(\S*?)[^>]*>.*?<\/\1>";
+            var regexMatch = Regex.Matches(rangeText, pattern);
+            if (regexMatch.Count == 0)
+            {
+                return;
+            }
+
+            foreach (Match m in regexMatch)
+            {
+                string formulaType = "";
+                var firstOrDefault = EmcConfig.FormulaType.FirstOrDefault(x => m.Value.Contains(x));
+                if (firstOrDefault != null)
+                    formulaType = firstOrDefault;
+                if(formulaType.Equals(""))
+                    continue;
+                range.Select();
+                this.Replace(1,m.Value,@"",1);
+                this.AddOperationFormula(_wordApp.Selection.Range, formulaType);
+            }
+        }
+        
+        /// <summary>
+        /// 添加公式
+        /// </summary>
+        protected void AddOperationFormula(Range range,string formulaType)
+        {
+            range.Select();
+            Range om = _wordApp.Selection.OMaths.Add(range);
+            _wordApp.Selection.OMaths.BuildUp();
+            switch (formulaType)
+            {
+                case "avg": 
+                    _wordApp.Selection.OMaths[1].Functions.Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionAcc).Acc.Char = 773;
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
+                    break;
+
+                case "absFv":
+                    var omatchFv = _wordApp.Selection.OMaths[1].Functions
+                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionDelim, 1);
+                    omatchFv.Delim.BegChar = 124;
+                    omatchFv.Delim.SepChar = 0;
+                    omatchFv.Delim.EndChar = 124;
+                    omatchFv.Delim.Grow = true;
+                    omatchFv.Delim.Shape = WdOMathShapeType.wdOMathShapeCentered;
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertSymbol(8242, "Cambria Math", true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.InsertAfter("v");
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertAfter("F");
+                    break;
+                case "absFc":
+                    var omatchFc = _wordApp.Selection.OMaths[1].Functions
+                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionDelim, 1);
+                    omatchFc.Delim.BegChar = 124;
+                    omatchFc.Delim.SepChar = 0;
+                    omatchFc.Delim.EndChar = 124;
+                    omatchFc.Delim.Grow = true;
+                    omatchFc.Delim.Shape = WdOMathShapeType.wdOMathShapeCentered;
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertSymbol(8242, "Cambria Math", true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.InsertAfter("c");
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertAfter("F");
+                    break;
+
+                case "uva":
+                    _wordApp.Selection.OMaths[1].Functions
+                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertAfter("UVA");
+                    break;
+                case "uvb":
+                    _wordApp.Selection.OMaths[1].Functions
+                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertAfter("UVB");
+                    break;
+                case "lamv":
+                    _wordApp.Selection.OMaths[1].Functions
+                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.InsertSymbol(-8442, null, true, WdFontBias.wdFontBiasDefault);
+                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.InsertAfter("V");
+                    break;
+            }
+        }
+
+
+        #endregion
 
         #region 公共方法
 
@@ -205,6 +312,10 @@ namespace EmcReportWebApi.Utils
                 if (range == null)
                     return "未找到书签:" + bookmark;
                 range.Select();
+                if (string.IsNullOrEmpty(content))
+                {
+                    content = "/";
+                }
                 range.Text = content;
                 if (isUnderLine)
                     range.Underline = WdUnderline.wdUnderlineSingle;
@@ -431,9 +542,32 @@ namespace EmcReportWebApi.Utils
             }
             catch (Exception ex)
             {
-                throw ex;
+                _needWrite = false;
+                Dispose();
+                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
             }
         }
+        /// <summary>
+        /// 查看书签高度比例
+        /// </summary>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        public double GetBookmarkHeightProportion(string bookmark)
+        {
+            try
+            {
+                Range range = this.GetBookmarkRank(_currentWord, bookmark);
+                float rangePositionTop = (float)range.Information[WdInformation.wdVerticalPositionRelativeToPage];
+                return rangePositionTop / range.PageSetup.PageHeight;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace.ToString()}.{ex.Message}");
+            }
+        }
+
         #endregion
 
         #region 私有方法

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace EmcReportWebApi.Business.ImplWordUtil
 {
@@ -43,7 +44,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 表格拆分合并 添加"续"
         /// </summary>
-        public virtual int TableSplit(string bookmark)
+        public virtual int TableSplit(string bookmark,bool hasPhoto)
         {
             try
             {
@@ -63,7 +64,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     int columnNumber = (int)r.Information[WdInformation.wdStartOfRangeColumnNumber];
                     int pageNumber = (int)r.Information[WdInformation.wdActiveEndPageNumber];
                     cellList.Add(new CellInfo(r.Text, rowNumber, columnNumber, pageNumber, cell));
-                    if (r.Text.Equals("\r\a") && !r.Text.Contains("$$"))
+                    if (r.Text.Equals("\r\a") && !r.Text.Contains("^^"))
                     {
                         continue;
                     }
@@ -112,10 +113,42 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 }
                 //替换字符
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> valuePairs = new Dictionary<string, string> { { "$$", "" } };
+                Dictionary<string, string> valuePairs = new Dictionary<string, string> { { "^^", "" } };
                 //报告编号
                 replaceDic.Add(1, valuePairs);//替换全部内容
                 ReplaceWritten(replaceDic);
+
+                #region 此处空白
+                table.Select();
+                Cell lastCellOrDefault = table.Range.Cells.Cast<Cell>().LastOrDefault();
+                if (lastCellOrDefault != null)
+                {
+                    lastCellOrDefault.Select();
+                    float cellPositionTop =
+                        (float) lastCellOrDefault.Range.Information[WdInformation.wdVerticalPositionRelativeToPage];
+                    float pageHeight = lastCellOrDefault.Range.PageSetup.PageHeight;
+                    //页眉高度大约62.37
+                    float cellToPageBottom = pageHeight - cellPositionTop;
+                    bool result = cellToPageBottom > 150;
+                    if (result)
+                    {
+                        lastCellOrDefault.Select();
+                        _wordApp.Selection.InsertRowsBelow(1);
+                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                        _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
+
+                        _wordApp.Selection.Font.NameFarEast = "宋体";
+                        _wordApp.Selection.Font.NameAscii = "宋体";
+                        _wordApp.Selection.Font.NameOther = "宋体";
+
+                        _wordApp.Selection.Cells.Merge();
+                        _wordApp.Selection.Cells[1]
+                            .SetHeight(cellToPageBottom - 150, WdRowHeightRule.wdRowHeightAtLeast);
+                        _wordApp.Selection.Cells[1].Range.Text = hasPhoto ? "此处空白" : "以下空白";
+                    }
+                }
+
+                #endregion
 
                 return 1;
             }
@@ -166,8 +199,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
             Cell nextCellInfo = nextCellList[nextCellList.Count - 2];
 
-            //找到最后一个带$$的单元格
-            CellInfo cellInfo = cellList.LastOrDefault(p => p.CellText.Contains("$$"));
+            //找到最后一个带^^的单元格
+            CellInfo cellInfo = cellList.LastOrDefault(p => p.CellText.Contains("^^"));
             if (nextCellInfo.Range.Text.Equals("") || nextCellInfo.Range.Text.Equals("\r\a"))
                 if (cellInfo != null)
                     nextCellInfo.Range.InsertAfter(cellInfo.CellText.Replace("\r\a", ""));
@@ -210,7 +243,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 Range tableRange = GetBookmarkRank(_currentWord, bookmark);
 
                 Table table = tableRange.Tables[1];
-
+                
                 for (int i = array.Count - 1; i >= 0; i--)
                 {
                     TableSplit((JObject)array[i], i + 1, table);
@@ -277,12 +310,13 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
 
             //序号
-            table.Cell(2, 1).Range.Text = jObject["idxNo"].ToString().Trim();
+            table.Cell(2, 1).Range.Text = serialNumber.ToString();
+
             //检验项目
             table.Cell(2, 2).Range.Text = jObject["itemContent"].ToString();
             //单项结论
             if (jObject["comment"] != null)
-                table.Cell(2, 6).Range.Text = "$$" + jObject["comment"];
+                table.Cell(2, 6).Range.Text = "^^" + jObject["comment"];
             //备注
             if (jObject["reMark"] != null && !jObject["reMark"].ToString().Equals(""))
                 table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
@@ -372,11 +406,26 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     table.Cell(cRow, cCol).Select();
                     var splitCellText = table.Cell(cRow, cCol).Range.Text;
                     table.Cell(cRow, cCol).Split(secondItemsCount, 2);
-                    //拆分之后重新赋值
-                    int splitCellLength = splitCellText.Length;
-                    if (!splitCellText.Equals("\r\a")&& !splitCellText.Equals(""))
-                        table.Cell(cRow, cCol).Range.Text = splitCellText.Substring(splitCellLength - 2, 2).Equals("\r\a") ?
-                            splitCellText.Substring(0, splitCellLength-2) : splitCellText;
+
+                    table.Cell(cRow, cCol).Range.Select();
+                    if (_wordApp.Selection.OMaths.Count <= 0)
+                    {
+                        //拆分之后重新赋值
+                        int splitCellLength = splitCellText.Length;
+                        if (!splitCellText.Equals("\r\a") && !splitCellText.Equals(""))
+                        {
+                            try
+                            {
+                                table.Cell(cRow, cCol).Range.Text = splitCellText.Substring(splitCellLength - 2, 2).Equals("\r\a") ?
+                                    splitCellText.Substring(0, splitCellLength - 2) : splitCellText;
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
+                        }
+                    }
+
                     for (int i = 0; i < secondItemsCount; i++)
                     {
                         table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
@@ -404,25 +453,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
 
                         tempCell.Range.Text = itemContent;
-
-                        if (tempCell.Range.Text.Contains("<avg>"))
-                        {
-                            tempCell.Range.Select();
-                            tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
-                            ReplaceAvg("<avg>", "\u0060", "Symbol");
-                        }
-
-                        //if (itemContent.Contains("\n"))
+                        
+                        //if (tempCell.Range.Text.Contains("</avg>"))
                         //{
-                        //    var cellText = tempCell.Range.Text;
-                        //    cellText = cellText.Replace("\r\a", "");
-                        //    cellText = cellText.Replace("\r", "\r\a");
-                        //    tempCell.Range.Text=(cellText); 
                         //    tempCell.Range.Select();
-                        //    object unite = WdUnits.wdLine;
-                        //    _wordApp.Selection.EndKey(ref unite, ref _missing);
-                        //    _wordApp.Selection.TypeParagraph();
+                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
+                        //    string avgStr = Regex.Match(tempCell.Range.Text, @"<avg[^>]*>", RegexOptions.IgnoreCase).Value;
+                        //    ReplaceAvg(avgStr, "\u0060", "Symbol");
                         //}
+
+                        this.FindHtmlLabel(tempCell.Range);
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
                         {
@@ -473,14 +513,36 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             else
                             {
 
-                                if (resultList.First["result"].ToString().Equals("@"))
+                                if (resultList.First["result"].ToString().Equals("@", StringComparison.OrdinalIgnoreCase))
                                 {
+                                    resultCell.Select();
+                                    //_wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                                    //_wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
                                     resultCell.Merge(table.Cell(cRow + i + resultIndex, cCol + 1));
                                 }
                                 else
                                 {
+                                    Cell previous = null;
+                                    try
+                                    {
+                                        previous = table.Cell(cRow + i + resultIndex - 1, cCol + 2);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        //resultCell.Range.Text = resultList.First["result"].ToString();
+                                    }
                                     resultCell.Range.Text = resultList.First["result"].ToString();
-
+                                    if (previous != null)
+                                    {
+                                        string previousText = previous.Range.Text;
+                                        if (previousText.Replace("\r\a","").Equals("$",StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            previous.Range.Text = "";
+                                            
+                                            previous.Select();
+                                            previous.Merge(resultCell);
+                                        }
+                                    }
                                 }
                             }
 
@@ -722,6 +784,17 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 throw ex;
             }
+        }
+        /// <summary>
+        /// 样品名称添加一行
+        /// </summary>
+        public void TableAddRowForY(string bookmark,string value)
+        {
+            Range range = GetBookmarkRank(_currentWord,bookmark);
+            Cell cell = range.Cells[1];
+            cell.Select();
+            _wordApp.Selection.InsertRowsBelow(1);
+            _wordApp.Selection.Cells[2].Range.Text = value;
         }
 
         #endregion

@@ -119,6 +119,34 @@
   <ItemGroup>
     <Content Include="Document\20200514183752926.txt" />
     <Content Include="Document\20200515104103476.txt" />
+    <Content Include="Document\测试用例\ypljt.jpg" />
+    <Content Include="Document\测试用例\传导发射\cdfs_layout.jpg" />
+    <Content Include="Document\测试用例\传导发射\cdfs_link.jpg" />
+    <Content Include="Document\测试用例\射频场感应的传导骚扰\spcgy_layout_1.jpg" />
+    <Content Include="Document\测试用例\射频场感应的传导骚扰\spcgy_layout_2.jpg" />
+    <Content Include="Document\测试用例\射频场感应的传导骚扰\spcgy_layout_3.jpg" />
+    <Content Include="Document\测试用例\射频场感应的传导骚扰\spcgy_link_1.jpg" />
+    <Content Include="Document\测试用例\射频场感应的传导骚扰\spcgy_link_2.jpg" />
+    <Content Include="Document\测试用例\射频电磁场辐射\spdccfs_layout_1.jpg" />
+    <Content Include="Document\测试用例\射频电磁场辐射\spdccfs_layout_2.jpg" />
+    <Content Include="Document\测试用例\射频电磁场辐射\spdccfs_link.jpg" />
+    <Content Include="Document\测试用例\工频磁场\gpcc_layout_1.jpg" />
+    <Content Include="Document\测试用例\工频磁场\gpcc_layout_2.jpg" />
+    <Content Include="Document\测试用例\工频磁场\gpcc_link.jpg" />
+    <Content Include="Document\测试用例\浪涌\ly_layout.jpg" />
+    <Content Include="Document\测试用例\浪涌\ly_link.jpg" />
+    <Content Include="Document\测试用例\电压暂降&amp;短时中断\zj&amp;ds_layout.jpg" />
+    <Content Include="Document\测试用例\电压暂降&amp;短时中断\zj&amp;ds_link.jpg" />
+    <Content Include="Document\测试用例\电压波动和闪烁\sybz.jpg" />
+    <Content Include="Document\测试用例\电压波动和闪烁\sylj.jpg" />
+    <Content Include="Document\测试用例\电快速瞬变脉冲群\dkssj_layout.jpg" />
+    <Content Include="Document\测试用例\电快速瞬变脉冲群\dkssj_link.jpg" />
+    <Content Include="Document\测试用例\谐波失真\xbsz_layout.jpg" />
+    <Content Include="Document\测试用例\谐波失真\xbsz_link.jpg" />
+    <Content Include="Document\测试用例\辐射发射\fsfs_layout.jpg" />
+    <Content Include="Document\测试用例\辐射发射\fsfs_link.jpg" />
+    <Content Include="Document\测试用例\静电放电\jdfd_layout.jpg" />
+    <Content Include="Document\测试用例\静电放电\jdfd_link.jpg" />
     <Content Include="Document\QRCode.txt" />
     <Content Include="Files\ReportFiles\Test\image1.jpg" />
     <Content Include="Files\ReportFiles\Test\image2.jpg" />
@@ -202,6 +230,19 @@
     <Content Include="Files\ExperimentTemplate\辐射发射.docx" />
     <Content Include="Files\标准模板.docx" />
     <Content Include="Files\ExperimentTemplate\工频磁场.docx" />
+    <Content Include="Document\20200619Review问题结果.docx" />
+    <Content Include="Document\测试用例\0505 电磁兼容资料审查表0802.docx" />
+    <Content Include="Document\测试用例\传导发射\QW2018-2065 冷冻射频肿瘤治疗系统 模式1  CE N.Rtf" />
+    <Content Include="Document\测试用例\传导发射\QW2019_4682_AC220V_模式①.Rtf" />
+    <Content Include="Document\测试用例\传导发射\QW2019_4682_AC220V_模式①_N .Rtf" />
+    <Content Include="Document\测试用例\传导发射\QW2019_4682_AC220V_模式①_N.Rtf" />
+    <Content Include="Document\测试用例\传导发射\QW2019_4682_AC220V_模式②_L .Rtf" />
+    <Content Include="Document\测试用例\传导发射\QW2019_4682_AC220V_模式②_N.Rtf" />
+    <Content Include="Document\测试用例\方案测试.xlsx" />
+    <Content Include="Document\测试用例\电压波动和闪烁\QW2019_4682_AC220V_模式①.rtf" />
+    <Content Include="Document\测试用例\电压波动和闪烁\QW2019_4682_AC220V_模式②.rtf" />
+    <Content Include="Document\测试用例\谐波失真\QW2019_4682_AC220V_模式①.rtf" />
+    <Content Include="Document\测试用例\辐射发射\QW2019_4682_AC220V_模式①.Rtf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

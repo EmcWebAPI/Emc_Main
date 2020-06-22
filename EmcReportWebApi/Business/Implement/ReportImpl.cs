@@ -302,7 +302,14 @@ namespace EmcReportWebApi.Business.Implement
         /// <summary>
         /// 实验数据
         /// </summary>
+        /// <param name="rtfType"></param>
+        /// <param name="middleDir"></param>
+        /// <param name="reportFilesPath"></param>
         /// <param name="funType">1.传导发射实验,辐射发射实验 2.谐波失真 3.其他html表单实验</param>
+        /// <param name="wordUtil"></param>
+        /// <param name="jObject"></param>
+        /// <param name="bookmark"></param>
+        /// <param name="isNewBookmark"></param>
         /// <returns>新建的书签供下个实验使用</returns>
         private string SetEmissionCommon(ReportHandleWord wordUtil, JObject jObject, string bookmark, string rtfType, string middleDir, string reportFilesPath, int funType, bool isNewBookmark)
         {
@@ -318,8 +325,8 @@ namespace EmcReportWebApi.Business.Implement
 
             JArray sysj = (JArray)jObject["sysj"];
 
-            RtfTableInfo rtfTableInfo = EmcConfig.RtfTableInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
-            RtfPictureInfo rtfPictureInfo = EmcConfig.RtfPictureInfos.Where(p => p.RtfType == rtfType).FirstOrDefault();
+            RtfTableInfo rtfTableInfo = EmcConfig.RtfTableInfos.FirstOrDefault(p => p.RtfType == rtfType);
+            RtfPictureInfo rtfPictureInfo = EmcConfig.RtfPictureInfos.FirstOrDefault(p => p.RtfType == rtfType);
 
             int startIndex = 0;
             int endIndex = 0;
@@ -333,24 +340,34 @@ namespace EmcReportWebApi.Business.Implement
             switch (funType)
             {
                 case 1:
-                    startIndex = rtfTableInfo.StartIndex;
-                    endIndex = rtfTableInfo.EndIndex;
-                    titleRow = rtfTableInfo.TitleRow;
-                    mainTitle = rtfTableInfo.MainTitle;
-                    dic = rtfTableInfo.ColumnInfoDic;
-                    rtfbookmark = rtfTableInfo.Bookmark;
+                    if (rtfTableInfo != null)
+                    {
+                        startIndex = rtfTableInfo.StartIndex;
+                        endIndex = rtfTableInfo.EndIndex;
+                        titleRow = rtfTableInfo.TitleRow;
+                        mainTitle = rtfTableInfo.MainTitle;
+                        dic = rtfTableInfo.ColumnInfoDic;
+                        rtfbookmark = rtfTableInfo.Bookmark;
+                    }
 
-                    imageStartIndex = rtfPictureInfo.StartIndex;
-                    imageBookmark = rtfPictureInfo.Bookmark;
+                    if (rtfPictureInfo != null)
+                    {
+                        imageStartIndex = rtfPictureInfo.StartIndex;
+                        imageBookmark = rtfPictureInfo.Bookmark;
+                    }
 
                     break;
                 case 2:
-                    startIndex = rtfTableInfo.StartIndex;
-                    endIndex = rtfTableInfo.EndIndex;
-                    titleRow = rtfTableInfo.TitleRow;
-                    mainTitle = rtfTableInfo.MainTitle;
-                    dic = rtfTableInfo.ColumnInfoDic;
-                    rtfbookmark = rtfTableInfo.Bookmark;
+                    if (rtfTableInfo != null)
+                    {
+                        startIndex = rtfTableInfo.StartIndex;
+                        endIndex = rtfTableInfo.EndIndex;
+                        titleRow = rtfTableInfo.TitleRow;
+                        mainTitle = rtfTableInfo.MainTitle;
+                        dic = rtfTableInfo.ColumnInfoDic;
+                        rtfbookmark = rtfTableInfo.Bookmark;
+                    }
+
                     break;
                 default:
                     break;
@@ -358,8 +375,9 @@ namespace EmcReportWebApi.Business.Implement
             }
 
             int i = 0;
-            foreach (JObject item in sysj)
+            foreach (var jToken in sysj)
             {
+                var item = (JObject) jToken;
                 //插入实验数据信息 (画表格)
 
                 List<string> contentList = new List<string>();
@@ -389,15 +407,16 @@ namespace EmcReportWebApi.Business.Implement
                 switch (funType)
                 {
                     case 1:
-                        if (item["rtf"] != null && !item["rtf"].Equals(""))
+                        if (item["rtf"] != null && !item["rtf"].ToString().Equals(""))
                         {
                             JArray rtf = (JArray)item["rtf"];
                             int rtfCount = rtf.Count;
                             int j = 0;
                             try
                             {
-                                foreach (JObject rtfObj in (JArray)item["rtf"])
+                                foreach (var jToken1 in (JArray)item["rtf"])
                                 {
+                                    var rtfObj = (JObject) jToken1;
                                     //需要画表格和插入rtf内容
                                     wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
 
@@ -419,8 +438,9 @@ namespace EmcReportWebApi.Business.Implement
                             int k = 0;
                             try
                             {
-                                foreach (JObject rtfObj in (JArray)item["rtf"])
+                                foreach (var jToken1 in (JArray)item["rtf"])
                                 {
+                                    var rtfObj = (JObject) jToken1;
                                     //需要画表格和插入rtf内容
                                     wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
                                     k++;
@@ -435,14 +455,15 @@ namespace EmcReportWebApi.Business.Implement
 
                         break;
                     default:
-                        if (item["html"] != null && !item["html"].Equals(""))
+                        if (item["html"] != null && !item["html"].ToString().Equals(""))
                         {
                             JArray html = (JArray)item["html"];
                             int htmlCount = html.Count;
                             int m = 0;
 
-                            foreach (JObject rtfObj in html)
+                            foreach (var jToken1 in html)
                             {
+                                var rtfObj = (JObject) jToken1;
                                 //生成html并将内容插入到模板中
                                 string htmlstr = (string)rtfObj["table"];
                                 string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
@@ -465,8 +486,9 @@ namespace EmcReportWebApi.Business.Implement
             {
                 JArray syljt = (JArray)jObject["syljt"];
 
-                foreach (JObject item in syljt)
+                foreach (var jToken in syljt)
                 {
+                    var item = (JObject) jToken;
                     list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
                 }
 
@@ -477,8 +499,9 @@ namespace EmcReportWebApi.Business.Implement
             {
                 JArray sybzt = (JArray)jObject["sybzt"];
                 list = new List<string>();
-                foreach (JObject item in sybzt)
+                foreach (var jToken in sybzt)
                 {
+                    var item = (JObject) jToken;
                     list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
                 }
                 wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
@@ -510,8 +533,9 @@ namespace EmcReportWebApi.Business.Implement
 
             //交、直流电源线
             int i = 0;
-            foreach (JObject item in sysj)
+            foreach (var jToken in sysj)
             {
+                var item = (JObject) jToken;
                 if ((item["sysjTitle"] != null && (item["sysjTitle"].ToString().Equals("交、直流电源线")) || item["sysjTitle"].ToString().Contains("电源线")) ||
                     (item["sysjTitle"] != null && item["sysjTitle"].ToString().Equals("电压暂降"))
                     )
@@ -546,8 +570,9 @@ namespace EmcReportWebApi.Business.Implement
                     int htmlCount = html.Count;
                     int m = 0;
 
-                    foreach (JObject rtfObj in html)
+                    foreach (var jToken1 in html)
                     {
+                        var rtfObj = (JObject) jToken1;
                         //生成html并将内容插入到模板中
                         string htmlstr = (string)rtfObj["table"];
                         string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
@@ -560,8 +585,9 @@ namespace EmcReportWebApi.Business.Implement
 
             //信号电缆和互连电缆
             int j = 0;
-            foreach (JObject item in sysj)
+            foreach (var jToken in sysj)
             {
+                var item = (JObject) jToken;
                 if ((item["sysjTitle"] != null && (item["sysjTitle"].ToString().Equals("信号电缆和互连电缆") || item["sysjTitle"].ToString().Contains("电缆"))) ||
                     (item["sysjTitle"] != null && item["sysjTitle"].ToString().Equals("短时中断"))
                     )

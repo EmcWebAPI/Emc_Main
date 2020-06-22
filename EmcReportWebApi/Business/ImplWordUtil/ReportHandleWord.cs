@@ -1,23 +1,22 @@
 ﻿using EmcReportWebApi.Utils;
+using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.Office.Interop.Word;
 
 namespace EmcReportWebApi.Business.ImplWordUtil
 {
     /// <summary>
     /// 报告实现word工具类
     /// </summary>
-    public class ReportHandleWord:WordUtil
+    public class ReportHandleWord : WordUtil
     {
 
         /// <summary>
         /// 打开现有文件操作
         /// </summary>
         /// <param name="fileFullName">需保存文件的路径</param>
-        public ReportHandleWord(string fileFullName) : base(fileFullName) {
+        public ReportHandleWord(string fileFullName) : base(fileFullName)
+        {
 
         }
 
@@ -376,7 +375,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 {
                     tableWidth += item.Width;
                 }
-                
+
                 for (int i = 0; i < listCount; i++)
                 {
                     string[] arrStr = list[i].Split(',');
@@ -431,19 +430,22 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             string newBookmark = "bookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
             try
             {
-                Document htmldoc = OpenWord(filePath);
+                Document htmlDoc = OpenWord(filePath) ?? throw new ArgumentNullException(nameof(filePath));
                 if (isNewBookmark)
                 {
-                    Range rangeContent = htmldoc.Content;
+                    Range rangeContent = htmlDoc.Content;
                     rangeContent.Select();
-                    InsertBreakPage(true);
+                    object unite = WdUnits.wdStory;
+                    _wordApp.Selection.EndKey(ref unite, ref _missing);
+                    object breakPage = WdBreakType.wdPageBreak;//分页符
+                    _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
                     rangeContent = rangeContent.Sections.Last.Range;
                     CreateAndGoToNextParagraph(rangeContent, false, true);
                     rangeContent.Select();
                     _wordApp.Selection.Bookmarks.Add(newBookmark, rangeContent);
                 }
                 Range range = GetBookmarkRank(_currentWord, bookmark);
-                htmldoc.Content.Copy();
+                htmlDoc.Content.Copy();
                 range.Paste();
                 range.Select();
                 int tableCount = _wordApp.Selection.Tables.Count;
@@ -456,7 +458,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 }
 
                 if (isCloseTheFile)
-                    CloseWord(htmldoc, filePath);
+                    CloseWord(htmlDoc, filePath);
             }
             catch (Exception ex)
             {
@@ -784,7 +786,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 Document templateDoc = OpenWord(templalteFileFullName);
                 Document copyFileDoc = OpenWord(copyFileFullPath, true);
-                result=CopyOtherFilePictureToWord(templateDoc,
+                result = CopyOtherFilePictureToWord(templateDoc,
                     copyFileDoc,
                     copyFilePictureStartIndex,
                     workBookmark,

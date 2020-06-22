@@ -129,7 +129,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     float pageHeight = lastCellOrDefault.Range.PageSetup.PageHeight;
                     //页眉高度大约62.37
                     float cellToPageBottom = pageHeight - cellPositionTop;
-                    bool result = cellToPageBottom > 150;
+                    bool result = cellToPageBottom > 250;
                     if (result)
                     {
                         lastCellOrDefault.Select();
@@ -143,7 +143,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                         _wordApp.Selection.Cells.Merge();
                         _wordApp.Selection.Cells[1]
-                            .SetHeight(cellToPageBottom - 150, WdRowHeightRule.wdRowHeightAtLeast);
+                            .SetHeight(cellToPageBottom - 250, WdRowHeightRule.wdRowHeightAtLeast);
                         _wordApp.Selection.Cells[1].Range.Text = hasPhoto ? "此处空白" : "以下空白";
                     }
                 }

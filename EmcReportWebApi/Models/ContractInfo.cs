@@ -46,7 +46,11 @@ namespace EmcReportWebApi.Models
                     if (stringSplit.Length > 0)
                     {
                         string stringFirst = stringSplit[0];
-                        _detectType = stringFirst.Substring(stringFirst.Length - 4, 4) + "年国家医疗器械抽检";
+                        _detectType = stringFirst.Substring(stringFirst.Length - 4, 4) + "年国家医疗器械抽检"+ (ReinspectionRPT ?? "");
+                    }
+                    else
+                    {
+                        _detectType = "年国家医疗器械抽检" + (ReinspectionRPT ?? "");
                     }
                 }
 
@@ -354,6 +358,10 @@ namespace EmcReportWebApi.Models
             set { batchNumberRPT = value; }
         }
 
+
+        public string ReinspectionRPT { get; set; }
+
+        public string SampleReceiptDateRPT { get; set; }
 
         #endregion
     }

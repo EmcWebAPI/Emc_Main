@@ -137,7 +137,7 @@ namespace EmcReportWebApi.Config
             { "cydw","SamplingCompany"},//抽样单位
             { "cydd","SamplingAddress"},//抽样地点
             { "cyrq","SamplingDate"},//抽样日期
-            { "dyrq","SampleReceiptDate"},//到样日期
+            { "dyrq","SampleReceiptDateRPT"},//到样日期
             { "jyxm","Content"},//检验项目
             { "jyyj","SampleTestBasis"},//检验依据
             { "jyjl","Conclusion"},//检验结论

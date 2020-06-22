@@ -205,23 +205,23 @@ namespace EmcReportWebApi.Utils
                     _wordApp.Selection.OMaths[1].Functions
                         .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter(forceValue);
+                    _wordApp.Selection.Range.InsertAfter(forceValue);
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
-                    _wordApp.Selection.Font.Italic = 0;
-                    _wordApp.Selection.Font.Bold = 0;
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter(matchValue.Trim().Replace("<下标>","").Replace("</下标>",""));
+                    _wordApp.Selection.Range.Font.Italic = 0;
+                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<下标>","").Replace("</下标>",""));
                     break;
                 case "上标":
                     _wordApp.Selection.OMaths[1].Functions
                         .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSup);
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter(forceValue);
+                    _wordApp.Selection.Range.InsertAfter(forceValue);
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
-                    _wordApp.Selection.Font.Italic = 0;
-                    _wordApp.Selection.Font.Bold = 0;
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter(matchValue.Trim().Replace("<上标>", "").Replace("</上标>", ""));
+                    _wordApp.Selection.Range.Font.Italic = 0;
+                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上标>", "").Replace("</上标>", ""));
                     break;
 
             }

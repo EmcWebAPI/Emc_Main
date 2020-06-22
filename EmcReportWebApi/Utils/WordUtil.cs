@@ -113,15 +113,26 @@ namespace EmcReportWebApi.Utils
             {
                 string formulaType = "";
                 
-                string forceValue= rangeText.Substring(m.Index - 1, 1);
+                
                 var firstOrDefault = EmcConfig.FormulaType.FirstOrDefault(x => m.Value.Contains(x));
                 if (firstOrDefault != null)
                     formulaType = firstOrDefault;
                 if(formulaType.Equals(""))
                     continue;
                 range.Select();
-                if(m.Value.Contains("下标")||m.Value.Contains("上标"))
-                    this.Replace(1,(forceValue+m.Value),@"",1);
+                string forceValue = "";
+                if (m.Value.Contains("下标") || m.Value.Contains("上标"))
+                {
+                    if (m.Index - 1<0)
+                    {
+                        continue;
+                    }
+
+                    forceValue = rangeText.Substring(m.Index - 1, 1);
+                    this.Replace(1, (forceValue + m.Value), @"", 1);
+                }
+
+                
                 else
                     this.Replace(1, m.Value, @"", 1);
                 this.AddOperationFormula(_wordApp.Selection.Range, formulaType, forceValue,m.Value);

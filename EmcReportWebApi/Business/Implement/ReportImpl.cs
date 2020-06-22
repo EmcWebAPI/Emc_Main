@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace EmcReportWebApi.Business.Implement
                 if (fileBytes.Length <= 0)
                 {
                     result = SetReportResult<string>("请求报告文件失败", false, para.ReportId.ToString());
-                    EmcConfig.ErrorLog.Error(string.Format("请求报告失败,报告id:{0}", para.ReportId));
+                    EmcConfig.ErrorLog.Error($"请求报告失败,报告id:{para.ReportId}");
                     return result;
                 }
                 //解压zip文件
@@ -64,14 +65,14 @@ namespace EmcReportWebApi.Business.Implement
                 string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
-                result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, content);
+                result = SetReportResult<string>(string.Format(format: "报告生成成功,用时:" + time1.ToString(CultureInfo.InvariantCulture)), true, content);
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
 
             }
             catch (Exception ex)
             {
                 EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
-                result = SetReportResult<string>(string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.ReportId, ex.Message), false, "");
+                result = SetReportResult<string>($"报告生成失败,reportId:{para.ReportId},错误信息:{ex.Message}", false, "");
                 return result;
             }
             finally
@@ -90,12 +91,12 @@ namespace EmcReportWebApi.Business.Implement
         {
             //解析json字符串
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("Report{0}.docx", Guid.NewGuid().ToString());//输出文件名称
-            string outfilePth = string.Format(@"{0}Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
-            string filePath = string.Format(@"{0}Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["TemplateName"].ToString());//模板文件
-            string middleDir = EmcConfig.CurrRoot + "Files\\TemplateMiddleware\\" + Guid.NewGuid().ToString();
+            string outfileName = $"Report{Guid.NewGuid().ToString()}.docx";//输出文件名称
+            string outfilePth = $@"{EmcConfig.CurrRoot}Files\OutPut\{outfileName}";//输出文件路径
+            string filePath =
+                $@"{EmcConfig.CurrRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";//模板文件
+            string middleDir = EmcConfig.CurrRoot + "Files\\TemplateMiddleware\\" + Guid.NewGuid();
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
-            string result = "保存成功1";
             //生成报告
             using (ReportHandleWord wordUtil = new ReportHandleWord(outfilePth, filePath))
             {
@@ -104,15 +105,15 @@ namespace EmcReportWebApi.Business.Implement
 
                 //首页内容 object
                 JObject firstPage = (JObject)mainObj["firstPage"];
-                result = InsertContentToWord(wordUtil, firstPage);
+                var result = InsertContentToWord(wordUtil, firstPage);
                 //报告编号
                 string[] reportArray = reportId.Split('-');
                 string reportStr = "国医检(磁)字QW2018第698号";
-                string reportYMStr = "国医检（磁）字QW2018第698号";
+                string reportYmStr = "国医检（磁）字QW2018第698号";
                 if (reportArray.Length >= 2)
                 {
                     reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
-                    reportYMStr = string.Format("国医检（磁）字{0}第{1}号", reportArray[0], reportArray[1]);
+                    reportYmStr = string.Format("国医检（磁）字{0}第{1}号", reportArray[0], reportArray[1]);
                 }
                 wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
 
@@ -155,12 +156,13 @@ namespace EmcReportWebApi.Business.Implement
                 int experimentCount = experiment.Count;
                 int k = 1;
                 string newBookmark = "experiment";
-                foreach (JObject item in experiment)
+                foreach (var jToken in experiment)
                 {
+                    var item = (JObject)jToken;
                     //判断模板是否存在
                     if (!File.Exists(GetTemplatePath(item["name"] + ".docx")) && !item["name"].ToString().Equals("电压暂降/短时中断"))
                     {
-                        EmcConfig.ErrorLog.Error(string.Format("{0}模板不存在", item["name"]));
+                        EmcConfig.ErrorLog.Error($"{item["name"]}模板不存在");
                         continue;
                     }
 
@@ -179,6 +181,20 @@ namespace EmcReportWebApi.Business.Implement
                     k++;
                 }
                 wordUtil.FormatCurrentWord(k);
+
+                //识别标记和文件 从新文件中取
+                string bsWord = null;
+                if (mainObj["bsWord"]!=null&& !mainObj["bsWord"].ToString().Equals(""))
+                {
+                    bsWord = reportFilesPath + "\\" + (string)mainObj["bsWord"];
+                }
+
+                if (!string.IsNullOrEmpty(bsWord))
+                {
+                    wordUtil.CopyOtherFileContentToWord(bsWord, "bsWord");
+                }
+
+
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
                 {
@@ -191,7 +207,7 @@ namespace EmcReportWebApi.Business.Implement
 
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
                 Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("reportId", reportYMStr);
+                valuePairs.Add("reportId", reportYmStr);
                 valuePairs.Add("page", pageCount.ToString());
                 replaceDic.Add(3, valuePairs);//替换页眉
 

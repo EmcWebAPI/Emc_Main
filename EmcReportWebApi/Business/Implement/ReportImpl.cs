@@ -492,7 +492,7 @@ namespace EmcReportWebApi.Business.Implement
                     list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
                 }
 
-                wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
+                wordUtil.InsertConnectionImageToTemplate(templateFullPath, list, "syljt", false);
             }
 
             if (jObject["sybzt"] != null && !jObject["sybzt"].ToString().Equals(""))
@@ -646,7 +646,7 @@ namespace EmcReportWebApi.Business.Implement
                     list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
                 }
 
-                wordUtil.InsertImageToTemplate(templateFullPath, list, "syljt", false);
+                wordUtil.InsertConnectionImageToTemplate(templateFullPath, list, "syljt", false);
             }
 
             if (jObject["sybzt"] != null && !jObject["sybzt"].ToString().Equals(""))

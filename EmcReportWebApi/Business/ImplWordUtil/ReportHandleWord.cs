@@ -351,6 +351,61 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// 将图片插入模板文件
         /// </summary>
         /// <returns></returns>
+        public virtual string InsertConnectionImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Document doc = OpenWord(fileFullPath);
+                Range range = GetBookmarkRank(doc, bookmark);
+
+                int listCount = list.Count;
+                //创建表格
+                range.Select();
+                Table table = _wordApp.Selection.Tables.Add(range, listCount, 1, ref _missing, ref _missing);
+                float tableWidth = 0f;
+                foreach (Column item in table.Columns)
+                {
+                    tableWidth += item.Width;
+                }
+
+                for (int i = 0; i < listCount; i++)
+                {
+                    string[] arrStr = list[i].Split(',');
+                    string fileName = arrStr[0];
+                    string content = arrStr[1];
+                    table.Select();
+                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
+                    cellRange.Select();
+
+                    if (!fileName.Equals(""))
+                    {
+                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 280);
+                    }
+                    //CreateAndGoToNextParagraph(cellRange, true, false);
+                    //cellRange.InsertAfter(content);
+                }
+                table.Select();
+                //设置table格式
+                _wordApp.Selection.SelectCell();
+                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                if (isCloseTheFile)
+                    CloseWord(doc, fileFullPath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "插入图片成功";
+        }
+
+        /// <summary>
+        /// 将图片插入模板文件
+        /// </summary>
+        /// <returns></returns>
         public virtual string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -416,7 +471,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             return "插入图片成功";
         }
-
+        
         /// <summary>
         /// 复制其他文件内容到当前word并创建一个新的书签
         /// </summary>

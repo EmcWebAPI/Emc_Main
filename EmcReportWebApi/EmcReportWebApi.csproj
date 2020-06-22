@@ -243,6 +243,7 @@
     <Content Include="Document\测试用例\电压波动和闪烁\QW2019_4682_AC220V_模式②.rtf" />
     <Content Include="Document\测试用例\谐波失真\QW2019_4682_AC220V_模式①.rtf" />
     <Content Include="Document\测试用例\辐射发射\QW2019_4682_AC220V_模式①.Rtf" />
+    <Content Include="Document\报告模板.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

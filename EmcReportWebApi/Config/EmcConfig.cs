@@ -170,8 +170,9 @@ namespace EmcReportWebApi.Config
             "uva",
             "uvb",
             "lamv",
-            "上标",
-            "下标"
+            "<上标>",
+            "<下标>",
+            "<上下标>"
         };
 
         #endregion

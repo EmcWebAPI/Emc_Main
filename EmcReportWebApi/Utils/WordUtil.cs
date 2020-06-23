@@ -114,16 +114,21 @@ namespace EmcReportWebApi.Utils
                 string formulaType = "";
                 
                 
-                var firstOrDefault = EmcConfig.FormulaType.FirstOrDefault(x => m.Value.Contains(x));
+                var firstOrDefault = EmcConfig.FormulaType.FirstOrDefault(x => m.Value.Trim().Contains(x));
                 if (firstOrDefault != null)
                     formulaType = firstOrDefault;
                 if(formulaType.Equals(""))
                     continue;
                 range.Select();
                 string forceValue = "";
-                if (m.Value.Contains("下标") || m.Value.Contains("上标"))
+                if (formulaType.Equals("<下标>") || formulaType.Equals("<上标>") || formulaType.Equals("<上下标>"))
                 {
                     if (m.Index - 1<0)
+                    {
+                        continue;
+                    }
+
+                    if (formulaType.Equals("<上下标>") && m.Value.Split('|').Length < 2)
                     {
                         continue;
                     }
@@ -212,7 +217,7 @@ namespace EmcReportWebApi.Utils
                     _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                     _wordApp.Selection.InsertAfter("V");
                     break;
-                case "下标":
+                case "<下标>":
                     _wordApp.Selection.OMaths[1].Functions
                         .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
@@ -223,7 +228,7 @@ namespace EmcReportWebApi.Utils
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                     _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<下标>","").Replace("</下标>",""));
                     break;
-                case "上标":
+                case "<上标>":
                     _wordApp.Selection.OMaths[1].Functions
                         .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSup);
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
@@ -233,6 +238,21 @@ namespace EmcReportWebApi.Utils
                     _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                     _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                     _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上标>", "").Replace("</上标>", ""));
+                    break;
+                case "<上下标>":
+                    string[] splitValue = matchValue.Trim().Replace("<上下标>", "").Replace("</上下标>", "").Split('|');
+                    _wordApp.Selection.OMaths[1].Functions
+                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSubSup);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 3, WdMovementType.wdMove);
+                    _wordApp.Selection.Range.InsertAfter(forceValue);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
+                    _wordApp.Selection.Range.Font.Italic = 0;
+                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.Range.InsertAfter(splitValue[0]);
+                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                    _wordApp.Selection.Range.InsertAfter(splitValue[1]);
+                    //_wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上下标>", "").Replace("</上下标>", ""));
                     break;
 
             }
@@ -595,7 +615,9 @@ namespace EmcReportWebApi.Utils
         {
             try
             {
-                Range range = this.GetBookmarkRank(_currentWord, bookmark);
+                Range range = this.GetBookmarkReturnNull(_currentWord, bookmark);
+                if (range == null)
+                    return 0;
                 float rangePositionTop = (float)range.Information[WdInformation.wdVerticalPositionRelativeToPage];
                 return rangePositionTop / range.PageSetup.PageHeight;
             }

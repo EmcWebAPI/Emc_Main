@@ -1175,7 +1175,9 @@ namespace EmcReportWebApi.Utils
                 //table.Range.Application.Selection.Cells.DistributeWidth();
 
                 SetDistributeTable(table);
+                table.Cell(1,1).SetHeight(table.Cell(1, 1).Height,WdRowHeightRule.wdRowHeightAtLeast);
             }
+            
 
         }
         /// <summary>

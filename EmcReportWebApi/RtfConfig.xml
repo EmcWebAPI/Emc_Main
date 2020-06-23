@@ -44,27 +44,27 @@
         <ColumnIndex>2</ColumnIndex>
       </Column>
       <Column>
-        <Title>天线高度
-(cm)</Title>
+        <Title>限值
+（dBμV）</Title>
         <ColumnIndex>3</ColumnIndex>
-      </Column>
-      <Column>
-        <Title>天线极性</Title>
-        <ColumnIndex>4</ColumnIndex>
-      </Column>
-      <Column>
-        <Title> 转台角度
-(deg)</Title>
-        <ColumnIndex>5</ColumnIndex>
       </Column>
       <Column>
         <Title>裕量
 （dB）</Title>
+        <ColumnIndex>4</ColumnIndex>
+      </Column>
+      <Column>
+        <Title> 天线高度
+（cm）</Title>
+        <ColumnIndex>5</ColumnIndex>
+      </Column>
+      <Column>
+        <Title>天线极性</Title>
         <ColumnIndex>6</ColumnIndex>
       </Column>
       <Column>
-        <Title>限值
-（dBμV）</Title>
+        <Title>转台角度
+（deg）</Title>
         <ColumnIndex>7</ColumnIndex>
       </Column>
     </Table>

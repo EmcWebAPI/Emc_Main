@@ -793,7 +793,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             copyTable.Cell(titleRow, j).Range.Text = copyTableColDic[j];
                         }
                     }
-                    if (mainTitleArray != null && mainTitleArray[m] != null)
+                    if (mainTitleArray != null)
                     {
                         copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
                         m++;

@@ -50,10 +50,14 @@ namespace EmcReportWebApi.Models
                     }
                     else
                     {
-                        _detectType = "年国家医疗器械抽检" + (ReinspectionRPT ?? "");
+                        _detectType = !_detectType.Contains(ReinspectionRPT) ? _detectType + (ReinspectionRPT ?? "") : _detectType;
                     }
                 }
-
+                else
+                {
+                    _detectType = !_detectType.Contains(ReinspectionRPT)?_detectType + (ReinspectionRPT ?? ""):_detectType;
+                }
+                
                 return _detectType;
             }
             set => _detectType = value;

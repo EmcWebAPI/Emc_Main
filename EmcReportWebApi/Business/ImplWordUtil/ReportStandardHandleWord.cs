@@ -358,24 +358,45 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 Cell cell7 = table.Cell(2, 7);
                 cell7.Split(firstItemsCount, 1);
 
-                Dictionary<string, JObject> cellCol4Dic = new Dictionary<string, JObject>();
+                Dictionary<string, JObject> noStdNameDictionary = new Dictionary<string, JObject>();
+                Dictionary<string, JObject> stdNameDictionary = new Dictionary<string, JObject>();
                 for (int i = 0; i < firstItemsCount; i++)
                 {
                     Cell tempCell = table.Cell(2 + i, 4);
                     JObject firstItem = (JObject)firstItems[i];
-                    tempCell.Range.Text = firstItem["stdName"].ToString();
-                    cellCol4Dic.Add((2 + i) + "," + 4,firstItem);
+                    if (firstItem["stdName"] == null)
+                    {
+                        noStdNameDictionary.Add((2 + i) + "," + 4, firstItem);
+                    }
+                    else
+                    {
+                        tempCell.Range.Text = firstItem["stdName"].ToString();
+                        stdNameDictionary.Add((2 + i) + "," + 4, firstItem);
+                    }
                 }
-                
+
                 //遍历节点拆分单元格
-                bool whileBool = true;
-                bool fist = true;
-                while (whileBool)
+                if (stdNameDictionary.Count != 0)
                 {
-                    //cellCol4Dic = AddCellAndSplit2(table, cellCol4Dic, fist);
-                    cellCol4Dic = AddCellAndSplit(table, cellCol4Dic);
-                    whileBool = (cellCol4Dic.Count != 0);
-                    fist = false;
+                    bool whileBool = true;
+                    while (whileBool)
+                    {
+                        //cellCol4Dic = AddCellAndSplit2(table, cellCol4Dic, fist);
+                        stdNameDictionary = AddCellAndSplit(table, stdNameDictionary);
+                        whileBool = (stdNameDictionary.Count != 0);
+                    }
+                }
+
+                if (noStdNameDictionary.Count != 0)
+                {
+                    bool whileBool = true;
+                    bool fist = true;
+                    while (whileBool)
+                    {
+                        noStdNameDictionary = AddCellAndSplit2(table, noStdNameDictionary, fist);
+                        whileBool = (stdNameDictionary.Count != 0);
+                        fist = false;
+                    }
                 }
             }
 
@@ -386,14 +407,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// 遍历节点拆分单元格
         /// </summary>
         /// <returns></returns>
-        private Dictionary<JObject, string> AddCellAndSplit2(Table table, Dictionary<JObject, string> cellCol6Dic,bool first)
+        private Dictionary<string, JObject> AddCellAndSplit2(Table table, Dictionary<string, JObject> cellCol6Dic,bool first)
         {
-            Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
+            Dictionary<string, JObject> cellCol7Dic = new Dictionary<string, JObject>();
             int incr = 0;
             foreach (var item in cellCol6Dic)
             {
-                JObject j = item.Key;
-                string c = item.Value;
+                string c = item.Key;
+                JObject j = item.Value;
                 int cRow = int.Parse(c.Split(',')[0]) + incr;
                 int cCol = int.Parse(c.Split(',')[1]);
                 if (j["list"] == null)
@@ -575,7 +596,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             }
 
                         }
-                        cellCol7Dic.Add(secondItem, (cRow + i + resultIndex).ToString() + "," + (cCol + 1).ToString());
+                        cellCol7Dic.Add((cRow + i + resultIndex) + "," + (cCol + 1),secondItem);
                     }
                     incr = incr + secondItemsCount + resultIndex - 1;
                 }

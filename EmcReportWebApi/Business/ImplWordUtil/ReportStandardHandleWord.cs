@@ -220,7 +220,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 return null;
             }
-            if (!tableNext.Cell(1, column).Range.Text.Equals("\r\a") || column > 4)
+            if (!tableNext.Cell(1, column).Range.Text.Equals("\r\a") || column > 6)
                 return cellInfo;
 
             var cellText = list.Where(p => p.ColumnNumber == column).OrderByDescending(p => p.RowNumber).First().CellText;

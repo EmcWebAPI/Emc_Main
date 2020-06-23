@@ -216,10 +216,10 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SamplingBase
         {
-            get => _samplingBase==null||_samplingBase.Equals("")|| SampleUnit.Equals("") ? _samplingBase : _samplingBase + SampleUnit;
+            get => _samplingBase;
             set => _samplingBase = value;
         }
-
+        
         /// <summary>
         /// "jydd" 检验地点
         /// </summary>

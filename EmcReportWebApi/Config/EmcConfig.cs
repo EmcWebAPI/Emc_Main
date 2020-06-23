@@ -149,7 +149,7 @@ namespace EmcReportWebApi.Config
             { "cydbh","SamplingNumber"},//抽样单编号
             { "scrq","SampleProductionDate"},//生产日期
             { "ypsl","SampleQuantity"},//样品数量
-            { "cyjs","SamplingBase"},//抽样技术
+            { "cyjs","SamplingBase"},//抽样基数
             { "jydd","AfterTreatmentMethod"},//检验地点
             { "jyrq","InspectionDate"},//检验日期
             { "ypms","SampleDescription"},//样品描述

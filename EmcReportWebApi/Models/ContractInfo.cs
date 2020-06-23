@@ -347,6 +347,7 @@ namespace EmcReportWebApi.Models
 
         private string _samplingBase;
         private string _samplingNumber;
+        
 
         public string BatchNumberRPT
         {
@@ -361,7 +362,15 @@ namespace EmcReportWebApi.Models
 
         public string ReinspectionRPT { get; set; }
 
-        public string SampleReceiptDateRPT { get; set; }
+        private string _sampleReceiptDateRpt;
+
+        public string SampleReceiptDateRPT
+        {
+            get => string.IsNullOrEmpty(_sampleReceiptDateRpt)?this._sampleReceiptDate: _sampleReceiptDateRpt;
+            set => _sampleReceiptDateRpt = value;
+        }
+
+        public int ColSpan { get; set; } = 0;
 
         #endregion
     }

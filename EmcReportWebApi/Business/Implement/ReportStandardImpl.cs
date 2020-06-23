@@ -145,7 +145,7 @@ namespace EmcReportWebApi.Business.Implement
                 {
                     //标准内容
                     JArray standardArray = (JArray)mainObj["standard"];
-                    wordUtil.TableSplit(standardArray, "standard");
+                    wordUtil.TableSplit(standardArray, "standard", contractInfo.ColSpan);
                     //添加续
                     //wordUtil.TableSplit("standard");
                 }

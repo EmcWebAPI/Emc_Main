@@ -243,14 +243,20 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <param name="array">拆分数组</param>
         /// <param name="bookmark">书签</param>
         /// <returns></returns>
-        public virtual int TableSplit(JArray array, string bookmark)
+        public virtual int TableSplit(JArray array, string bookmark,int colSpan)
         {
             try
             {
                 Range tableRange = GetBookmarkRank(_currentWord, bookmark);
 
                 Table table = tableRange.Tables[1];
-                
+
+                if (colSpan > 1)
+                {
+                    table.Cell(1, 4).SetWidth(table.Cell(1, 4).Width - 28.35f, WdRulerStyle.wdAdjustNone);
+                    table.Cell(1, 5).SetWidth(table.Cell(1, 5).Width + 28.35f, WdRulerStyle.wdAdjustNone);
+                }
+
                 for (int i = array.Count - 1; i >= 0; i--)
                 {
                     TableSplit((JObject)array[i], i + 1, table);
@@ -278,9 +284,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 Dispose();
                 throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
             }
-
         }
-
+        
         private void ClearTableFormat(Table table)
         {
             table.Select();
@@ -290,6 +295,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             _wordApp.Selection.ParagraphFormat.DisableLineHeightGrid = -1;
             _wordApp.Selection.ParagraphFormat.WordWrap = -1;
         }
+
+
 
         /// <summary>
         /// 表格拆分
@@ -351,15 +358,15 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 Cell cell7 = table.Cell(2, 7);
                 cell7.Split(firstItemsCount, 1);
 
-                Dictionary<JObject, string> cellCol4Dic = new Dictionary<JObject, string>();
+                Dictionary<string, JObject> cellCol4Dic = new Dictionary<string, JObject>();
                 for (int i = 0; i < firstItemsCount; i++)
                 {
                     Cell tempCell = table.Cell(2 + i, 4);
                     JObject firstItem = (JObject)firstItems[i];
                     tempCell.Range.Text = firstItem["stdName"].ToString();
-                    cellCol4Dic.Add(firstItem, (2 + i) + "," + 4);
+                    cellCol4Dic.Add((2 + i) + "," + 4,firstItem);
                 }
-
+                
                 //遍历节点拆分单元格
                 bool whileBool = true;
                 bool fist = true;
@@ -512,6 +519,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             int resultCount = resultList.Count;
                             if (resultCount > 1)
                             {
+                                
+                                table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
                                 resultCell.Select();
                                 resultCell.Split(resultCount, 2);
                                 for (int k = 0; k < resultCount; k++)
@@ -579,14 +588,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// 遍历节点拆分单元格
         /// </summary>
         /// <returns></returns>
-        private Dictionary<JObject, string> AddCellAndSplit(Table table, Dictionary<JObject, string> cellCol6Dic)
+        private Dictionary<string,JObject > AddCellAndSplit(Table table, Dictionary<string, JObject> cellCol6Dic)
         {
-            Dictionary<JObject, string> cellCol7Dic = new Dictionary<JObject, string>();
+            Dictionary<string, JObject> cellCol7Dic = new Dictionary<string, JObject>();
             int incr = 0;
             foreach (var item in cellCol6Dic)
             {
-                JObject j = item.Key;
-                string c = item.Value;
+                string c = item.Key;
+                JObject j = item.Value;
                 int cRow = int.Parse(c.Split(',')[0]) + incr;
                 int cCol = int.Parse(c.Split(',')[1]);
                 if (j["list"] == null)
@@ -757,7 +766,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             }
 
                         }
-                        cellCol7Dic.Add(secondItem, (cRow + i + resultIndex).ToString() + "," + (cCol + 1).ToString());
+                        cellCol7Dic.Add((cRow + i + resultIndex).ToString() + "," + (cCol + 1).ToString(), secondItem);
                     }
                     incr = incr + secondItemsCount + resultIndex - 1;
                 }

@@ -200,14 +200,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Files\报告模板.docx" />
-    <Content Include="Files\ExperimentTemplate\传导发射实验.docx" />
     <Content Include="Files\ExperimentTemplate\电压暂降和短时中断.docx" />
     <Content Include="Files\ExperimentTemplate\射频场感应的传导骚扰.docx" />
     <Content Include="Files\ExperimentTemplate\射频电磁场辐射.docx" />
     <Content Include="Files\ExperimentTemplate\浪涌.docx" />
     <Content Include="Files\ExperimentTemplate\电外科干扰抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\电快速瞬变脉冲群.docx" />
-    <Content Include="Files\ExperimentTemplate\辐射发射试验.docx" />
     <Content Include="Files\ExperimentTemplate\静电放电.docx" />
     <Content Include="Files\ExperimentTemplate\高频手术设备干扰抗扰度试验.docx" />
     <Content Include="Files\ExperimentTemplate\RTFTemplate.docx" />

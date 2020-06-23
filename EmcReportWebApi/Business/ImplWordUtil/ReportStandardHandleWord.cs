@@ -124,12 +124,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 if (lastCellOrDefault != null)
                 {
                     lastCellOrDefault.Select();
+                    int currentPageNumber =
+                        (int) lastCellOrDefault.Range.Information[WdInformation.wdActiveEndPageNumber];
                     float cellPositionTop =
                         (float) lastCellOrDefault.Range.Information[WdInformation.wdVerticalPositionRelativeToPage];
                     float pageHeight = lastCellOrDefault.Range.PageSetup.PageHeight;
                     //页眉高度大约62.37
                     float cellToPageBottom = pageHeight - cellPositionTop- lastCellOrDefault.Height;
-                    bool result = cellToPageBottom > 270;
+                    bool result = cellToPageBottom > 200;
                     if (result)
                     {
                         lastCellOrDefault.Select();
@@ -142,9 +144,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         _wordApp.Selection.Font.NameOther = "宋体";
 
                         _wordApp.Selection.Cells.Merge();
-                        _wordApp.Selection.Cells[1]
-                            .SetHeight(cellToPageBottom - 270, WdRowHeightRule.wdRowHeightAtLeast);
-                        _wordApp.Selection.Cells[1].Range.Text = hasPhoto ? "此处空白" : "以下空白";
+                        Cell blankCell = _wordApp.Selection.Cells[1];
+                        blankCell.SetHeight(cellToPageBottom - 200, WdRowHeightRule.wdRowHeightAtLeast);
+                        blankCell.Range.Text = hasPhoto ? "此处空白" : "以下空白";
+                        while (blankCell.Range.Information[WdInformation.wdActiveEndPageNumber] !=
+                               currentPageNumber)
+                        {
+                            blankCell.SetHeight(blankCell.Height - 1, WdRowHeightRule.wdRowHeightAtLeast);
+                        }
                     }
                 }
 

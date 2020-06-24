@@ -242,6 +242,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// </summary>
         /// <param name="array">拆分数组</param>
         /// <param name="bookmark">书签</param>
+        /// <param name="colSpan">检验结果是否有加列</param>
         /// <returns></returns>
         public virtual int TableSplit(JArray array, string bookmark,int colSpan)
         {
@@ -496,18 +497,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         string itemContent = secondItem["stdItmNo"] != null
                             ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
                             : secondItem["itemContent"].ToString();
-
-
-
+                        
                         tempCell.Range.Text = itemContent;
-
-                        //if (tempCell.Range.Text.Contains("</avg>"))
-                        //{
-                        //    tempCell.Range.Select();
-                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
-                        //    string avgStr = Regex.Match(tempCell.Range.Text, @"<avg[^>]*>", RegexOptions.IgnoreCase).Value;
-                        //    ReplaceAvg(avgStr, "\u0060", "Symbol");
-                        //}
 
                         this.FindHtmlLabel(tempCell.Range);
 
@@ -561,13 +552,19 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             }
                             else
                             {
-
                                 if (resultList.First["result"].ToString().Equals("@", StringComparison.OrdinalIgnoreCase))
                                 {
+                                    var previousCell = table.Cell(cRow + i + resultIndex, cCol + 1);
+                                    var rangText = previousCell.Range.Text;
+                                    var textLength = previousCell.Range.Text.Length;
                                     resultCell.Select();
-                                    //_wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                                    //_wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
-                                    resultCell.Merge(table.Cell(cRow + i + resultIndex, cCol + 1));
+                                    if (textLength > 2&& rangText.Substring(0,textLength-2).Length>10)
+                                    {
+                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                                        _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
+                                    }
+
+                                    resultCell.Merge(previousCell);
                                 }
                                 else
                                 {
@@ -576,7 +573,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                     {
                                         previous = table.Cell(cRow + i + resultIndex - 1, cCol + 2);
                                     }
-                                    catch (Exception e)
+                                    catch (Exception)
                                     {
                                         //resultCell.Range.Text = resultList.First["result"].ToString();
                                     }
@@ -694,13 +691,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                         tempCell.Range.Text = itemContent;
                         
-                        //if (tempCell.Range.Text.Contains("</avg>"))
-                        //{
-                        //    tempCell.Range.Select();
-                        //    tempCell.Range.Text = tempCell.Range.Text.Replace("</avg>", "").Replace("\r\a", "");
-                        //    string avgStr = Regex.Match(tempCell.Range.Text, @"<avg[^>]*>", RegexOptions.IgnoreCase).Value;
-                        //    ReplaceAvg(avgStr, "\u0060", "Symbol");
-                        //}
 
                         this.FindHtmlLabel(tempCell.Range);
 
@@ -755,10 +745,17 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                                 if (resultList.First["result"].ToString().Equals("@", StringComparison.OrdinalIgnoreCase))
                                 {
+                                    var previousCell = table.Cell(cRow + i + resultIndex, cCol + 1);
+                                    var rangText = previousCell.Range.Text;
+                                    var textLength = previousCell.Range.Text.Length;
                                     resultCell.Select();
-                                    //_wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                                    //_wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
-                                    resultCell.Merge(table.Cell(cRow + i + resultIndex, cCol + 1));
+                                    if (textLength > 2 && rangText.Substring(0, textLength - 2).Length > 10)
+                                    {
+                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                                        _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
+                                    }
+
+                                    resultCell.Merge(previousCell);
                                 }
                                 else
                                 {
@@ -939,8 +936,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         private void AddPictureForStandard(string picFileName, Document doc, Range range, float width = 0,
             float height = 0)
         {
-            float imageWidth = 0;
-            float imageHeight = 0;
+            float imageWidth;
+            float imageHeight;
             using (FileStream fs = new FileStream(picFileName, FileMode.Open, FileAccess.Read))
             {
                 System.Drawing.Image sourceImage = System.Drawing.Image.FromStream(fs);
@@ -950,7 +947,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
 
-            if (width != 0 && imageWidth > width && imageWidth > imageHeight)
+            if (imageWidth > width && imageWidth > imageHeight)
             {
 
                 if (imageHeight * (width / imageWidth) > height)
@@ -966,7 +963,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             }
 
-            else if (height != 0 && imageHeight > height && imageHeight >= imageWidth)
+            else if (imageHeight > height && imageHeight >= imageWidth)
             {
                 if (imageWidth * (height / imageHeight) > width)
                 {
@@ -999,32 +996,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
             return "成功";
         }
-
-        public void ReplaceAvg(string oldWord, string newWord, string fontName)
-        {
-            object wdReplaceAll = WdReplace.wdReplaceAll;//替换所有文字
-
-            _wordApp.Selection.Find.Replacement.ClearFormatting();
-            _wordApp.Selection.Find.ClearFormatting();
-            _wordApp.Selection.Find.Text = oldWord;//需要被替换的文本
-            _wordApp.Selection.Find.Replacement.Font.Name = fontName;
-            _wordApp.Selection.Find.Replacement.Text = newWord;//替换文本 
-            try
-            {
-                //执行替换操作
-                _wordApp.Selection.Find.Execute(
-                ref _missing, ref _missing, ref _missing,
-                ref _missing, ref _missing, ref _missing,
-                ref _missing, ref _missing, ref _missing,
-                ref _missing, ref wdReplaceAll,// 指定要执行替换的个数：一个、全部或者不替换。 可以是任何WdReplace常量:wdReplaceAll wdReplaceNone wdReplaceOne
-                ref _missing, ref _missing, ref _missing,
-                ref _missing);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        
         /// <summary>
         /// 样品名称添加一行
         /// </summary>

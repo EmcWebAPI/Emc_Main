@@ -33,6 +33,20 @@ namespace EmcReportWebApi.Config
         /// </summary>
         public static string ReportFilesPathRoot = $@"{CurrentRoot}Files\ReportFiles\";
         /// <summary>
+        /// 报告生成文件目录
+        /// </summary>
+        public static string ReportOutputPath = $@"{CurrentRoot}Files\OutPut\";
+        /// <summary>
+        /// 模板文件路径
+        /// </summary>
+        public static string ReportTemplateFileFullName =
+            $@"{EmcConfig.CurrentRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";
+        /// <summary>
+        /// 模板中间件文件路径
+        /// </summary>
+        public static string ReportTemplateMiddlewareFilePath =
+            $@"{EmcConfig.CurrentRoot}Files\TemplateMiddleware\";
+        /// <summary>
         /// rtf中获取表格的配置
         /// </summary>
         public static List<RtfTableInfo> RtfTableInfos = GetRtfTableInfo();

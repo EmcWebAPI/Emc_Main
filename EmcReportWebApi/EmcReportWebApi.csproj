@@ -178,6 +178,7 @@
     <Compile Include="Business\IReport.cs" />
     <Compile Include="Config\CompressContent.cs" />
     <Compile Include="Config\CompressContentAttribute.cs" />
+    <Compile Include="ReportComponent\ReportFirstPage.cs" />
     <Compile Include="ReportComponent\ReportInfo.cs" />
     <Compile Include="Utils\FileUtil.cs" />
     <Compile Include="Config\HiddenApiFilter.cs" />

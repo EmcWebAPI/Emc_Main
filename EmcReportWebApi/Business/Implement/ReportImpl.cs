@@ -70,24 +70,16 @@ namespace EmcReportWebApi.Business.Implement
         /// </summary>
         public string ReportJsonToWord(ReportInfo reportInfo)
         {
-            //解析json字符串
-            JObject mainObj = (JObject)JsonConvert.DeserializeObject(reportInfo.ReportJsonStrForWord);
-            string outfileName = $"Report{Guid.NewGuid().ToString()}.docx";//输出文件名称
-            string outfilePth = $@"{EmcConfig.CurrentRoot}Files\OutPut\{outfileName}";//输出文件路径
-            string filePath =
-                $@"{EmcConfig.CurrentRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";//模板文件
-            string middleDir = EmcConfig.CurrentRoot + "Files\\TemplateMiddleware\\" + Guid.NewGuid();
-            filePath = CreateTemplateMiddle(middleDir, "template", filePath);
-            if (mainObj["firstPage"] == null)
-                throw new Exception("合同信息不能为null");
             //生成报告
-            using (ReportHandleWord wordUtil = new ReportHandleWord(outfilePth, filePath))
+            using (ReportHandleWord wordUtil = new ReportHandleWord(reportInfo.OutFileFullName, reportInfo.TemplateFileFullName))
             {
+                ReportFirstPage fistFirstPage = reportInfo.ReportFirstPage;
+                JObject mainObj = reportInfo.ReportJsonObjectForWord;
                 //审查表 //测试数据
                 string scbWord = reportInfo.ReportFilesPath + "\\" + (string)mainObj["scbWord"];
 
                 //首页内容 object
-                JObject firstPage = (JObject)mainObj["firstPage"];
+                JObject firstPage = fistFirstPage.FirstPageObject;
                 var result = InsertContentToWord(wordUtil, firstPage);
                 //报告编号
                 string[] reportArray = reportInfo.ReportId.Split('-');
@@ -95,8 +87,8 @@ namespace EmcReportWebApi.Business.Implement
                 string reportYmStr = "国医检（磁）字QW2018第698号";
                 if (reportArray.Length >= 2)
                 {
-                    reportStr = string.Format("国医检(磁)字{0}第{1}号", reportArray[0], reportArray[1]);
-                    reportYmStr = string.Format("国医检（磁）字{0}第{1}号", reportArray[0], reportArray[1]);
+                    reportStr = $"国医检(磁)字{reportArray[0]}第{reportArray[1]}号";
+                    reportYmStr = $"国医检（磁）字{reportArray[0]}第{reportArray[1]}号";
                 }
                 wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
 
@@ -150,17 +142,17 @@ namespace EmcReportWebApi.Business.Implement
                     }
 
                     if (item["name"].ToString().Equals("传导发射实验") || item["name"].ToString().Equals("传导发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportInfo.ReportFilesPath, 1, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", EmcConfig.ReportTemplateMiddlewareFilePath, reportInfo.ReportFilesPath, 1, k != experimentCount);
                     else if (item["name"].ToString().Equals("辐射发射试验") || item["name"].ToString().Equals("辐射发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportInfo.ReportFilesPath, 1, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", EmcConfig.ReportTemplateMiddlewareFilePath, reportInfo.ReportFilesPath, 1, k != experimentCount);
                     else if (item["name"].ToString().Equals("谐波失真"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportInfo.ReportFilesPath, 2, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", EmcConfig.ReportTemplateMiddlewareFilePath, reportInfo.ReportFilesPath, 2, k != experimentCount);
                     else if (item["name"].ToString().Equals("电压波动和闪烁"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportInfo.ReportFilesPath, 2, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", EmcConfig.ReportTemplateMiddlewareFilePath, reportInfo.ReportFilesPath, 2, k != experimentCount);
                     else if (item["name"].ToString().Equals("电快速瞬变脉冲群") || item["name"].ToString().Equals("电压暂降和短时中断") || item["name"].ToString().Contains("电压暂降"))
-                        newBookmark = SetPulseEmission(wordUtil, item, newBookmark, "", middleDir, reportInfo.ReportFilesPath, k != experimentCount);
+                        newBookmark = SetPulseEmission(wordUtil, item, newBookmark, "", EmcConfig.ReportTemplateMiddlewareFilePath, reportInfo.ReportFilesPath, k != experimentCount);
                     else
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportInfo.ReportFilesPath, 3, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", EmcConfig.ReportTemplateMiddlewareFilePath, reportInfo.ReportFilesPath, 3, k != experimentCount);
                     k++;
                 }
                 wordUtil.FormatCurrentWord(k);
@@ -176,7 +168,6 @@ namespace EmcReportWebApi.Business.Implement
                 {
                     wordUtil.CopyOtherFileContentToWord(bsWord, "bsWord");
                 }
-
 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
@@ -195,15 +186,12 @@ namespace EmcReportWebApi.Business.Implement
                 replaceDic.Add(3, valuePairs);//替换页眉
 
                 wordUtil.ReplaceWritten(replaceDic);
-
-
-
             }
             //删除中间件文件夹
-            DelectDir(middleDir);
+            DelectDir(EmcConfig.ReportTemplateMiddlewareFilePath);
             DelectDir(reportInfo.ReportFilesPath);
 
-            return outfileName;
+            return reportInfo.FileName;
         }
 
         #region 生成报表方法

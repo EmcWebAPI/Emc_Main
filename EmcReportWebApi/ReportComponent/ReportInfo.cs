@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using EmcReportWebApi.Config;
 using EmcReportWebApi.Models;
 using EmcReportWebApi.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EmcReportWebApi.ReportComponent
 {
@@ -10,25 +13,51 @@ namespace EmcReportWebApi.ReportComponent
     /// </summary>
     public class ReportInfo
     {
+        private readonly ReportParams _para;
+
         /// <summary>
         /// 构造报告文件信息
         /// </summary>
         public ReportInfo(ReportParams para)
         {
-            this.ReportFilesPath = FileUtil.CreateReportFilesDirectory();
-            this.ReportId = string.IsNullOrEmpty(para.ReportId)?"QW2018-698":para.ReportId;
-            this.ReportJsonStrForWord = para.JsonStr;
-            if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
+            try
             {
-                string zipUrl = para.ZipFilesUrl;
-                this.ReportZipFilesPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
+                _para = para;
+                ReportFilesPath = FileUtil.CreateReportFilesDirectory();
+                TemplateFileFullName = CreateTemplateMiddle(EmcConfig.ReportTemplateMiddlewareFilePath, "template",
+                    EmcConfig.ReportTemplateFileFullName);
+                this.ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
+                this.DecompressionReportFiles();
+                
+            }
+            catch (Exception ex)
+            {
+                EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
+                throw new Exception(ex.Message);
+            }
+            
+        }
+        /// <summary>
+        /// 报告首页内容
+        /// </summary>
+        public ReportFirstPage ReportFirstPage
+        {
+            get => new ReportFirstPage(this.ReportJsonObjectForWord);
+            set => throw new NotImplementedException();
+        }
+
+        private void DecompressionReportFiles()
+        {
+            if (_para.ZipFilesUrl != null && !_para.ZipFilesUrl.Equals(""))
+            {
+                string zipUrl = _para.ZipFilesUrl;
 
                 byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(zipUrl, ReportZipFilesPath,
                     int.Parse(DateTime.Now.ToString("hhmmss")));
                 if (fileBytes.Length <= 0)
                 {
-                    EmcConfig.ErrorLog.Error($"请求报告失败,报告id:{para.ReportId}");
-                    throw new Exception($"请求报告文件失败,报告id{para.ReportId}");
+                    EmcConfig.ErrorLog.Error($"请求报告失败,报告id:{_para.ReportId}");
+                    throw new Exception($"请求报告文件失败,报告id{_para.ReportId}");
                 }
                 //解压zip文件
                 FileUtil.DecompressionZip(ReportZipFilesPath, ReportFilesPath);
@@ -41,24 +70,90 @@ namespace EmcReportWebApi.ReportComponent
             }
         }
 
+        private string CreateTemplateMiddle(string dir, string template, string filePath)
+        {
+            string dateStr = Guid.NewGuid().ToString();
+            string fileName = template + dateStr + ".docx";
+            DirectoryInfo di = new DirectoryInfo(dir);
+            if (!di.Exists) { di.Create(); }
+
+            string fileFullName = $"{dir}{fileName}";
+            FileInfo file = new FileInfo(filePath);
+            if (File.Exists(filePath))
+            {
+                file.CopyTo(fileFullName);
+                return fileFullName;
+            }
+
+            throw new Exception("模板不存在");
+        }
+
         /// <summary>
         /// 报告编号
         /// </summary>
-        public string ReportId { get; set; }
-
-        /// <summary>
-        /// 报告转word的Json
-        /// </summary>
-        public string ReportJsonStrForWord { get; set; }
+        public string ReportId
+        {
+            get => string.IsNullOrEmpty(_para.ReportId) ? "QW2018-698" : _para.ReportId;
+            set => throw new NotImplementedException();
+        }
 
         /// <summary>
         /// 报告所需文件路径
         /// </summary>
-        public string ReportFilesPath { get; set; }
+        public string ReportFilesPath
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// 报告zip文件路径
         /// </summary>
-        public string ReportZipFilesPath { get; set; }
+        public string ReportZipFilesPath
+        {
+            get => $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 报告转word的Json
+        /// </summary>
+        public string ReportJsonStrForWord
+        {
+            get => _para.JsonStr;
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 报告转word的Json
+        /// </summary>
+        public JObject ReportJsonObjectForWord { get; set; }
+
+        /// <summary>
+        /// 报告文件名称
+        /// </summary>
+        public string FileName
+        {
+            get => $"Report{Guid.NewGuid()}.docx";
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 输出文件全路径(路径+文件名)
+        /// </summary>
+        public string OutFileFullName
+        {
+            get => $"{EmcConfig.ReportOutputPath}{FileName}";
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 报告模板路径(路径+文件名)
+        /// </summary>
+        public string TemplateFileFullName
+        {
+            get;
+            set;
+        }
     }
 }

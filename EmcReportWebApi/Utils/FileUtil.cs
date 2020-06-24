@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using EmcReportWebApi.Config;
 
 namespace EmcReportWebApi.Utils
 {
@@ -24,6 +25,22 @@ namespace EmcReportWebApi.Utils
             {
                 Directory.CreateDirectory(outputPath);
             }
+            return outputPath;
+        }
+
+        /// <summary>
+        /// 创建报告目录文件
+        /// </summary>
+        /// <returns></returns>
+        public static string CreateReportFilesDirectory()
+        {
+            string reportFiles = Guid.NewGuid().ToString();
+            string outputPath = $@"{EmcConfig.ReportFilesPathRoot}{reportFiles}";
+            if (Directory.Exists(outputPath))
+            {
+                throw new Exception($@"报告文件所需文件夹已经存在\{reportFiles}");
+            }
+            Directory.CreateDirectory(outputPath);
             return outputPath;
         }
 

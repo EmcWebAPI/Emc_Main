@@ -13,13 +13,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using EmcReportWebApi.Business.ImplWordUtil;
+using EmcReportWebApi.ReportComponent;
 
 namespace EmcReportWebApi.Business.Implement
 {
     /// <summary>
     /// 报告实现类
     /// </summary>
-    public class ReportImpl: ReportBase,IReport
+    public class ReportImpl : ReportBase, IReport
     {
         /// <summary>
         /// 生成报告公共方法
@@ -34,40 +35,22 @@ namespace EmcReportWebApi.Business.Implement
             return result;
         }
 
-        private ReportResult<string> CreateReportAsync(ReportParams para) {
-            ReportResult<string> result = new ReportResult<string>();
+        private ReportResult<string> CreateReportAsync(ReportParams para)
+        {
+            ReportResult<string> result;
             try
             {
                 EmcConfig.SemLim.Wait();
                 //计时
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                string reportId = para.ReportId;
-                //获取zip文件 
-                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
-                string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, Guid.NewGuid().ToString());
-                string zipUrl = ConfigurationManager.AppSettings["ReportFilesUrl"].ToString() + reportId + "?timestamp=" + EmcConfig.GetTimestamp(DateTime.Now);
-                if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
-                {
-                    zipUrl = para.ZipFilesUrl;
-                }
-                byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(zipUrl, reportZipFilesPath,
-                int.Parse(DateTime.Now.ToString("hhmmss")));
-                if (fileBytes.Length <= 0)
-                {
-                    result = SetReportResult<string>("请求报告文件失败", false, para.ReportId.ToString());
-                    EmcConfig.ErrorLog.Error($"请求报告失败,报告id:{para.ReportId}");
-                    return result;
-                }
-                //解压zip文件
-                FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
+                ReportInfo reportInfo = new ReportInfo(para);
                 //生成报告
-                string content = JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr, reportFilesPath);
+                string content = ReportJsonToWord(reportInfo);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
-                result = SetReportResult<string>(string.Format(format: "报告生成成功,用时:" + time1.ToString(CultureInfo.InvariantCulture)), true, content);
+                result = SetReportResult<string>(string.Format(format: "报告生成成功,用时:" + time1), true, content);
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
-
             }
             catch (Exception ex)
             {
@@ -87,15 +70,15 @@ namespace EmcReportWebApi.Business.Implement
         /// <summary>
         /// Json格式转成word文件
         /// </summary>
-        public string JsonToWord(string reportId, string jsonStr, string reportFilesPath)
+        public string ReportJsonToWord(ReportInfo reportInfo)
         {
             //解析json字符串
-            JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
+            JObject mainObj = (JObject)JsonConvert.DeserializeObject(reportInfo.ReportJsonStrForWord);
             string outfileName = $"Report{Guid.NewGuid().ToString()}.docx";//输出文件名称
-            string outfilePth = $@"{EmcConfig.CurrRoot}Files\OutPut\{outfileName}";//输出文件路径
+            string outfilePth = $@"{EmcConfig.CurrentRoot}Files\OutPut\{outfileName}";//输出文件路径
             string filePath =
-                $@"{EmcConfig.CurrRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";//模板文件
-            string middleDir = EmcConfig.CurrRoot + "Files\\TemplateMiddleware\\" + Guid.NewGuid();
+                $@"{EmcConfig.CurrentRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";//模板文件
+            string middleDir = EmcConfig.CurrentRoot + "Files\\TemplateMiddleware\\" + Guid.NewGuid();
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             if (mainObj["firstPage"] == null)
                 throw new Exception("合同信息不能为null");
@@ -103,13 +86,13 @@ namespace EmcReportWebApi.Business.Implement
             using (ReportHandleWord wordUtil = new ReportHandleWord(outfilePth, filePath))
             {
                 //审查表 //测试数据
-                string scbWord = reportFilesPath + "\\" + (string)mainObj["scbWord"];
+                string scbWord = reportInfo.ReportFilesPath + "\\" + (string)mainObj["scbWord"];
 
                 //首页内容 object
                 JObject firstPage = (JObject)mainObj["firstPage"];
                 var result = InsertContentToWord(wordUtil, firstPage);
                 //报告编号
-                string[] reportArray = reportId.Split('-');
+                string[] reportArray = reportInfo.ReportId.Split('-');
                 string reportStr = "国医检(磁)字QW2018第698号";
                 string reportYmStr = "国医检（磁）字QW2018第698号";
                 if (reportArray.Length >= 2)
@@ -169,26 +152,26 @@ namespace EmcReportWebApi.Business.Implement
                     }
 
                     if (item["name"].ToString().Equals("传导发射实验") || item["name"].ToString().Equals("传导发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportFilesPath, 1, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "CE", middleDir, reportInfo.ReportFilesPath, 1, k != experimentCount);
                     else if (item["name"].ToString().Equals("辐射发射试验") || item["name"].ToString().Equals("辐射发射"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportFilesPath, 1, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "RE", middleDir, reportInfo.ReportFilesPath, 1, k != experimentCount);
                     else if (item["name"].ToString().Equals("谐波失真"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportFilesPath, 2, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "谐波", middleDir, reportInfo.ReportFilesPath, 2, k != experimentCount);
                     else if (item["name"].ToString().Equals("电压波动和闪烁"))
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportFilesPath, 2, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "波动", middleDir, reportInfo.ReportFilesPath, 2, k != experimentCount);
                     else if (item["name"].ToString().Equals("电快速瞬变脉冲群") || item["name"].ToString().Equals("电压暂降和短时中断") || item["name"].ToString().Contains("电压暂降"))
-                        newBookmark = SetPulseEmission(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, k != experimentCount);
+                        newBookmark = SetPulseEmission(wordUtil, item, newBookmark, "", middleDir, reportInfo.ReportFilesPath, k != experimentCount);
                     else
-                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportFilesPath, 3, k != experimentCount);
+                        newBookmark = SetEmissionCommon(wordUtil, item, newBookmark, "", middleDir, reportInfo.ReportFilesPath, 3, k != experimentCount);
                     k++;
                 }
                 wordUtil.FormatCurrentWord(k);
 
                 //识别标记和文件 从新文件中取
                 string bsWord = null;
-                if (mainObj["bsWord"]!=null&& !mainObj["bsWord"].ToString().Equals(""))
+                if (mainObj["bsWord"] != null && !mainObj["bsWord"].ToString().Equals(""))
                 {
-                    bsWord = reportFilesPath + "\\" + (string)mainObj["bsWord"];
+                    bsWord = reportInfo.ReportFilesPath + "\\" + (string)mainObj["bsWord"];
                 }
 
                 if (!string.IsNullOrEmpty(bsWord))
@@ -201,7 +184,7 @@ namespace EmcReportWebApi.Business.Implement
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
                 {
                     JArray yptp = (JArray)mainObj["yptp"];
-                    InsertImageToWordYptp(wordUtil, yptp, reportFilesPath);
+                    InsertImageToWordYptp(wordUtil, yptp, reportInfo.ReportFilesPath);
                 }
 
                 //替换页眉内容
@@ -220,7 +203,7 @@ namespace EmcReportWebApi.Business.Implement
             }
             //删除中间件文件夹
             DelectDir(middleDir);
-            DelectDir(reportFilesPath);
+            DelectDir(reportInfo.ReportFilesPath);
 
             return outfileName;
         }
@@ -379,7 +362,7 @@ namespace EmcReportWebApi.Business.Implement
             int i = 0;
             foreach (var jToken in sysj)
             {
-                var item = (JObject) jToken;
+                var item = (JObject)jToken;
                 //插入实验数据信息 (画表格)
 
                 List<string> contentList = new List<string>();
@@ -418,7 +401,7 @@ namespace EmcReportWebApi.Business.Implement
                             {
                                 foreach (var jToken1 in (JArray)item["rtf"])
                                 {
-                                    var rtfObj = (JObject) jToken1;
+                                    var rtfObj = (JObject)jToken1;
                                     //需要画表格和插入rtf内容
                                     wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, false);
 
@@ -442,7 +425,7 @@ namespace EmcReportWebApi.Business.Implement
                             {
                                 foreach (var jToken1 in (JArray)item["rtf"])
                                 {
-                                    var rtfObj = (JObject) jToken1;
+                                    var rtfObj = (JObject)jToken1;
                                     //需要画表格和插入rtf内容
                                     wordUtil.CopyOtherFileTableForColByTableIndex(sysjTemplateFilePath, reportFilesPath + "\\" + rtfObj["name"].ToString(), startIndex, endIndex, dic, rtfbookmark, titleRow, mainTitle, false, true, k == rtfCount1 - 1);
                                     k++;
@@ -465,7 +448,7 @@ namespace EmcReportWebApi.Business.Implement
 
                             foreach (var jToken1 in html)
                             {
-                                var rtfObj = (JObject) jToken1;
+                                var rtfObj = (JObject)jToken1;
                                 //生成html并将内容插入到模板中
                                 string htmlstr = (string)rtfObj["table"];
                                 string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
@@ -490,7 +473,7 @@ namespace EmcReportWebApi.Business.Implement
 
                 foreach (var jToken in syljt)
                 {
-                    var item = (JObject) jToken;
+                    var item = (JObject)jToken;
                     list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
                 }
 
@@ -503,7 +486,7 @@ namespace EmcReportWebApi.Business.Implement
                 list = new List<string>();
                 foreach (var jToken in sybzt)
                 {
-                    var item = (JObject) jToken;
+                    var item = (JObject)jToken;
                     list.Add(reportFilesPath + "\\" + item["name"].ToString() + "," + item["content"].ToString());
                 }
                 wordUtil.InsertImageToTemplate(templateFullPath, list, "sybzt", false);
@@ -537,7 +520,7 @@ namespace EmcReportWebApi.Business.Implement
             int i = 0;
             foreach (var jToken in sysj)
             {
-                var item = (JObject) jToken;
+                var item = (JObject)jToken;
                 if ((item["sysjTitle"] != null && (item["sysjTitle"].ToString().Equals("交、直流电源线")) || item["sysjTitle"].ToString().Contains("电源线")) ||
                     (item["sysjTitle"] != null && item["sysjTitle"].ToString().Equals("电压暂降"))
                     )
@@ -574,7 +557,7 @@ namespace EmcReportWebApi.Business.Implement
 
                     foreach (var jToken1 in html)
                     {
-                        var rtfObj = (JObject) jToken1;
+                        var rtfObj = (JObject)jToken1;
                         //生成html并将内容插入到模板中
                         string htmlstr = (string)rtfObj["table"];
                         string htmlfullname = CreateHtmlFile(htmlstr, middleDir);
@@ -589,7 +572,7 @@ namespace EmcReportWebApi.Business.Implement
             int j = 0;
             foreach (var jToken in sysj)
             {
-                var item = (JObject) jToken;
+                var item = (JObject)jToken;
                 if ((item["sysjTitle"] != null && (item["sysjTitle"].ToString().Equals("信号电缆和互连电缆") || item["sysjTitle"].ToString().Contains("电缆"))) ||
                     (item["sysjTitle"] != null && item["sysjTitle"].ToString().Equals("短时中断"))
                     )

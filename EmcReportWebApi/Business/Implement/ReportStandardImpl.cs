@@ -45,7 +45,7 @@ namespace EmcReportWebApi.Business.Implement
                 sw.Start();
                 string reportId = para.OriginalRecord;
                 //获取zip文件 
-                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrRoot));
+                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrentRoot));
                 string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, Guid.NewGuid().ToString());
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
                 {
@@ -107,11 +107,11 @@ namespace EmcReportWebApi.Business.Implement
             //解析json字符串
             // JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
             string outfileName = $"StandardReport{Guid.NewGuid().ToString()}.docx";//输出文件名称
-            string outfilePth = $@"{EmcConfig.CurrRoot}\Files\OutPut\{outfileName}";//输出文件路径
+            string outfilePth = $@"{EmcConfig.CurrentRoot}\Files\OutPut\{outfileName}";//输出文件路径
             string filePath =
-                $@"{EmcConfig.CurrRoot}\Files\{ConfigurationManager.AppSettings["StandardTemplateName"]}";//模板文件
+                $@"{EmcConfig.CurrentRoot}\Files\{ConfigurationManager.AppSettings["StandardTemplateName"]}";//模板文件
 
-            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + Guid.NewGuid();
+            string middleDir = EmcConfig.CurrentRoot + "\\Files\\TemplateMiddleware\\" + Guid.NewGuid();
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
             string reportStr;
             if (mainObj["firstPage"] == null)

@@ -8,8 +8,14 @@ using System.Web.Routing;
 
 namespace EmcReportWebApi
 {
+    /// <summary>
+    /// web应用程序
+    /// </summary>
     public class WebApiApplication : System.Web.HttpApplication
     {
+        /// <summary>
+        /// 启动项
+        /// </summary>
         protected void Application_Start()
         {
             //配置log

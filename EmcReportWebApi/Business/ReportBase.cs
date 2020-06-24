@@ -89,7 +89,7 @@ namespace EmcReportWebApi.Business
         protected void SaveParams<T>(T para)
         {
             string dateStr = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            string txtPath = string.Format("{0}Log\\Params\\{1}.txt", EmcConfig.CurrRoot, dateStr);
+            string txtPath = string.Format("{0}Log\\Params\\{1}.txt", EmcConfig.CurrentRoot, dateStr);
             if (!System.IO.File.Exists(txtPath))
             {
                 //没有则创建这个文件
@@ -125,7 +125,7 @@ namespace EmcReportWebApi.Business
         /// </summary>
         protected string GetTemplatePath(string fileName)
         {
-            return string.Format(@"{0}\Files\ExperimentTemplate\{1}", EmcConfig.CurrRoot, fileName);
+            return string.Format(@"{0}\Files\ExperimentTemplate\{1}", EmcConfig.CurrentRoot, fileName);
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using EmcReportWebApi.ReportComponent;
 
 namespace EmcReportWebApi.Controllers
 {
@@ -130,7 +131,7 @@ namespace EmcReportWebApi.Controllers
             Task<ReportResult<string>> task = new Task<ReportResult<string>>(()=>CreateReportTestAsync(para));
             task.Start();
             ReportResult<string> result = task.Result;
-            return Json<ReportResult<string>>(result);
+            return Json(result);
         }
 
         private ReportResult<string> CreateReportTestAsync(ReportParams para) {
@@ -138,21 +139,19 @@ namespace EmcReportWebApi.Controllers
             try
             {
                 EmcConfig.SemLim.Wait();
-                //string jsonStr = para.JsonStr;
-                string reportId = para.ReportId;
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                //获取zip文件 
-                string reportFilesPath = FileUtil.CreateDirectory($"{EmcConfig.CurrRoot}\\Files\\ReportFiles");
-                string reportZipFilesPath = $"{EmcConfig.CurrRoot}Files\\ReportFiles\\Test\\{"QT2019-3015.zip"}";
-                //解压zip文件
-                FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
 
+                ReportInfo reportInfo = new ReportInfo(new ReportParams
+                {
+                    JsonStr = para.JsonStr.Equals("") ? jsonStr1:para.JsonStr,
+                    ReportId = "QT2019-3015"
+                });
                 //生成报告
-                string content = report.JsonToWord(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonStr.Equals("") ? jsonStr1 : para.JsonStr, reportFilesPath);
+                string content = report.ReportJsonToWord(reportInfo);
                 sw.Stop();
                 double time1 = (double)sw.ElapsedMilliseconds / 1000;
-                result.Message = string.Format("报告生成成功,用时:" + time1.ToString());
+                result.Message = string.Format("报告生成成功,用时:" + time1);
                 result.SumbitResult = true;
                 result.Content = content;
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
@@ -161,7 +160,7 @@ namespace EmcReportWebApi.Controllers
             catch (Exception ex)
             {
                 EmcConfig.ErrorLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
             finally {
                 EmcConfig.SemLim.Release();
@@ -177,20 +176,19 @@ namespace EmcReportWebApi.Controllers
         public string Test()
         {
             Stopwatch sw = new Stopwatch();
-
             sw.Start();
             EmcConfig.KillWordProcess();
 
-            string reportFilesPath = FileUtil.CreateDirectory($"{EmcConfig.CurrRoot}\\Files\\ReportFiles");
-            string reportZipFilesPath = $"{EmcConfig.CurrRoot}Files\\ReportFiles\\Test\\{"QT2019-3015.zip"}";
-            //解压zip文件
-            FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
+            ReportInfo reportInfo = new ReportInfo(new ReportParams
+            {
+                JsonStr = jsonStr1,
+                ReportId = "QT2019-3015"
+            });
 
-            string result = report.JsonToWord("QT2019-3015", jsonStr1, reportFilesPath);
-            //string result = "";
+            string result = report.ReportJsonToWord(reportInfo);
             sw.Stop();
             double time1 = (double)sw.ElapsedMilliseconds / 1000;
-            return result + ":" + time1.ToString();
+            return result + ":" + time1;
         }
 
         /// <summary>
@@ -206,8 +204,8 @@ namespace EmcReportWebApi.Controllers
             sw.Start();
             EmcConfig.KillWordProcess();
 
-            string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
-            string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrRoot, "QT2019-3015.zip");
+            string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrentRoot));
+            string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrentRoot, "QT2019-3015.zip");
             //解压zip文件
             FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(testType==1?jsonStr:jsonStr2);
@@ -259,8 +257,8 @@ namespace EmcReportWebApi.Controllers
                 return Task<string>.Run(() =>
                 {
                     semLim.Wait();
-                    string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
-                    string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrRoot, "QT2019-3015.zip");
+                    string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrentRoot));
+                    string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrentRoot, "QT2019-3015.zip");
                     //解压zip文件
                     FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
                     JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
@@ -305,8 +303,8 @@ namespace EmcReportWebApi.Controllers
 
                 sw.Start();
 
-                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrRoot));
-                string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrRoot, "QT2019-3015.zip");
+                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrentRoot));
+                string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrentRoot, "QT2019-3015.zip");
                 //解压zip文件
                 FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
                 JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);

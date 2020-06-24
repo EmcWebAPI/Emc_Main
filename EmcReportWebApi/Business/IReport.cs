@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using EmcReportWebApi.ReportComponent;
 
 namespace EmcReportWebApi.Business
 {
@@ -16,13 +17,10 @@ namespace EmcReportWebApi.Business
         ReportResult<string> CreateReport(ReportParams para);
 
         /// <summary>
-        /// 报告json转成word
+        /// json转成word
         /// </summary>
-        /// <param name="reportId"></param>
-        /// <param name="jsonStr"></param>
-        /// <param name="reportFilesPath"></param>
+        /// <param name="reportInfo">报告信息</param>
         /// <returns></returns>
-        string JsonToWord(string reportId, string jsonStr, string reportFilesPath);
-        
+        string ReportJsonToWord(ReportInfo reportInfo);
     }
 }

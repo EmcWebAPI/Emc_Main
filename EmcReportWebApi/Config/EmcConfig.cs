@@ -19,14 +19,19 @@ namespace EmcReportWebApi.Config
         /// <summary>
         /// 报表日志记录
         /// </summary>
-        public static log4net.ILog ErrorLog = log4net.LogManager.GetLogger("ErrorLogger");
         public static log4net.ILog InfoLog = log4net.LogManager.GetLogger("InfoLogger");
-
+        /// <summary>
+        /// 错误日志
+        /// </summary>
+        public static log4net.ILog ErrorLog = log4net.LogManager.GetLogger("ErrorLogger");
         /// <summary>
         /// 当前程序路径
         /// </summary>
-        public static string CurrRoot = AppDomain.CurrentDomain.BaseDirectory;
-
+        public static string CurrentRoot = AppDomain.CurrentDomain.BaseDirectory;
+        /// <summary>
+        /// 报告存放文件的根目录
+        /// </summary>
+        public static string ReportFilesPathRoot = $@"{CurrentRoot}Files\ReportFiles\";
         /// <summary>
         /// rtf中获取表格的配置
         /// </summary>

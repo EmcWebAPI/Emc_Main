@@ -87,7 +87,7 @@ namespace EmcReportWebApi.Controllers
                 {
                     browser = HttpContext.Current.Request.UserAgent.ToUpper();
                 }
-                string fileFullName = $@"{EmcConfig.CurrRoot}Files\OutPut\{fileName}";
+                string fileFullName = $@"{EmcConfig.CurrentRoot}Files\OutPut\{fileName}";
                 if (!FileUtil.FileExists(fileFullName))
                 {
                     throw new Exception($"文件{fileName},不存在");
@@ -151,7 +151,7 @@ namespace EmcReportWebApi.Controllers
                             result = SetReportResult("下载失败:上传的文件信息不存在！", false, "");
                             return Json(result);
                         }
-                        string filePath = EmcConfig.CurrRoot + "Files\\WordConvert\\";
+                        string filePath = EmcConfig.CurrentRoot + "Files\\WordConvert\\";
                         string forceName = "upload";
                         string extendName = FilterExtendName(filename);
                         string newName = Guid.NewGuid().ToString();

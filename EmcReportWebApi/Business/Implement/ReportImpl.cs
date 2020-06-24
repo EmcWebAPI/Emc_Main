@@ -97,6 +97,8 @@ namespace EmcReportWebApi.Business.Implement
                 $@"{EmcConfig.CurrRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";//模板文件
             string middleDir = EmcConfig.CurrRoot + "Files\\TemplateMiddleware\\" + Guid.NewGuid();
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
+            if (mainObj["firstPage"] == null)
+                throw new Exception("合同信息不能为null");
             //生成报告
             using (ReportHandleWord wordUtil = new ReportHandleWord(outfilePth, filePath))
             {

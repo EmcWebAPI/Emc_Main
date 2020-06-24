@@ -106,14 +106,16 @@ namespace EmcReportWebApi.Business.Implement
 
             //解析json字符串
             // JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-            string outfileName = string.Format("StandardReport{0}.docx", Guid.NewGuid().ToString());//输出文件名称
-            string outfilePth = string.Format(@"{0}\Files\OutPut\{1}", EmcConfig.CurrRoot, outfileName);//输出文件路径
-            string filePath = string.Format(@"{0}\Files\{1}", EmcConfig.CurrRoot, ConfigurationManager.AppSettings["StandardTemplateName"].ToString());//模板文件
+            string outfileName = $"StandardReport{Guid.NewGuid().ToString()}.docx";//输出文件名称
+            string outfilePth = $@"{EmcConfig.CurrRoot}\Files\OutPut\{outfileName}";//输出文件路径
+            string filePath =
+                $@"{EmcConfig.CurrRoot}\Files\{ConfigurationManager.AppSettings["StandardTemplateName"]}";//模板文件
 
-            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + Guid.NewGuid().ToString();
+            string middleDir = EmcConfig.CurrRoot + "\\Files\\TemplateMiddleware\\" + Guid.NewGuid();
             filePath = CreateTemplateMiddle(middleDir, "template", filePath);
-            string result = "保存成功1";
-            string reportStr = "";
+            string reportStr;
+            if (mainObj["firstPage"] == null)
+                throw new Exception("合同信息不能为null");
             //生成报告
             using (ReportStandardHandleWord wordUtil = new ReportStandardHandleWord(outfilePth, filePath))
             {
@@ -124,7 +126,7 @@ namespace EmcReportWebApi.Business.Implement
                 string ypbh = firstPage["ypbh"] != null ? firstPage["ypbh"].ToString() : "";
                 //报告编号
                 reportStr = firstPage["bgbh"] != null ? firstPage["bgbh"].ToString() : "";
-                result = InsertContentToWord(wordUtil, firstPage);
+                var result = InsertContentToWord(wordUtil, firstPage);
 
                 if (!result.Equals("保存成功"))
                 {
@@ -145,7 +147,7 @@ namespace EmcReportWebApi.Business.Implement
                 {
                     //标准内容
                     JArray standardArray = (JArray)mainObj["standard"];
-                    wordUtil.TableSplit(standardArray, "standard", contractInfo.ColSpan);
+                    wordUtil.TableSplit(standardArray, "standard", contractInfo.ColSpan ?? 0);
                     //添加续
                     //wordUtil.TableSplit("standard");
                 }

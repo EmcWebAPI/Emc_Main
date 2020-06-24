@@ -374,7 +374,7 @@ namespace EmcReportWebApi.Models
             set => _sampleReceiptDateRpt = value;
         }
 
-        public int ColSpan { get; set; } = 0;
+        public int? ColSpan { get; set; } = 0;
 
         #endregion
     }

@@ -531,8 +531,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             int resultCount = resultList.Count;
                             if (resultCount > 1)
                             {
-                                
-                                table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
                                 resultCell.Select();
                                 resultCell.Split(resultCount, 2);
                                 for (int k = 0; k < resultCount; k++)

@@ -40,16 +40,14 @@ namespace EmcReportWebApi.Business.Implement
             ReportResult<string> result;
             try
             {
+                //线程池容量等待
                 EmcConfig.SemLim.Wait();
                 //计时
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
+                TimerUtil tu = new TimerUtil(new Stopwatch());
                 ReportInfo reportInfo = new ReportInfo(para);
                 //生成报告
                 string content = ReportJsonToWord(reportInfo);
-                sw.Stop();
-                double time1 = (double)sw.ElapsedMilliseconds / 1000;
-                result = SetReportResult<string>(string.Format(format: "报告生成成功,用时:" + time1), true, content);
+                result = SetReportResult<string>(string.Format(format: "报告生成成功,用时:" + tu.StopTimer()), true, content);
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
             }
             catch (Exception ex)

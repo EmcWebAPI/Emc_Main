@@ -175,8 +175,8 @@ namespace EmcReportWebApi.Controllers
         [HttpGet]
         public string Test()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            
+            TimerUtil tu = new TimerUtil(new Stopwatch());
             EmcConfig.KillWordProcess();
 
             ReportInfo reportInfo = new ReportInfo(new ReportParams
@@ -186,9 +186,8 @@ namespace EmcReportWebApi.Controllers
             });
 
             string result = report.ReportJsonToWord(reportInfo);
-            sw.Stop();
-            double time1 = (double)sw.ElapsedMilliseconds / 1000;
-            return result + ":" + time1;
+
+            return result + ":" + tu.StopTimer();
         }
 
         /// <summary>

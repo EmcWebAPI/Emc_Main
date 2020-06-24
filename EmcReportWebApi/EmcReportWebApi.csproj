@@ -184,6 +184,7 @@
     <Compile Include="Utils\QRCodeUtil.cs" />
     <Compile Include="Utils\SyncHttpHelper.cs" />
     <Compile Include="Config\EmcConfig.cs" />
+    <Compile Include="Utils\TimerUtil.cs" />
     <Compile Include="Utils\WordUtil.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\TestController.cs" />

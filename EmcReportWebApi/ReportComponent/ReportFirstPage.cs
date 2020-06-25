@@ -8,23 +8,46 @@ namespace EmcReportWebApi.ReportComponent
     /// </summary>
     public class ReportFirstPage
     {
-        private readonly JObject _reportJsonObjectForWord;
+        private readonly string _reportId;
 
         /// <summary>
         /// 获取首页信息
         /// </summary>
         /// <param name="reportJsonObjectForWord"></param>
-        public ReportFirstPage(JObject reportJsonObjectForWord)
+        /// <param name="reportId"></param>
+        public ReportFirstPage(JObject reportJsonObjectForWord,string reportId)
         {
-            _reportJsonObjectForWord = reportJsonObjectForWord;
+            _reportId = reportId;
+            this.FirstPageObject = (JObject)(reportJsonObjectForWord["firstPage"] ?? throw new Exception("合同信息不能为null"));
+            this.SetReportCode();
         }
+
         /// <summary>
         /// 首页json
         /// </summary>
-        public JObject FirstPageObject
+        public JObject FirstPageObject { get; set; }
+
+        /// <summary>
+        /// 首页上的报告编号
+        /// </summary>
+        public string ReportCode { get; set; }
+
+        /// <summary>
+        /// 首页上报告编号书签
+        /// </summary>
+        public string ReportCodeBookmark { get; set; } = "reportId";
+
+        /// <summary>
+        /// 页眉报告编号
+        /// </summary>
+        public string ReportYmCode { get; set; }
+
+        private void SetReportCode()
         {
-            get => (JObject)(_reportJsonObjectForWord["firstPage"] ?? throw new Exception("合同信息不能为null"));
-            set => throw new NotImplementedException();
+            string[] reportArray = _reportId.Split('-');
+
+            ReportCode = reportArray.Length >= 2 ? $"国医检(磁)字{reportArray[0]}第{reportArray[1]}号" : "国医检(磁)字QW2018第698号";
+            ReportYmCode = reportArray.Length >= 2? $"国医检（磁）字{reportArray[0]}第{reportArray[1]}号": "国医检（磁）字QW2018第698号";
         }
     }
 }

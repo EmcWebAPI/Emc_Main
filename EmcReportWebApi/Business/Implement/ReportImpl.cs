@@ -1,17 +1,13 @@
 ﻿using EmcReportWebApi.Config;
 using EmcReportWebApi.Utils;
 using EmcReportWebApi.Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using EmcReportWebApi.Business.ImplWordUtil;
 using EmcReportWebApi.ReportComponent;
 
@@ -47,13 +43,13 @@ namespace EmcReportWebApi.Business.Implement
                 ReportInfo reportInfo = new ReportInfo(para);
                 //生成报告
                 string content = ReportJsonToWord(reportInfo);
-                result = SetReportResult<string>(string.Format(format: "报告生成成功,用时:" + tu.StopTimer()), true, content);
+                result = SetReportResult(string.Format(format: "报告生成成功,用时:" + tu.StopTimer()), true, content);
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
             }
             catch (Exception ex)
             {
                 EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
-                result = SetReportResult<string>($"报告生成失败,reportId:{para.ReportId},错误信息:{ex.Message}", false, "");
+                result = SetReportResult($"报告生成失败,reportId:{para.ReportId},错误信息:{ex.Message}", false, "");
                 return result;
             }
             finally
@@ -73,32 +69,15 @@ namespace EmcReportWebApi.Business.Implement
             //生成报告
             using (ReportHandleWord wordUtil = new ReportHandleWord(reportInfo.OutFileFullName, reportInfo.TemplateFileFullName))
             {
-                ReportFirstPage fistFirstPage = reportInfo.ReportFirstPage;
                 JObject mainObj = reportInfo.ReportJsonObjectForWord;
-                //审查表 //测试数据
-                string scbWord = reportInfo.ReportFilesPath + "\\" + (string)mainObj["scbWord"];
-
-                //首页内容 object
-                JObject firstPage = fistFirstPage.FirstPageObject;
-                var result = InsertContentToWord(wordUtil, firstPage);
+                //写首页内容
+                ReportFirstPage reportFirstPage = reportInfo.ReportFirstPage;
+                InsertContentToWord(wordUtil, reportFirstPage.FirstPageObject);
                 //报告编号
-                string[] reportArray = reportInfo.ReportId.Split('-');
-                string reportStr = "国医检(磁)字QW2018第698号";
-                string reportYmStr = "国医检（磁）字QW2018第698号";
-                if (reportArray.Length >= 2)
-                {
-                    reportStr = $"国医检(磁)字{reportArray[0]}第{reportArray[1]}号";
-                    reportYmStr = $"国医检（磁）字{reportArray[0]}第{reportArray[1]}号";
-                }
-                wordUtil.InsertContentToWordByBookmark(reportStr, "reportId");
+                wordUtil.InsertContentToWordByBookmark(reportFirstPage.ReportCode, reportFirstPage.ReportCodeBookmark);
 
-                //设置页眉
-
-                if (!result.Equals("保存成功"))
-                {
-                    return result;
-                }
-
+                //审查表路径
+                string scbWord = reportInfo.ReviewTableInfo.ReviewTableFileFullName;
                 //受检样品描述 object  sjypms (审查表)
                 GetTableFromReview(wordUtil, "sjypms", scbWord, 3, false);
 
@@ -116,7 +95,7 @@ namespace EmcReportWebApi.Business.Implement
 
                 //测试设备list cssbList 不动
                 JArray cssbList = (JArray)mainObj["cssbList"];
-                result = InsertListIntoTable(wordUtil, cssbList, 1, "cssblist");
+                string result = InsertListIntoTable(wordUtil, cssbList, 1, "cssblist");
                 if (!result.Equals("保存成功"))
                 {
                     return result;
@@ -181,7 +160,7 @@ namespace EmcReportWebApi.Business.Implement
 
                 Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
                 Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("reportId", reportYmStr);
+                valuePairs.Add("reportId", reportFirstPage.ReportYmCode);
                 valuePairs.Add("page", pageCount.ToString());
                 replaceDic.Add(3, valuePairs);//替换页眉
 

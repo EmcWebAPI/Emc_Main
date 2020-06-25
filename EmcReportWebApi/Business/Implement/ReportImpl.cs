@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmcReportWebApi.Business.ImplWordUtil;
 using EmcReportWebApi.ReportComponent;
+using EmcReportWebApi.ReportComponent.FirstPage;
+using EmcReportWebApi.ReportComponent.ReviewTable;
 
 namespace EmcReportWebApi.Business.Implement
 {
@@ -71,38 +73,13 @@ namespace EmcReportWebApi.Business.Implement
             {
                 JObject mainObj = reportInfo.ReportJsonObjectForWord;
                 //写首页内容
-                ReportFirstPage reportFirstPage = reportInfo.ReportFirstPage;
-                InsertContentToWord(wordUtil, reportFirstPage.FirstPageObject);
-                //报告编号
-                wordUtil.InsertContentToWordByBookmark(reportFirstPage.ReportCode, reportFirstPage.ReportCodeBookmark);
+                ReportFirstPageAbstract reportFirstPage = reportInfo.ReportFirstPage;
+                reportFirstPage.WriteFirstPage(wordUtil);
 
-                //审查表路径
-                string scbWord = reportInfo.ReviewTableInfo.ReviewTableFileFullName;
-                //受检样品描述 object  sjypms (审查表)
-                GetTableFromReview(wordUtil, "sjypms", scbWord, 3, false);
+                //审查表信息(包含测试设备)
+                ReviewTableInfoAbstract reviewTableInfo = reportInfo.ReviewTableInfo;
+                reviewTableInfo.WriteReviewTableInfo(wordUtil);
 
-                //样品构成 list ypgcList (审查表)
-                GetTableFromReview(wordUtil, "ypgcList", scbWord, 4, false);
-
-                //样品连接图 图片 connectionGraph (审查表)
-                GetImageFomReview(wordUtil, "connectionGraph", scbWord, false);
-
-                //样品运行模式 list ypyxList (审查表)
-                GetTableFromReview(wordUtil, "ypyxList", scbWord, 6, false);
-
-                //样品电缆 list ypdlList (审查表)
-                GetTableFromReview(wordUtil, "ypdlList", scbWord, 7, false);
-
-                //测试设备list cssbList 不动
-                JArray cssbList = (JArray)mainObj["cssbList"];
-                string result = InsertListIntoTable(wordUtil, cssbList, 1, "cssblist");
-                if (!result.Equals("保存成功"))
-                {
-                    return result;
-                }
-
-                //辅助设备 list fzsbList (审查表)
-                GetTableFromReview(wordUtil, "fzsbList", scbWord, 5, true);
 
                 //实验数据
                 JArray experiment = (JArray)mainObj["experiment"];
@@ -174,80 +151,6 @@ namespace EmcReportWebApi.Business.Implement
         }
 
         #region 生成报表方法
-
-        /// <summary>
-        /// 设置首页内容
-        /// </summary>
-        private string InsertContentToWord(ReportHandleWord wordUtil, JObject jo1)
-        {
-            foreach (var item in jo1)
-            {
-                string key = item.Key.ToString();
-                string value = item.Value.ToString();
-                if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
-                {
-                    value = CheckFirstPage(value);
-                }
-                wordUtil.InsertContentToWordByBookmark(value, key);
-            }
-            return "保存成功";
-        }
-        /// <summary>
-        /// 首页内容特殊处理
-        /// </summary>
-        private string CheckFirstPage(string itemValue)
-        {
-            int fontCount = 38;
-            int valueCount = System.Text.Encoding.Default.GetBytes(itemValue).Length;
-            if (fontCount > valueCount)
-            {
-                int spaceCount = (fontCount - valueCount) / 2;
-                for (int i = 0; i < spaceCount; i++)
-                {
-                    itemValue = " " + itemValue + " ";
-                }
-            }
-
-            return itemValue;
-        }
-
-
-        //测试工具
-        private string InsertListIntoTable(ReportHandleWord wordUtil, JArray array, int mergeColumn, string bookmark, bool isNeedNumber = true)
-        {
-            List<string> list = new List<string>();
-
-            foreach (JObject item in array)
-            {
-                string jTemp = "";
-                int iTemp = 0;
-                foreach (var item2 in item)
-                {
-                    iTemp++;
-                    if (iTemp != item.Count)
-                        jTemp += (item2.Value + ",");
-                    else
-                        jTemp += item2.Value;
-                }
-                list.Add(jTemp);
-            }
-
-            string result = wordUtil.InsertListToTable(list, bookmark);
-
-            return result;
-        }
-
-        //从审查表中取table数据
-        private void GetTableFromReview(ReportHandleWord wordUtil, string bookmark, string scbWordPath, int tableIndex, bool isCloseTheFile)
-        {
-            wordUtil.CopyTableToWord(scbWordPath, bookmark, tableIndex, isCloseTheFile);
-        }
-
-        //从审查表中取连接图
-        private void GetImageFomReview(ReportHandleWord wordUtil, string bookmark, string scbWordPath, bool isCloseTheFile)
-        {
-            wordUtil.CopyImageToWord(scbWordPath, bookmark, isCloseTheFile);
-        }
 
         /// <summary>
         /// 实验数据

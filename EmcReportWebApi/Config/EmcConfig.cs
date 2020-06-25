@@ -1,19 +1,19 @@
-﻿/*
- * 
- * 
- * 
- */
-using EmcReportWebApi.Models;
+﻿using EmcReportWebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Xml.Linq;
+using EmcReportWebApi.ReportComponent.ReviewTable;
 
 namespace EmcReportWebApi.Config
 {
+    /// <summary>
+    /// 项目配置信息
+    /// </summary>
     public static class EmcConfig
     {
         /// <summary>
@@ -40,25 +40,17 @@ namespace EmcReportWebApi.Config
         /// 模板文件路径
         /// </summary>
         public static string ReportTemplateFileFullName =
-            $@"{EmcConfig.CurrentRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";
+            $@"{CurrentRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";
         /// <summary>
         /// 模板中间件文件路径
         /// </summary>
         public static string ReportTemplateMiddlewareFilePath =
-            $@"{EmcConfig.CurrentRoot}Files\TemplateMiddleware\";
-        /// <summary>
-        /// rtf中获取表格的配置
-        /// </summary>
-        public static List<RtfTableInfo> RtfTableInfos = GetRtfTableInfo();
-        /// <summary>
-        /// rtf中获取图片的配置
-        /// </summary>
-        public static List<RtfPictureInfo> RtfPictureInfos = GetRtfPictueInfo();
+            $@"{CurrentRoot}Files\TemplateMiddleware\";
         
         /// <summary>
         /// 线程池任务信号量
         /// </summary>
-        public static SemaphoreSlim SemLim = new SemaphoreSlim(int.Parse(ConfigurationManager.AppSettings["TaskCount"].ToString()));
+        public static SemaphoreSlim SemLim = new SemaphoreSlim(int.Parse(ConfigurationManager.AppSettings["TaskCount"]));
 
         /// <summary>
         /// 获取时间戳
@@ -68,7 +60,7 @@ namespace EmcReportWebApi.Config
         public static string GetTimestamp(DateTime d)
         {
             TimeSpan ts = d.ToUniversalTime() - new DateTime(1970, 1, 1);
-            return ts.TotalMilliseconds.ToString();     //精确到毫秒
+            return ts.TotalMilliseconds.ToString(CultureInfo.CurrentCulture);     //精确到毫秒
         }
 
         /// <summary>
@@ -76,7 +68,6 @@ namespace EmcReportWebApi.Config
         /// </summary>
         public static void KillWordProcess()
         {
-            Process myProcess = new Process();
             Process[] wordProcess = Process.GetProcessesByName("winword");
             foreach (Process pro in wordProcess) //这里是找到那些没有界面的Word进程
             {
@@ -84,58 +75,131 @@ namespace EmcReportWebApi.Config
             }
         }
 
+
+        #region Emc报告
+        /// <summary>
+        /// 审查表内容信息
+        /// </summary>
+        public static IEnumerable<ReviewTableItemInfo> ReviewTableItemInfos = ConfigReviewTableItemInfos();
+
+        /// <summary>
+        /// 获取审查表内容信息
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<ReviewTableItemInfo> ConfigReviewTableItemInfos()
+        {
+            return new List<ReviewTableItemInfo>
+            {
+                new ReviewTableItemInfo
+                {
+                    ReportBookmark = "sjypms",//受检样品描述
+                    ReviewTableItemIndex = 3,
+                    ItemType = ReviewTableItemType.Table
+                },
+                new ReviewTableItemInfo
+                {
+                    ReportBookmark = "ypgcList",//样品构成
+                    ReviewTableItemIndex = 4,
+                    ItemType = ReviewTableItemType.Table
+                },
+                new ReviewTableItemInfo
+                {
+                    ReportBookmark = "fzsbList",//辅助设备
+                    ReviewTableItemIndex = 5,
+                    ItemType = ReviewTableItemType.Table
+                },
+                new ReviewTableItemInfo
+                {
+                    ReportBookmark = "ypyxList",
+                    ReviewTableItemIndex = 6,//样品运行模式
+                    ItemType = ReviewTableItemType.Table
+                },
+                new ReviewTableItemInfo
+                {
+                    ReportBookmark = "ypdlList",//样品电缆
+                    ReviewTableItemIndex = 7,
+                    ItemType = ReviewTableItemType.Table
+                },new ReviewTableItemInfo
+                {
+                    ReportBookmark = "connectionGraph",//样品连接图
+                    ReviewTableItemIndex = 1,
+                    ItemType = ReviewTableItemType.Image
+                },new ReviewTableItemInfo
+                {
+                    ReportBookmark = "cssbList",
+                    ItemType = ReviewTableItemType.TestEquipment
+                }
+            };
+        }
+
+        /// <summary>
+        /// rtf中获取表格的配置
+        /// </summary>
+        public static List<RtfTableInfo> RtfTableInfos = GetRtfTableInfo();
+        /// <summary>
+        /// rtf中获取图片的配置
+        /// </summary>
+        public static List<RtfPictureInfo> RtfPictureInfos = GetRtfPictureInfo();
+        /// <summary>
+        /// rtf内容信息
+        /// </summary>
+        /// <returns></returns>
         public static List<RtfTableInfo> GetRtfTableInfo()
         {
-            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
             //初始化xml信息
-            XDocument docXml = XDocument.Load(currRoot + "\\RtfConfig.xml");
+            XDocument docXml = XDocument.Load(CurrentRoot + "RtfConfig.xml");
             var data = new List<RtfTableInfo>();
 
-            foreach (var item in docXml.Root.Elements())
-            {
-                string itemType = item.Attribute("Type").Value;
-                data = data.Concat((from d in item.Elements().Where(p => p.Name == "Table")
-                                    select new RtfTableInfo
-                                    {
-                                        StartIndex = int.Parse(d.Attribute("StartIndex").Value.ToString()),
-                                        EndIndex = int.Parse(d.Attribute("EndIndex").Value.ToString()),
-                                        MainTitle =d.Attribute("MainTitle").Value.ToString(),
-                                        TitleRow = int.Parse(d.Attribute("TitleRow").Value.ToString()),
-                                        RtfType = itemType,
-                                        Bookmark = d.Attribute("Bookmark").Value.ToString(),
-                                        ColumnInfoDic = (from f in d.Elements()
-                                                         select new
-                                                         {
-                                                             ColumnIndex = int.Parse(f.Element("ColumnIndex").Value),
-                                                             Title = f.Element("Title").Value.ToString()
-                                                         }
-                                                     ).ToDictionary(x => x.ColumnIndex, x => x.Title)
-                                    }).ToList()).ToList();
-            }
+            if (docXml.Root != null)
+                foreach (var item in docXml.Root.Elements())
+                {
+                    string itemType = item.Attribute("Type")?.Value;
+                    data = data.Concat((from d in item.Elements().Where(p => p.Name == "Table")
+                                        select new RtfTableInfo
+                                        {
+                                            StartIndex = int.Parse(d.Attribute("StartIndex")?.Value.ToString() ?? string.Empty),
+                                            EndIndex = int.Parse(d.Attribute("EndIndex")?.Value.ToString() ?? string.Empty),
+                                            MainTitle = d.Attribute("MainTitle")?.Value.ToString(),
+                                            TitleRow = int.Parse(d.Attribute("TitleRow")?.Value.ToString() ?? string.Empty),
+                                            RtfType = itemType,
+                                            Bookmark = d.Attribute("Bookmark")?.Value.ToString(),
+                                            ColumnInfoDic = (from f in d.Elements()
+                                                             select new
+                                                             {
+                                                                 ColumnIndex = int.Parse(f.Element("ColumnIndex")?.Value ?? string.Empty),
+                                                                 Title = f.Element("Title")?.Value.ToString()
+                                                             }
+                                                ).ToDictionary(x => x.ColumnIndex, x => x.Title)
+                                        }).ToList()).ToList();
+                }
 
             return data;
         }
-        public static List<RtfPictureInfo> GetRtfPictueInfo()
+        /// <summary>
+        /// rtf图片信息
+        /// </summary>
+        /// <returns></returns>
+        public static List<RtfPictureInfo> GetRtfPictureInfo()
         {
-            string currRoot = AppDomain.CurrentDomain.BaseDirectory;
             //初始化xml信息
-            XDocument docXml = XDocument.Load(currRoot + "\\RtfConfig.xml");
+            XDocument docXml = XDocument.Load(CurrentRoot + "RtfConfig.xml");
             var data = new List<RtfPictureInfo>();
-            foreach (var item in docXml.Root.Elements())
-            {
-                string itemType = item.Attribute("Type").Value;
-                data = data.Concat((from d in item.Elements().Where(p => p.Name == "Picture")
-                                    select new RtfPictureInfo
-                                    {
-                                        StartIndex = int.Parse(d.Attribute("StartIndex").Value.ToString()),
-                                        RtfType = itemType,
-                                        Bookmark = d.Attribute("Bookmark").Value.ToString()
-                                    }).ToList()).ToList();
-            }
+            if (docXml.Root != null)
+                foreach (var item in docXml.Root.Elements())
+                {
+                    string itemType = item.Attribute("Type")?.Value;
+                    data = data.Concat((from d in item.Elements().Where(p => p.Name == "Picture")
+                                        select new RtfPictureInfo
+                                        {
+                                            StartIndex = int.Parse(d.Attribute("StartIndex")?.Value.ToString() ?? string.Empty),
+                                            RtfType = itemType,
+                                            Bookmark = d.Attribute("Bookmark")?.Value.ToString()
+                                        }).ToList()).ToList();
+                }
 
             return data;
         }
-
+        #endregion
 
         #region 标准报告
         /// <summary>

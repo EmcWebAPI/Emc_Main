@@ -2,6 +2,8 @@
 using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace EmcReportWebApi.Business.ImplWordUtil
 {
@@ -109,7 +111,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <param name="list"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public virtual string InsertListToTable(List<string> list, string bookmark)
+        public string InsertListToTable(JArray list, string bookmark)
         {
             Range range = GetBookmarkRank(_currentWord, bookmark);
             Table table = range.Tables[1];
@@ -117,7 +119,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             int listCount = list.Count;
             for (int i = 0; i < listCount; i++)
             {
-
                 if (i != 0)
                 {
                     table.Cell(tableRowIndex, 1).Select();
@@ -125,10 +126,12 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     tableRowIndex++;
                 }
 
-                string[] arrStr = list[i].Split(',');
-                for (int j = 0; j < arrStr.Length; j++)
+                JObject item = (JObject)list[i];
+                int j = 1;
+                foreach (var tpItem in item)
                 {
-                    table.Cell(tableRowIndex, j + 1).Range.Text = arrStr[j];
+                    table.Cell(tableRowIndex, j).Range.Text = tpItem.Value.ToString();
+                    j++;
                 }
             }
 

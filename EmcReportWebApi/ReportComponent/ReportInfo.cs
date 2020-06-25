@@ -2,6 +2,8 @@
 using System.IO;
 using EmcReportWebApi.Config;
 using EmcReportWebApi.Models;
+using EmcReportWebApi.ReportComponent.FirstPage;
+using EmcReportWebApi.ReportComponent.ReviewTable;
 using EmcReportWebApi.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -47,12 +49,12 @@ namespace EmcReportWebApi.ReportComponent
         /// <summary>
         /// 报告首页内容
         /// </summary>
-        public ReportFirstPage ReportFirstPage { get; set; }
+        public ReportFirstPageAbstract ReportFirstPage { get; set; }
 
         /// <summary>
         /// 审查表信息
         /// </summary>
-        public ReviewTableInfo ReviewTableInfo { get; set; }
+        public ReviewTableInfoAbstract ReviewTableInfo { get; set; }
 
         /// <summary>
         /// 报告转word的Json

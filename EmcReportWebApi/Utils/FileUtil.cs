@@ -38,7 +38,7 @@ namespace EmcReportWebApi.Utils
             string outputPath = $@"{EmcConfig.ReportFilesPathRoot}{reportFiles}";
             if (Directory.Exists(outputPath))
             {
-                throw new Exception($@"报告文件所需文件夹已经存在\{reportFiles}");
+                throw new Exception($@"报告文件所需文件夹已经存在:{reportFiles}");
             }
             Directory.CreateDirectory(outputPath);
             return outputPath;

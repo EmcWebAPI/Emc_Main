@@ -178,9 +178,12 @@
     <Compile Include="Business\IReport.cs" />
     <Compile Include="Config\CompressContent.cs" />
     <Compile Include="Config\CompressContentAttribute.cs" />
-    <Compile Include="ReportComponent\ReportFirstPage.cs" />
+    <Compile Include="ReportComponent\FirstPage\ReportFirstPage.cs" />
+    <Compile Include="ReportComponent\FirstPage\ReportFirstPageAbstract.cs" />
     <Compile Include="ReportComponent\ReportInfo.cs" />
-    <Compile Include="ReportComponent\ReviewTableInfo.cs" />
+    <Compile Include="ReportComponent\ReviewTable\ReviewTableInfo.cs" />
+    <Compile Include="ReportComponent\ReviewTable\ReviewTableInfoAbstract.cs" />
+    <Compile Include="ReportComponent\ReviewTable\ReviewTableItemInfo.cs" />
     <Compile Include="Utils\FileUtil.cs" />
     <Compile Include="Config\HiddenApiFilter.cs" />
     <Compile Include="Utils\QRCodeUtil.cs" />

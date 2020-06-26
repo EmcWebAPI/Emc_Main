@@ -1,9 +1,7 @@
 ﻿using EmcReportWebApi.Config;
 using EmcReportWebApi.Utils;
 using EmcReportWebApi.Models;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using EmcReportWebApi.Business.ImplWordUtil;
@@ -70,7 +68,6 @@ namespace EmcReportWebApi.Business.Implement
             //生成报告
             using (ReportHandleWord wordUtil = new ReportHandleWord(reportInfo.OutFileFullName, reportInfo.TemplateFileFullName))
             {
-                JObject mainObj = reportInfo.ReportJsonObjectForWord;
                 //写首页内容
                 ReportFirstPageAbstract reportFirstPage = reportInfo.ReportFirstPage;
                 reportFirstPage.WriteFirstPage(wordUtil);
@@ -94,57 +91,12 @@ namespace EmcReportWebApi.Business.Implement
                 //替换页眉内容
                 reportInfo.HandleReportHeader(wordUtil);
 
-                //string bsWord = null;
-                //if (mainObj["bsWord"] != null && !mainObj["bsWord"].ToString().Equals(""))
-                //{
-                //    bsWord = reportInfo.ReportFilesPath + "\\" + (string)mainObj["bsWord"];
-                //}
-
-                //if (!string.IsNullOrEmpty(bsWord))
-                //{
-                //    wordUtil.CopyOtherFileContentToWord(bsWord, "bsWord");
-                //}
-
-
-                //if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
-                //{
-                //    JArray yptp = (JArray)mainObj["yptp"];
-                //    InsertImageToWordYptp(wordUtil, yptp, reportInfo.ReportFilesPath);
-                //}
-
-
-                //int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
-
-                //Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                //Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                //valuePairs.Add("reportId", reportFirstPage.ReportYmCode);
-                //valuePairs.Add("page", pageCount.ToString());
-                //replaceDic.Add(3, valuePairs);//替换页眉
-
-                //wordUtil.ReplaceWritten(replaceDic);
             }
             //删除中间件文件夹
 
             reportInfo.DeleteTemplateMiddleDirctory();
 
-            //DelectDir(r.ReportTemplateMiddlewareFilePath);
-            //DelectDir(reportInfo.ReportFilesPath);
-
             return reportInfo.FileName;
         }
-
-        #region 生成报表方法
-
-        //样品图片
-        private string InsertImageToWordYptp(ReportHandleWord wordUtil, JArray array, string reportFilesPath)
-        {
-            List<string> list = new List<string>();
-            foreach (JObject item in array)
-            {
-                list.Add(reportFilesPath + "\\" + item["fileName"].ToString() + "," + item["content"].ToString());
-            }
-            return wordUtil.InsertImageToWordSample(list, "yptp");
-        }
-        #endregion
     }
 }

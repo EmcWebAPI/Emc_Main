@@ -31,12 +31,13 @@ namespace EmcReportWebApi.ReportComponent
                 _para = para;
                 ReportFilesPath = FileUtil.CreateReportFilesDirectory();
                 TemplateFileFullName = CreateTemplateMiddle();
-                this.ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
-                this.DecompressionReportFiles();
-                this.ReportId = string.IsNullOrEmpty(_para.ReportId) ? "QW2018-698" : _para.ReportId;
-                this.ReportZipFileFullPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
-                this.FileName = $"Report{Guid.NewGuid()}.docx";
-                this.OutFileFullName = $"{EmcConfig.ReportOutputPath}{FileName}";
+                ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
+                DecompressionReportFiles();
+                ReportId = string.IsNullOrEmpty(_para.ReportId) ? "QW2018-698" : _para.ReportId;
+                ReportZipFileFullPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
+                FileName = $"Report{Guid.NewGuid()}.docx";
+                OutFileFullName = $"{EmcConfig.ReportOutputPath}{FileName}";
+
                 //首页信息
                 ReportFirstPage = new ReportFirstPage(this.ReportJsonObjectForWord,this.ReportId);
                 //审查表信息
@@ -44,7 +45,7 @@ namespace EmcReportWebApi.ReportComponent
                 //实验数据信息
                 ExperimentInfo = new ExperimentInfo(this,ReportJsonObjectForWord);
                 //标识文件
-                IdentityTableInfo = new ReviewTableInfo(this.ReportJsonObjectForWord, this.ReportFilesPath);
+                IdentityTableInfo = new IdentityTableInfo(this.ReportJsonObjectForWord, this.ReportFilesPath);
                 //样品图片
                 ImageInfo = new ImageInfo(this,ReportJsonObjectForWord);
             }
@@ -63,9 +64,10 @@ namespace EmcReportWebApi.ReportComponent
             int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
 
             Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-            Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-            valuePairs.Add("reportId", ReportFirstPage.ReportYmCode);
-            valuePairs.Add("page", pageCount.ToString());
+            Dictionary<string, string> valuePairs = new Dictionary<string, string>
+            {
+                {"reportId", ReportFirstPage.ReportYmCode}, {"page", pageCount.ToString()}
+            };
             replaceDic.Add(3, valuePairs);//替换页眉
 
             wordUtil.ReplaceWritten(replaceDic);
@@ -200,7 +202,7 @@ namespace EmcReportWebApi.ReportComponent
         /// <summary>
         /// 删除模板中间件
         /// </summary>
-        public void DeleteDir(string srcPath)
+        private void DeleteDir(string srcPath)
         {
             DirectoryInfo dir = new DirectoryInfo(srcPath);
             FileSystemInfo[] fileInfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录

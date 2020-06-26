@@ -300,64 +300,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <param name="list"></param>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        public virtual string InsertImageToWordSample(List<string> list, string bookmark)
-        {
-            try
-            {
-                Range range = GetBookmarkRank(_currentWord, bookmark);
-
-                int listCount = list.Count;
-                //创建表格
-                range.Select();
-                Table table = _wordApp.Selection.Tables.Add(range, listCount, 1, ref _missing, ref _missing);
-                float tableWidth = 0f;
-                foreach (Column item in table.Columns)
-                {
-                    tableWidth += item.Width;
-                }
-
-                string frontStr = "№";
-
-                for (int i = 0; i < listCount; i++)
-                {
-                    string[] arrStr = list[i].Split(',');
-                    string fileName = arrStr[0];
-                    string content = arrStr[1];
-                    table.Select();
-                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
-                    cellRange.Select();
-
-                    if (!fileName.Equals(""))
-                    {
-                        AddPicture(fileName, _currentWord, cellRange, tableWidth - 56, tableWidth - 280);
-                    }
-                    string templateStr = frontStr + (i + 1).ToString();
-                    CreateAndGoToNextParagraph(cellRange, true, false);
-                    cellRange.InsertAfter(templateStr + content);
-                }
-                table.Select();
-                //设置table格式
-                table.Borders.Enable = (int)WdLineStyle.wdLineStyleSingle;
-                _wordApp.Selection.SelectCell();
-                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
-            }
-
-            return "创建成功";
-        }
-
-        /// <summary>
-        /// 样品图片用到的
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="bookmark"></param>
-        /// <returns></returns>
         public virtual string InsertImageToWordSample(IList<ImageInfoAbstract> list, string bookmark)
         {
             try
@@ -411,60 +353,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         }
 
         /// <summary>
-        /// 将图片插入模板文件
+        /// 实验连接图
         /// </summary>
-        /// <returns></returns>
-        public virtual string InsertConnectionImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
-        {
-            try
-            {
-                Document doc = OpenWord(fileFullPath);
-                Range range = GetBookmarkRank(doc, bookmark);
-
-                int listCount = list.Count;
-                //创建表格
-                range.Select();
-                Table table = _wordApp.Selection.Tables.Add(range, listCount, 1, ref _missing, ref _missing);
-                float tableWidth = 0f;
-                foreach (Column item in table.Columns)
-                {
-                    tableWidth += item.Width;
-                }
-
-                for (int i = 0; i < listCount; i++)
-                {
-                    string[] arrStr = list[i].Split(',');
-                    string fileName = arrStr[0];
-                    string content = arrStr[1];
-                    table.Select();
-                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
-                    cellRange.Select();
-
-                    if (!fileName.Equals(""))
-                    {
-                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 280);
-                    }
-                    //CreateAndGoToNextParagraph(cellRange, true, false);
-                    //cellRange.InsertAfter(content);
-                }
-                table.Select();
-                //设置table格式
-                _wordApp.Selection.SelectCell();
-                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
-                if (isCloseTheFile)
-                    CloseWord(doc, fileFullPath);
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
-            }
-
-            return "插入图片成功";
-        }
-
         public virtual string InsertConnectionImageToTemplate(string fileFullPath, IList<ExperimentImage> list, string bookmark, bool isCloseTheFile = true)
         {
             try
@@ -516,77 +406,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         }
 
         /// <summary>
-        /// 将图片插入模板文件
-        /// </summary>
-        /// <returns></returns>
-        public virtual string InsertImageToTemplate(string fileFullPath, List<string> list, string bookmark, bool isCloseTheFile = true)
-        {
-            try
-            {
-                Document doc = OpenWord(fileFullPath);
-                Range range = GetBookmarkRank(doc, bookmark);
-
-                int listCount = list.Count;
-                int rowCount = listCount / 2;
-                int columnCount = 2;
-                if (listCount % 2 != 0)
-                {
-                    rowCount++;
-                }
-                if (listCount == 1)
-                    columnCount = 1;
-                //创建表格
-                range.Select();
-                Table table = _wordApp.Selection.Tables.Add(range, rowCount, columnCount, ref _missing, ref _missing);
-                float tableWidth = 0f;
-                foreach (Column item in table.Columns)
-                {
-                    tableWidth += item.Width;
-                }
-
-                for (int i = 0; i < listCount; i++)
-                {
-                    string[] arrStr = list[i].Split(',');
-                    string fileName = arrStr[0];
-                    string content = arrStr[1];
-                    table.Select();
-                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
-                    cellRange.Select();
-
-                    if (!fileName.Equals(""))
-                    {
-                        if (columnCount == 1)
-                        {
-                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 280);
-                        }
-                        else
-                        {
-                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - 33, tableWidth / 2 - 66);
-                        }
-                    }
-                    CreateAndGoToNextParagraph(cellRange, true, false);
-                    cellRange.InsertAfter(content);
-                }
-                table.Select();
-                //设置table格式
-                _wordApp.Selection.SelectCell();
-                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
-                if (isCloseTheFile)
-                    CloseWord(doc, fileFullPath);
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
-            }
-
-            return "插入图片成功";
-        }
-
-        /// <summary>
-        /// 将图片插入模板文件
+        /// 实验布置图
         /// </summary>
         /// <returns></returns>
         public virtual string InsertImageToTemplate(string fileFullPath, IList<ExperimentImage> list, string bookmark, bool isCloseTheFile = true)

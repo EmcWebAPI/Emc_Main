@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using EmcReportWebApi.Business.ImplWordUtil;
-using EmcReportWebApi.Config;
 using EmcReportWebApi.Models;
 using EmcReportWebApi.ReportComponent.ExperimentData;
 using Newtonsoft.Json.Linq;

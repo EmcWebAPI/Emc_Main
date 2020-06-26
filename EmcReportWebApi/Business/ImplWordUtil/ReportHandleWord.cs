@@ -643,16 +643,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             table.Select();
             if (isNeedBreak)
             {
-                //InsertBreakPage(true);
-                object unite = WdUnits.wdStory;
-                _wordApp.Selection.EndKey(ref unite, ref _missing);
-                object breakPage = WdBreakType.wdSectionBreakNextPage;//分页符
-                _wordApp.Selection.InsertBreak(breakPage);
-
-                table = _wordApp.Selection.Range.Sections.Last.Range;
-                //CreateAndGoToNextParagraph(table, true, true);
-                //CreateAndGoToNextParagraph(table, true, true);
+                 doc.Content.Select();
+                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                table = _wordApp.Selection.Range;
             }
+
             int numRows = 1;
             int numColumns = 2;
             switch (contentList.Count)
@@ -748,22 +743,15 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         {
             try
             {
-                //Document rtfDoc = OpenWord(copyFileFullPath, true);
-
                 int rtfTableCount = rtfDoc.Tables.Count;
-
-                Range wordTable = GetBookmarkRank(templateDoc, wordBookmark);
-                wordTable.Select();
+                templateDoc.Content.Select();
                 if (isNeedBreak)
                 {
-                    object unite = WdUnits.wdStory;
-                    _wordApp.Selection.EndKey(ref unite, ref _missing);
-
-                    object breakType = WdBreakType.wdLineBreak;//换行符
-                    _wordApp.ActiveWindow.Selection.InsertBreak(breakType);
-
-                    wordTable = _wordApp.Selection.Range.Sections.Last.Range;
+                    templateDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
                 }
+
+                Range  wordTable = _wordApp.Selection.Range;
 
                 //判断主表头是否为null
                 string[] mainTitleArray = null;
@@ -908,14 +896,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             try
             {
                 Range bookmarkPic = GetBookmarkRank(fileDoc, workBookmark);
-                bookmarkPic.Select();
+                 bookmarkPic.Select();
+                
                 if (isNeedBreak)
                 {
-                    InsertBreakPage(false);
-                    bookmarkPic = _wordApp.Selection.Range.Sections.Last.Range;
+                    fileDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                    _wordApp.Selection.TypeParagraph();
+                    bookmarkPic = _wordApp.Selection.Range;
                 }
 
-                copyFileDoc.Select();//选中当前文档进行操作
                 int i = 1;
                 foreach (InlineShape shape in copyFileDoc.InlineShapes)
                 {
@@ -927,9 +917,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             //利用剪贴板保存数据
                             shape.Select(); //选定当前图片
                             shape.Range.Copy();
-                            // WordApp.Selection.Copy();//copy当前图片
-
-
                             bookmarkPic.Paste();
                             CreateAndGoToNextParagraph(bookmarkPic, true, true);
                         }
@@ -938,9 +925,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 }
                 if (isPage)
                 {
-                    InsertBreakPage(false);
+                    fileDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                    object breakPage = WdBreakType.wdPageBreak;//分页符
+                    _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
                 }
-
             }
             catch (Exception ex)
             {

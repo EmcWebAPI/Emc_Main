@@ -4,12 +4,8 @@ using System.IO;
 using EmcReportWebApi.Business.ImplWordUtil;
 using EmcReportWebApi.Config;
 using EmcReportWebApi.Models;
-using EmcReportWebApi.ReportComponent.Experiment;
-using EmcReportWebApi.ReportComponent.FirstPage;
 using EmcReportWebApi.ReportComponent.Image;
-using EmcReportWebApi.ReportComponent.ReviewTable;
 using EmcReportWebApi.Utils;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace EmcReportWebApi.StandardReportComponent

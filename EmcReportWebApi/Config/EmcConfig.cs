@@ -46,7 +46,13 @@ namespace EmcReportWebApi.Config
         /// </summary>
         public static string ReportTemplateMiddlewareFilePath =
             $@"{CurrentRoot}Files\TemplateMiddleware\";
-        
+
+        /// <summary>
+        /// 模板中间件文件路径
+        /// </summary>
+        public static string ExperimentTemplateFilePath =
+            $@"{CurrentRoot}Files\ExperimentTemplate\";
+
         /// <summary>
         /// 线程池任务信号量
         /// </summary>
@@ -199,6 +205,35 @@ namespace EmcReportWebApi.Config
 
             return data;
         }
+
+        /// <summary>
+        /// 实验基础信息
+        /// </summary>
+        public static IList<string> ExperimentBaseInfo = new List<string>
+        {
+            "syjg",
+            "jyrq",
+            "wd",
+            "xdsd",
+            "dqyl"
+        };
+        /// <summary>
+        /// 实验数据头信息
+        /// </summary>
+        public static Dictionary<string,string> ExperimentDataTitleInfo = new Dictionary<string, string>
+        {
+            {"sygdy","试验供电电源："},
+            {"syplfw","试验频率范围："},
+            {"ypyxms","样品运行模式："},
+            {"mccfpl","脉冲重复频率（kHz）："},
+            {"sycxsj","试验持续时间（s）："},
+            {"cfpl","重复频率（s）："},
+            {"cs","次数（次）："},
+            {"sycfcs","试验重复次数（次）："},
+            {"sysjjg","试验时间间隔（s）："},
+            {"sypl","试验频率（Hz）："}
+        };
+
         #endregion
 
         #region 标准报告

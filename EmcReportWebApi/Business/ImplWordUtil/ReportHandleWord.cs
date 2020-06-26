@@ -3,6 +3,7 @@ using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmcReportWebApi.ReportComponent.Experiment;
 using Newtonsoft.Json.Linq;
 
 namespace EmcReportWebApi.Business.ImplWordUtil
@@ -405,6 +406,56 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return "插入图片成功";
         }
 
+        public virtual string InsertConnectionImageToTemplate(string fileFullPath, IList<ExperimentImage> list, string bookmark, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Document doc = OpenWord(fileFullPath);
+                Range range = GetBookmarkRank(doc, bookmark);
+
+                int listCount = list.Count;
+                //创建表格
+                range.Select();
+                Table table = _wordApp.Selection.Tables.Add(range, listCount, 1, ref _missing, ref _missing);
+                float tableWidth = 0f;
+                foreach (Column item in table.Columns)
+                {
+                    tableWidth += item.Width;
+                }
+
+                for (int i = 0; i < listCount; i++)
+                {
+                    string fileName = list[i].ImageFileFullName;
+                    string content = list[i].Content;
+                    table.Select();
+                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
+                    cellRange.Select();
+
+                    if (!fileName.Equals(""))
+                    {
+                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 280);
+                    }
+                    //CreateAndGoToNextParagraph(cellRange, true, false);
+                    //cellRange.InsertAfter(content);
+                }
+                table.Select();
+                //设置table格式
+                _wordApp.Selection.SelectCell();
+                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                if (isCloseTheFile)
+                    CloseWord(doc, fileFullPath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "插入图片成功";
+        }
+
         /// <summary>
         /// 将图片插入模板文件
         /// </summary>
@@ -474,7 +525,76 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             return "插入图片成功";
         }
-        
+
+        /// <summary>
+        /// 将图片插入模板文件
+        /// </summary>
+        /// <returns></returns>
+        public virtual string InsertImageToTemplate(string fileFullPath, IList<ExperimentImage> list, string bookmark, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Document doc = OpenWord(fileFullPath);
+                Range range = GetBookmarkRank(doc, bookmark);
+
+                int listCount = list.Count;
+                int rowCount = listCount / 2;
+                int columnCount = 2;
+                if (listCount % 2 != 0)
+                {
+                    rowCount++;
+                }
+                if (listCount == 1)
+                    columnCount = 1;
+                //创建表格
+                range.Select();
+                Table table = _wordApp.Selection.Tables.Add(range, rowCount, columnCount, ref _missing, ref _missing);
+                float tableWidth = 0f;
+                foreach (Column item in table.Columns)
+                {
+                    tableWidth += item.Width;
+                }
+
+                for (int i = 0; i < listCount; i++)
+                {
+                    string fileName = list[i].ImageFileFullName;
+                    string content = list[i].Content;
+                    table.Select();
+                    Range cellRange = _wordApp.Selection.Cells[i + 1].Range;
+                    cellRange.Select();
+
+                    if (!fileName.Equals(""))
+                    {
+                        if (columnCount == 1)
+                        {
+                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 280);
+                        }
+                        else
+                        {
+                            InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth / 2 - 33, tableWidth / 2 - 66);
+                        }
+                    }
+                    CreateAndGoToNextParagraph(cellRange, true, false);
+                    cellRange.InsertAfter(content);
+                }
+                table.Select();
+                //设置table格式
+                _wordApp.Selection.SelectCell();
+                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                if (isCloseTheFile)
+                    CloseWord(doc, fileFullPath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "插入图片成功";
+        }
+
         /// <summary>
         /// 复制其他文件内容到当前word并创建一个新的书签
         /// </summary>
@@ -627,7 +747,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <param name="isNeedBreak"></param>
         /// <param name="isCloseTheFile"></param>
         /// <returns></returns>
-        public string CreateTableToWord(string otherFileFullName, List<string> contentList, string bookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CreateTableToWord(string otherFileFullName, IList<string> contentList, string bookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
         {
             Document otherFileDoc = OpenWord(otherFileFullName);
             if (isCloseTemplateFile)
@@ -638,7 +758,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 
         /// </summary>
-        private string CreateTableToWord(Document doc, List<string> contentList, string bookmark, bool isNeedBreak, bool isCloseTheFile = true)
+        private string CreateTableToWord(Document doc, IList<string> contentList, string bookmark, bool isNeedBreak, bool isCloseTheFile = true)
         {
             Range table = GetBookmarkRank(doc, bookmark);
             table.Select();

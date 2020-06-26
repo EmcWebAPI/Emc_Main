@@ -21,7 +21,7 @@ namespace EmcReportWebApi.ReportComponent.ReviewTable
         public string ReviewTableFileFullName { get; set; }
 
         /// <summary>
-        /// 审查表中
+        /// 审查表中的项
         /// </summary>
         public List<ReviewTableItemInfo> ItemInfos { get; set; }
 

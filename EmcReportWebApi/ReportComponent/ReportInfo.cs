@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using EmcReportWebApi.Config;
 using EmcReportWebApi.Models;
+using EmcReportWebApi.ReportComponent.Experiment;
 using EmcReportWebApi.ReportComponent.FirstPage;
 using EmcReportWebApi.ReportComponent.ReviewTable;
 using EmcReportWebApi.Utils;
@@ -31,13 +33,15 @@ namespace EmcReportWebApi.ReportComponent
                 this.ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
                 this.DecompressionReportFiles();
                 this.ReportId = string.IsNullOrEmpty(_para.ReportId) ? "QW2018-698" : _para.ReportId;
-                this.ReportZipFilesPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
+                this.ReportZipFileFullPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
                 this.FileName = $"Report{Guid.NewGuid()}.docx";
                 this.OutFileFullName = $"{EmcConfig.ReportOutputPath}{FileName}";
                 //首页信息
                 ReportFirstPage = new ReportFirstPage(this.ReportJsonObjectForWord,this.ReportId);
                 //审查表信息
                 ReviewTableInfo = new ReviewTableInfo(this.ReportJsonObjectForWord,this.ReportFilesPath);
+                //实验数据信息
+                ExperimentInfo = new ExperimentInfo(this,ReportJsonObjectForWord);
             }
             catch (Exception ex)
             {
@@ -57,6 +61,11 @@ namespace EmcReportWebApi.ReportComponent
         public ReviewTableInfoAbstract ReviewTableInfo { get; set; }
 
         /// <summary>
+        /// 实验数据信息
+        /// </summary>
+        public ExperimentInfo ExperimentInfo { get; set; }
+
+        /// <summary>
         /// 报告转word的Json
         /// </summary>
         public string ReportJsonStrForWord
@@ -71,14 +80,14 @@ namespace EmcReportWebApi.ReportComponent
         public string ReportId { get; set; }
 
         /// <summary>
-        /// 报告所需文件路径
+        /// 报告所需文件夹路径
         /// </summary>
         public string ReportFilesPath { get; set; }
 
         /// <summary>
-        /// 报告zip文件路径
+        /// 报告zip文件
         /// </summary>
-        public string ReportZipFilesPath { get; set; }
+        public string ReportZipFileFullPath { get; set; }
 
         /// <summary>
         /// 报告转word的Json
@@ -106,7 +115,7 @@ namespace EmcReportWebApi.ReportComponent
             {
                 string zipUrl = _para.ZipFilesUrl;
 
-                byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(zipUrl, ReportZipFilesPath,
+                byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(zipUrl, ReportZipFileFullPath,
                     int.Parse(DateTime.Now.ToString("hhmmss")));
                 if (fileBytes.Length <= 0)
                 {
@@ -114,7 +123,7 @@ namespace EmcReportWebApi.ReportComponent
                     throw new Exception($"请求报告文件失败,报告id{_para.ReportId}");
                 }
                 //解压zip文件
-                FileUtil.DecompressionZip(ReportZipFilesPath, ReportFilesPath);
+                FileUtil.DecompressionZip(ReportZipFileFullPath, ReportFilesPath);
             }
             else
             {

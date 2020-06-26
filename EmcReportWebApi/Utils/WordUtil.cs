@@ -308,7 +308,7 @@ namespace EmcReportWebApi.Utils
             {
                 _needWrite = false;
                 Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
             }
             return "创建成功";
         }
@@ -353,7 +353,7 @@ namespace EmcReportWebApi.Utils
             {
                 _needWrite = false;
                 Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
             }
 
             return "创建成功";

@@ -93,8 +93,7 @@ namespace EmcReportWebApi.Business.Implement
 
             }
             //删除中间件文件夹
-
-            reportInfo.DeleteTemplateMiddleDirctory();
+            reportInfo.DeleteTemplateMiddleDirectory();
 
             return reportInfo.FileName;
         }

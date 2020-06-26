@@ -76,7 +76,7 @@ namespace EmcReportWebApi.ReportComponent
         /// <summary>
         /// 删除模板中间件文件夹
         /// </summary>
-        public void DeleteTemplateMiddleDirctory()
+        public void DeleteTemplateMiddleDirectory()
         {
             DeleteDir(TemplateMiddleFilesPath);
             DeleteDir(ReportFilesPath);
@@ -211,12 +211,12 @@ namespace EmcReportWebApi.ReportComponent
             {
                 if (i is DirectoryInfo)            //判断是否文件夹
                 {
-                    DirectoryInfo subdir = new DirectoryInfo(i.FullName);
-                    subdir.Delete(true);          //删除子目录和文件
+                    DirectoryInfo directoryInfo = new DirectoryInfo(i.FullName);
+                    directoryInfo.Delete(true);          //删除子目录和文件
                 }
                 else
                 {
-                    //如果 使用了 streamreader 在删除前 必须先关闭流 ，否则无法删除 sr.close();
+                    //如果 使用了 streamReader 在删除前 必须先关闭流 ，否则无法删除 sr.close();
                     File.Delete(i.FullName);      //删除指定文件
                 }
             }

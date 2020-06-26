@@ -173,7 +173,7 @@ namespace EmcReportWebApi.Controllers
                         string convertFileName = newName + convertExtendName;
                         string convertFileFullName = filePath + convertFileName;
 
-                        double approverHeightProportion = 0;
+                        double approverHeightProportion;
                         //转pdf
                         using (WordUtil wu = new WordUtil(convertFileFullName, outFileName))
                         {

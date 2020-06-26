@@ -200,12 +200,6 @@ namespace EmcReportWebApi.Business.Implement
             {
                 string key = item.Key.ToString();
                 string value = item.Value.ToString();
-                //if (key.Equals("main_wtf") || key.Equals("main_ypmc") || key.Equals("main_xhgg") || key.Equals("main_jylb"))
-                //{
-                //    value = CheckFirstPage(value);
-                //    wordUtil.InsertContentToWordByBookmark(value, key, true);
-                //}
-                //else
                 if (key.Equals("main_ypmc"))
                 {
                     string[] values = value.Split('\n');
@@ -245,7 +239,7 @@ namespace EmcReportWebApi.Business.Implement
 
             return itemValue;
         }
-
+        
         private string AddAttachTable(ReportStandardHandleWord wordUtil, JArray array, string bookmark)
         {
             string result = "";
@@ -284,7 +278,7 @@ namespace EmcReportWebApi.Business.Implement
                 string value = item.Value;
 
                 var property = contractInfo.Data.GetType().GetProperty(value);
-                string obj = (property == null || property.GetValue(contractInfo.Data, null) == null) ? "" : contractInfo.Data.GetType().GetProperty(value).GetValue(contractInfo.Data, null).ToString();
+                string obj = (property == null || property.GetValue(contractInfo.Data, null) == null) ? "" : contractInfo.Data.GetType().GetProperty(value)?.GetValue(contractInfo.Data, null).ToString();
                 jObject.Add(key, obj);
             }
             return jObject;
@@ -302,7 +296,7 @@ namespace EmcReportWebApi.Business.Implement
                 string value = item.Value;
 
                 var property = contractData.GetType().GetProperty(value);
-                string obj = (property == null || property.GetValue(contractData, null) == null) ? "" : contractData.GetType().GetProperty(value).GetValue(contractData, null).ToString();
+                string obj = (property == null || property.GetValue(contractData, null) == null) ? "" : contractData.GetType().GetProperty(value)?.GetValue(contractData, null).ToString();
                 jObject.Add(key, obj);
             }
             return jObject;

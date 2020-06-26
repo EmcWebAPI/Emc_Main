@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ using EmcReportWebApi.ReportComponent;
 
 namespace EmcReportWebApi.Controllers
 {
+    /// <summary>
+    /// 测试接口
+    /// </summary>
     public class TestController : ApiController
     {
 
@@ -35,7 +39,7 @@ namespace EmcReportWebApi.Controllers
         #endregion
 
         private IReport _report;
-        private IReportStandard _reportStandard;
+        private readonly IReportStandard _reportStandard;
 
         /// <summary>
         /// 测试
@@ -198,22 +202,19 @@ namespace EmcReportWebApi.Controllers
         [HttpGet]
         public string Test3(int testType=1)
         {
-            Stopwatch sw = new Stopwatch();
-
-            sw.Start();
+           
+            TimerUtil tu  = new TimerUtil(new Stopwatch());
             EmcConfig.KillWordProcess();
 
-            string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrentRoot));
+            string reportFilesPath = FileUtil.CreateDirectory($"{EmcConfig.CurrentRoot}Files\\ReportFiles");
             string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrentRoot, "QT2019-3015.zip");
             //解压zip文件
             FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
             JObject mainObj = (JObject)JsonConvert.DeserializeObject(testType==1?jsonStr:jsonStr2);
 
             StandardReportResult result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
-            //string result = "";
-            sw.Stop();
-            double time1 = (double)sw.ElapsedMilliseconds / 1000;
-            return result.FileName + ":" + time1.ToString();
+            
+            return result.FileName + ":" + tu.StopTimer();
         }
 
         /// <summary>
@@ -250,31 +251,20 @@ namespace EmcReportWebApi.Controllers
             return result;
         }
 
-        private Task<string> TestTask() {
-            try
+        private Task<string> TestTask()
+        {
+            return Task.Run(() =>
             {
-                return Task<string>.Run(() =>
-                {
-                    semLim.Wait();
-                    string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}Files\\ReportFiles", EmcConfig.CurrentRoot));
-                    string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrentRoot, "QT2019-3015.zip");
-                    //解压zip文件
-                    FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
-                    JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
-                    StandardReportResult result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
-                    semLim.Release();
-                    return result.FileName;
-                });
-               // EmcConfig.KillWordProcess();
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-
+                semLim.Wait();
+                string reportFilesPath = FileUtil.CreateDirectory($"{EmcConfig.CurrentRoot}Files\\ReportFiles");
+                string reportZipFilesPath = string.Format("{0}Files\\ReportFiles\\Test\\{1}", EmcConfig.CurrentRoot, "QT2019-3015.zip");
+                //解压zip文件
+                FileUtil.DecompressionZip(reportZipFilesPath, reportFilesPath);
+                JObject mainObj = (JObject)JsonConvert.DeserializeObject(jsonStr);
+                StandardReportResult result = _reportStandard.JsonToWordStandard("QT2019-3015", mainObj, reportFilesPath);
+                semLim.Release();
+                return result.FileName;
+            });
         }
 
 

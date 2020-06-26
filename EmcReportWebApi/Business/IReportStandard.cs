@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using EmcReportWebApi.StandardReportComponent;
 
 namespace EmcReportWebApi.Business
 {
@@ -19,11 +20,9 @@ namespace EmcReportWebApi.Business
         /// <summary>
         /// 生成标准报告方法
         /// </summary>
-        /// <param name="reportId"></param>
-        /// <param name="jsonStr"></param>
-        /// <param name="reportFilesPath"></param>
+        /// <param name="standardReportInfo"></param>
         /// <returns></returns>
-        StandardReportResult JsonToWordStandard(string reportId, JObject jsonStr, string reportFilesPath);
+        StandardReportResult JsonToWordStandard(StandardReportInfo standardReportInfo);
         
     }
 }

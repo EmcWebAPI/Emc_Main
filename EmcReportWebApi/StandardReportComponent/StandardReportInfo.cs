@@ -12,41 +12,39 @@ using EmcReportWebApi.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace EmcReportWebApi.ReportComponent
+namespace EmcReportWebApi.StandardReportComponent
 {
     /// <summary>
     /// 报告信息
     /// </summary>
-    public class ReportInfo
+    public class StandardReportInfo
     {
         /// <summary>
         /// 构造报告文件信息
         /// </summary>
-        public ReportInfo(ReportParams para)
+        public StandardReportInfo(StandardReportParams para)
         {
             try
             {
-                ReportJsonStrForWord = para.JsonStr;
                 ZipFilesUrl = para.ZipFilesUrl;
+                ReportId = para.OriginalRecord;
                 ReportFilesPath = FileUtil.CreateReportFilesDirectory();
                 TemplateFileFullName = CreateTemplateMiddle();
-                ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
+                ReportJsonObjectForWord = para.JsonObject;
                 DecompressionReportFiles();
-                ReportId = string.IsNullOrEmpty(para.ReportId) ? "QW2018-698" : para.ReportId;
                 ReportZipFileFullPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
-                FileName = $"Report{Guid.NewGuid()}.docx";
+                FileName = $"StandardReport{Guid.NewGuid()}.docx";
                 OutFileFullName = $"{EmcConfig.ReportOutputPath}{FileName}";
 
                 //首页信息
-                ReportFirstPage = new ReportFirstPage(this.ReportJsonObjectForWord,this.ReportId);
-                //审查表信息
-                ReviewTableInfo = new ReviewTableInfo(this.ReportJsonObjectForWord,this.ReportFilesPath);
-                //实验数据信息
-                ExperimentInfo = new ExperimentInfo(this,ReportJsonObjectForWord);
-                //标识文件
-                IdentityTableInfo = new IdentityTableInfo(this.ReportJsonObjectForWord, this.ReportFilesPath);
-                //样品图片
-                ImageInfo = new ImageInfo(this,ReportJsonObjectForWord);
+                ReportFirstPage = new StandardReportFirstPage(this,this.ReportJsonObjectForWord);
+
+                StandardReportResultInfo = new StandardReportResult
+                {
+                    FilePath = OutFileFullName,
+                    ReportCode = ReportFirstPage.ReportCode,
+                    FileName = FileName
+                };
             }
             catch (Exception ex)
             {
@@ -58,14 +56,15 @@ namespace EmcReportWebApi.ReportComponent
         /// <summary>
         /// 
         /// </summary>
-        public void HandleReportHeader(ReportHandleWord wordUtil)
+        public void HandleReportHeader(ReportStandardHandleWord wordUtil)
         {
-            int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
-
+            int pageCount = wordUtil.GetDocumnetPageCount() - 2;//获取文件页数(首页不算)
             Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
             Dictionary<string, string> valuePairs = new Dictionary<string, string>
             {
-                {"reportId", ReportFirstPage.ReportYmCode}, {"page", pageCount.ToString()}
+                {"bgbh", ReportFirstPage.ReportCode},//报告编号
+                {"ypbh", ReportFirstPage.SampleCode},//样品编号
+                {"page", pageCount.ToString()}
             };
             replaceDic.Add(3, valuePairs);//替换页眉
 
@@ -84,22 +83,7 @@ namespace EmcReportWebApi.ReportComponent
         /// <summary>
         /// 报告首页内容
         /// </summary>
-        public ReportFirstPageAbstract ReportFirstPage { get; set; }
-
-        /// <summary>
-        /// 审查表信息
-        /// </summary>
-        public ReviewTableInfoAbstract ReviewTableInfo { get; set; }
-
-        /// <summary>
-        /// 实验数据信息
-        /// </summary>
-        public ExperimentInfo ExperimentInfo { get; set; }
-
-        /// <summary>
-        /// 标识文件
-        /// </summary>
-        public ReviewTableInfoAbstract IdentityTableInfo { get; set; }
+        public StandardReportFirstPage ReportFirstPage { get; set; }
 
         /// <summary>
         /// 图片文件
@@ -156,6 +140,11 @@ namespace EmcReportWebApi.ReportComponent
         /// </summary>
         public string TemplateFileFullName { get; set; }
 
+        /// <summary>
+        /// 标准报告返回的结果
+        /// </summary>
+        public StandardReportResult StandardReportResultInfo { get; set; }
+
         private void DecompressionReportFiles()
         {
             if (ZipFilesUrl != null && !ZipFilesUrl.Equals(""))
@@ -189,8 +178,8 @@ namespace EmcReportWebApi.ReportComponent
             if (!di.Exists) { di.Create(); }
 
             string fileFullName = $"{TemplateMiddleFilesPath}{fileName}";
-            FileInfo file = new FileInfo(EmcConfig.ReportTemplateFileFullName);
-            if (File.Exists(EmcConfig.ReportTemplateFileFullName))
+            FileInfo file = new FileInfo(EmcConfig.StandardReportTemplateFileFullName);
+            if (File.Exists(EmcConfig.StandardReportTemplateFileFullName))
             {
                 file.CopyTo(fileFullName);
                 return fileFullName;

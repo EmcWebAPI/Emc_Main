@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace EmcReportWebApi.Business.ImplWordUtil
 {
@@ -428,15 +427,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     if (secondItemsCount != 1)
                     {
                         //检验结果列拆分
-                        // table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
-
                         for (int i = 0; i < secondItemsCount - 1; i++)
                         {
                             table.Cell(cRow, cCol + 1).Select();
                             table.Cell(cRow, cCol + 1).Split(2, 1);
                         }
-
-
                         //备注列拆分
                         table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
                     }
@@ -470,17 +465,10 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         for (int i = 0; i < secondItemsCount; i++)
                         {
                             table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
-
-                            //table.Cell(cRow+i, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
-                            //table.Cell(cRow+i, cCol).PreferredWidth = 40f;
                         }
-
                     }
-
-
                     if (secondItemsCount != 1&&(cCol!=4||!first))
                         table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
-                    // table.Cell(cRow, cCol).SetWidth(40f, WdRulerStyle.wdAdjustFirstColumn);//拆分单元格后设置列宽
 
                     //结果有拆分的
                     int resultIndex = 0;
@@ -762,7 +750,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                     {
                                         previous = table.Cell(cRow + i + resultIndex - 1, cCol + 2);
                                     }
-                                    catch (Exception e)
+                                    catch (Exception)
                                     {
                                         //resultCell.Range.Text = resultList.First["result"].ToString();
                                     }
@@ -863,7 +851,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 _needWrite = false;
                 Dispose();
-                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+                throw new Exception($"错误信息:{ex.StackTrace},{ex.Message}");
             }
             return "创建成功";
         }

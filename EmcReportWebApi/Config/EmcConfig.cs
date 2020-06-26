@@ -37,10 +37,15 @@ namespace EmcReportWebApi.Config
         /// </summary>
         public static string ReportOutputPath = $@"{CurrentRoot}Files\OutPut\";
         /// <summary>
-        /// 模板文件路径
+        /// emc报告模板文件路径
         /// </summary>
         public static string ReportTemplateFileFullName =
             $@"{CurrentRoot}Files\{ConfigurationManager.AppSettings["TemplateName"]}";
+        /// <summary>
+        /// 标准报告模板文件路径
+        /// </summary>
+        public static string StandardReportTemplateFileFullName =
+            $@"{CurrentRoot}Files\{ConfigurationManager.AppSettings["StandardTemplateName"]}";
         /// <summary>
         /// 模板中间件文件路径
         /// </summary>

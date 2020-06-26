@@ -19,8 +19,6 @@ namespace EmcReportWebApi.ReportComponent
     /// </summary>
     public class ReportInfo
     {
-        private readonly ReportParams _para;
-
         /// <summary>
         /// 构造报告文件信息
         /// </summary>
@@ -28,12 +26,14 @@ namespace EmcReportWebApi.ReportComponent
         {
             try
             {
-                _para = para;
+                ReportJsonStrForWord = para.JsonStr;
+                ZipFilesUrl = para.ZipFilesUrl;
+                ReportId = para.ReportId;
                 ReportFilesPath = FileUtil.CreateReportFilesDirectory();
                 TemplateFileFullName = CreateTemplateMiddle();
                 ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
                 DecompressionReportFiles();
-                ReportId = string.IsNullOrEmpty(_para.ReportId) ? "QW2018-698" : _para.ReportId;
+                ReportId = string.IsNullOrEmpty(para.ReportId) ? "QW2018-698" : para.ReportId;
                 ReportZipFileFullPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
                 FileName = $"Report{Guid.NewGuid()}.docx";
                 OutFileFullName = $"{EmcConfig.ReportOutputPath}{FileName}";
@@ -110,11 +110,7 @@ namespace EmcReportWebApi.ReportComponent
         /// <summary>
         /// 报告转word的Json
         /// </summary>
-        public string ReportJsonStrForWord
-        {
-            get => _para.JsonStr;
-            set => throw new NotImplementedException();
-        }
+        public string ReportJsonStrForWord { get; set; }
 
         /// <summary>
         /// 报告编号
@@ -152,22 +148,27 @@ namespace EmcReportWebApi.ReportComponent
         public string TemplateMiddleFilesPath { get; set; }
 
         /// <summary>
+        /// 解压文件的请求路径
+        /// </summary>
+        public string ZipFilesUrl { get; set; }
+
+        /// <summary>
         /// 报告模板路径(路径+文件名)
         /// </summary>
         public string TemplateFileFullName { get; set; }
 
         private void DecompressionReportFiles()
         {
-            if (_para.ZipFilesUrl != null && !_para.ZipFilesUrl.Equals(""))
+            if (ZipFilesUrl != null && !ZipFilesUrl.Equals(""))
             {
-                string zipUrl = _para.ZipFilesUrl;
+                string zipUrl = ZipFilesUrl;
 
                 byte[] fileBytes = SyncHttpHelper.GetHttpRespponseForFile(zipUrl, ReportZipFileFullPath,
                     int.Parse(DateTime.Now.ToString("hhmmss")));
                 if (fileBytes.Length <= 0)
                 {
-                    EmcConfig.ErrorLog.Error($"请求报告失败,报告id:{_para.ReportId}");
-                    throw new Exception($"请求报告文件失败,报告id{_para.ReportId}");
+                    EmcConfig.ErrorLog.Error($"请求报告失败,报告id:{ReportId}");
+                    throw new Exception($"请求报告文件失败,报告id{ReportId}");
                 }
                 //解压zip文件
                 FileUtil.DecompressionZip(ReportZipFileFullPath, ReportFilesPath);

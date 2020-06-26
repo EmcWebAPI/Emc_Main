@@ -41,7 +41,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// 将html内容导入模板
         /// </summary>
         /// <returns></returns>
-        public virtual string CopyHtmlContentToTemplate(string htmlFilePath, string TemplateFilePath, string bookmark, bool isNeedBreak, bool isCloseTheFile, bool isCloseTemplateFile)
+        public virtual string CopyHtmlContentToTemplate(string htmlFilePath, string templateFilePath, string bookmark, bool isNeedBreak, bool isCloseTheFile, bool isCloseTemplateFile)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 htmlDoc.Select();
                 htmlDoc.Content.Copy();
 
-                Document templateDoc = OpenWord(TemplateFilePath);
+                Document templateDoc = OpenWord(templateFilePath);
                 templateDoc.Select();
                 Range range = GetBookmarkRank(templateDoc, bookmark);
                 range.Select();
@@ -67,7 +67,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 }
                 if (isCloseTemplateFile)
                 {
-                    CloseWord(templateDoc, TemplateFilePath);
+                    CloseWord(templateDoc, templateFilePath);
                 }
                 if (isCloseTheFile)
                     CloseWord(htmlDoc, htmlFilePath);
@@ -101,7 +101,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 _needWrite = false;
                 Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw new Exception($"错误信息:{ex.StackTrace.ToString()},{ex.Message}");
             }
 
             return "插入成功";

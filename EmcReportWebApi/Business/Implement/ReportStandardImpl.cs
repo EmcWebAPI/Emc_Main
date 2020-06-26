@@ -41,12 +41,11 @@ namespace EmcReportWebApi.Business.Implement
             {
                 EmcConfig.SemLim.Wait();
                 //计时
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
+                TimerUtil tu = new TimerUtil(new Stopwatch());
                 string reportId = para.OriginalRecord;
                 //获取zip文件 
-                string reportFilesPath = FileUtil.CreateDirectory(string.Format("{0}\\Files\\ReportFiles", EmcConfig.CurrentRoot));
-                string reportZipFilesPath = string.Format("{0}\\zip{1}.zip", reportFilesPath, Guid.NewGuid().ToString());
+                string reportFilesPath = FileUtil.CreateDirectory($"{EmcConfig.CurrentRoot}\\Files\\ReportFiles");
+                string reportZipFilesPath = $"{reportFilesPath}\\zip{Guid.NewGuid().ToString()}.zip";
                 if (para.ZipFilesUrl != null && !para.ZipFilesUrl.Equals(""))
                 {
                     string zipUrl = para.ZipFilesUrl;
@@ -55,7 +54,7 @@ namespace EmcReportWebApi.Business.Implement
                     if (fileBytes.Length <= 0)
                     {
                         result = SetReportResult<string>("请求报告文件失败", false, para.OriginalRecord.ToString());
-                        EmcConfig.ErrorLog.Error(string.Format("请求报告文件失败,报告id:{0}", para.OriginalRecord));
+                        EmcConfig.ErrorLog.Error($"请求报告文件失败,报告id:{para.OriginalRecord}");
                         return result;
                     }
                     //解压zip文件
@@ -65,11 +64,9 @@ namespace EmcReportWebApi.Business.Implement
                 //生成报告
                 StandardReportResult srr = JsonToWordStandard(reportId.Equals("") ? "QW2018-698" : reportId, para.JsonObject, reportFilesPath);
                 //string content = JsonToWordStandardNew(reportId.Equals("") ? "QW2018-698" : reportId, para.ContractId, reportFilesPath);
-                sw.Stop();
-                //报告生成时间
-                double time1 = (double)sw.ElapsedMilliseconds / 1000;
+             
 
-                result = SetReportResult<string>(string.Format("报告生成成功,用时:" + time1.ToString()), true, srr.FileName);
+                result = SetReportResult<string>(string.Format("报告生成成功,用时:" + tu.StopTimer()), true, srr.FileName);
                 EmcConfig.InfoLog.Info("报告:" + result.Content + ",信息:" + result.Message);
 
                 CallbackReqSuccess(srr.FilePath, srr.ReportCode, result.Message, para.CallbackUrl, para.OriginalRecord);
@@ -77,7 +74,7 @@ namespace EmcReportWebApi.Business.Implement
             }
             catch (Exception ex)
             {
-                string message = string.Format("报告生成失败,reportId:{0},错误信息:{1}", para.OriginalRecord, ex.Message);
+                string message = $"报告生成失败,reportId:{para.OriginalRecord},错误信息:{ex.Message}";
                 EmcConfig.ErrorLog.Error(message, ex);//设置错误信息
                 result = SetReportResult<string>(message, false, "");
                 CallbackReqFail(message, para.CallbackUrl, para.OriginalRecord);
@@ -151,8 +148,6 @@ namespace EmcReportWebApi.Business.Implement
                     //添加续
                     //wordUtil.TableSplit("standard");
                 }
-
-
 
                 //样品图片
                 if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))

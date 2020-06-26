@@ -194,7 +194,11 @@
     <Compile Include="ReportComponent\Experiment\ReExperimentInfo.cs" />
     <Compile Include="ReportComponent\FirstPage\ReportFirstPage.cs" />
     <Compile Include="ReportComponent\FirstPage\ReportFirstPageAbstract.cs" />
+    <Compile Include="ReportComponent\Image\ImageInfo.cs" />
+    <Compile Include="ReportComponent\Image\ImageInfoAbstract.cs" />
+    <Compile Include="ReportComponent\Image\SampleImageInfo.cs" />
     <Compile Include="ReportComponent\ReportInfo.cs" />
+    <Compile Include="ReportComponent\ReviewTable\IdentityTableInfo.cs" />
     <Compile Include="ReportComponent\ReviewTable\ReviewTableInfo.cs" />
     <Compile Include="ReportComponent\ReviewTable\ReviewTableInfoAbstract.cs" />
     <Compile Include="ReportComponent\ReviewTable\ReviewTableItemInfo.cs" />
@@ -264,6 +268,8 @@
     <Content Include="Document\测试用例\谐波失真\QW2019_4682_AC220V_模式①.rtf" />
     <Content Include="Document\测试用例\辐射发射\QW2019_4682_AC220V_模式①.Rtf" />
     <Content Include="Document\报告模板.docx" />
+    <Content Include="Document\0505 电磁兼容资料审查表.docx" />
+    <Content Include="Document\0505识别、标记和文件.docx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

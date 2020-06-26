@@ -52,7 +52,6 @@ namespace EmcReportWebApi.ReportComponent.Experiment
                     case "电压波动和闪烁":
                         ExperimentInfos.Add(new FluctuationExperimentInfo(reportInfo, this, experimentName, experimentInfo));
                         break;
-
                     case "电快速瞬变脉冲群":
                         ExperimentInfos.Add(new AcDcExperimentInfo(reportInfo, this, experimentName, experimentInfo));
                         break;
@@ -64,7 +63,6 @@ namespace EmcReportWebApi.ReportComponent.Experiment
                         ExperimentInfos.Add(new DefaultExperimentInfo(reportInfo, this, experimentName, experimentInfo));
                         break;
                 }
-
                 index++;
             }
 

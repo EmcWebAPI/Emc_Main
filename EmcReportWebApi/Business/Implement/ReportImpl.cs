@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using EmcReportWebApi.Business.ImplWordUtil;
 using EmcReportWebApi.ReportComponent;
 using EmcReportWebApi.ReportComponent.FirstPage;
+using EmcReportWebApi.ReportComponent.Image;
 using EmcReportWebApi.ReportComponent.ReviewTable;
 
 namespace EmcReportWebApi.Business.Implement
@@ -81,40 +82,53 @@ namespace EmcReportWebApi.Business.Implement
                 //实验数据
                 var experimentBaseInfo = reportInfo.ExperimentInfo;
                 experimentBaseInfo.WriteExperimentInfoAll(wordUtil);
-              
-                //识别标记和文件 从新文件中取
-                string bsWord = null;
-                if (mainObj["bsWord"] != null && !mainObj["bsWord"].ToString().Equals(""))
-                {
-                    bsWord = reportInfo.ReportFilesPath + "\\" + (string)mainObj["bsWord"];
-                }
 
-                if (!string.IsNullOrEmpty(bsWord))
-                {
-                    wordUtil.CopyOtherFileContentToWord(bsWord, "bsWord");
-                }
+                //识别标记和文件 从新文件中取
+                ReviewTableInfoAbstract identityTableInfo = reportInfo.IdentityTableInfo;
+                identityTableInfo.WriteReviewTableInfo(wordUtil);
 
                 //样品图片
-                if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
-                {
-                    JArray yptp = (JArray)mainObj["yptp"];
-                    InsertImageToWordYptp(wordUtil, yptp, reportInfo.ReportFilesPath);
-                }
+                ImageInfo imageInfo = reportInfo.ImageInfo;
+                imageInfo.WriteImages(wordUtil);
 
                 //替换页眉内容
-                int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
+                reportInfo.HandleReportHeader(wordUtil);
 
-                Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
-                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("reportId", reportFirstPage.ReportYmCode);
-                valuePairs.Add("page", pageCount.ToString());
-                replaceDic.Add(3, valuePairs);//替换页眉
+                //string bsWord = null;
+                //if (mainObj["bsWord"] != null && !mainObj["bsWord"].ToString().Equals(""))
+                //{
+                //    bsWord = reportInfo.ReportFilesPath + "\\" + (string)mainObj["bsWord"];
+                //}
 
-                wordUtil.ReplaceWritten(replaceDic);
+                //if (!string.IsNullOrEmpty(bsWord))
+                //{
+                //    wordUtil.CopyOtherFileContentToWord(bsWord, "bsWord");
+                //}
+
+
+                //if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
+                //{
+                //    JArray yptp = (JArray)mainObj["yptp"];
+                //    InsertImageToWordYptp(wordUtil, yptp, reportInfo.ReportFilesPath);
+                //}
+
+
+                //int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
+
+                //Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
+                //Dictionary<string, string> valuePairs = new Dictionary<string, string>();
+                //valuePairs.Add("reportId", reportFirstPage.ReportYmCode);
+                //valuePairs.Add("page", pageCount.ToString());
+                //replaceDic.Add(3, valuePairs);//替换页眉
+
+                //wordUtil.ReplaceWritten(replaceDic);
             }
             //删除中间件文件夹
-            DelectDir(EmcConfig.ReportTemplateMiddlewareFilePath);
-            DelectDir(reportInfo.ReportFilesPath);
+
+            reportInfo.DeleteTemplateMiddleDirctory();
+
+            //DelectDir(r.ReportTemplateMiddlewareFilePath);
+            //DelectDir(reportInfo.ReportFilesPath);
 
             return reportInfo.FileName;
         }

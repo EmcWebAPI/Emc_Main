@@ -105,10 +105,10 @@ namespace EmcReportWebApi.ReportComponent.Experiment
         protected virtual string CreateTemplateMiddle(string filePath)
         {
             string fileName = Guid.NewGuid() + ".docx";
-            DirectoryInfo di = new DirectoryInfo(EmcConfig.ReportTemplateMiddlewareFilePath);
+            DirectoryInfo di = new DirectoryInfo(ReportInfo.TemplateMiddleFilesPath);
             if (!di.Exists) { di.Create(); }
 
-            string fileFullName = EmcConfig.ReportTemplateMiddlewareFilePath + "\\" + fileName;
+            string fileFullName = ReportInfo.TemplateMiddleFilesPath + fileName;
             FileInfo file = new FileInfo(filePath);
             if (File.Exists(filePath))
             {

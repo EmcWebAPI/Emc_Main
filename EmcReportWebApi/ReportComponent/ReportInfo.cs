@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using EmcReportWebApi.Business.ImplWordUtil;
 using EmcReportWebApi.Config;
 using EmcReportWebApi.Models;
 using EmcReportWebApi.ReportComponent.Experiment;
 using EmcReportWebApi.ReportComponent.FirstPage;
+using EmcReportWebApi.ReportComponent.Image;
 using EmcReportWebApi.ReportComponent.ReviewTable;
 using EmcReportWebApi.Utils;
 using Newtonsoft.Json;
@@ -28,8 +30,7 @@ namespace EmcReportWebApi.ReportComponent
             {
                 _para = para;
                 ReportFilesPath = FileUtil.CreateReportFilesDirectory();
-                TemplateFileFullName = CreateTemplateMiddle(EmcConfig.ReportTemplateMiddlewareFilePath, "template",
-                    EmcConfig.ReportTemplateFileFullName);
+                TemplateFileFullName = CreateTemplateMiddle();
                 this.ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
                 this.DecompressionReportFiles();
                 this.ReportId = string.IsNullOrEmpty(_para.ReportId) ? "QW2018-698" : _para.ReportId;
@@ -42,12 +43,41 @@ namespace EmcReportWebApi.ReportComponent
                 ReviewTableInfo = new ReviewTableInfo(this.ReportJsonObjectForWord,this.ReportFilesPath);
                 //实验数据信息
                 ExperimentInfo = new ExperimentInfo(this,ReportJsonObjectForWord);
+                //标识文件
+                IdentityTableInfo = new ReviewTableInfo(this.ReportJsonObjectForWord, this.ReportFilesPath);
+                //样品图片
+                ImageInfo = new ImageInfo(this,ReportJsonObjectForWord);
             }
             catch (Exception ex)
             {
                 EmcConfig.ErrorLog.Error(ex.Message, ex);//设置错误信息
                 throw new Exception(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void HandleReportHeader(ReportHandleWord wordUtil)
+        {
+            int pageCount = wordUtil.GetDocumnetPageCount() - 1;//获取文件页数(首页不算)
+
+            Dictionary<int, Dictionary<string, string>> replaceDic = new Dictionary<int, Dictionary<string, string>>();
+            Dictionary<string, string> valuePairs = new Dictionary<string, string>();
+            valuePairs.Add("reportId", ReportFirstPage.ReportYmCode);
+            valuePairs.Add("page", pageCount.ToString());
+            replaceDic.Add(3, valuePairs);//替换页眉
+
+            wordUtil.ReplaceWritten(replaceDic);
+        }
+
+        /// <summary>
+        /// 删除模板中间件文件夹
+        /// </summary>
+        public void DeleteTemplateMiddleDirctory()
+        {
+            DeleteDir(TemplateMiddleFilesPath);
+            DeleteDir(ReportFilesPath);
         }
 
         /// <summary>
@@ -64,6 +94,16 @@ namespace EmcReportWebApi.ReportComponent
         /// 实验数据信息
         /// </summary>
         public ExperimentInfo ExperimentInfo { get; set; }
+
+        /// <summary>
+        /// 标识文件
+        /// </summary>
+        public ReviewTableInfoAbstract IdentityTableInfo { get; set; }
+
+        /// <summary>
+        /// 图片文件
+        /// </summary>
+        public ImageInfo ImageInfo { get; set; }
 
         /// <summary>
         /// 报告转word的Json
@@ -105,6 +145,11 @@ namespace EmcReportWebApi.ReportComponent
         public string OutFileFullName { get; set; }
 
         /// <summary>
+        /// 模板中间件文件夹
+        /// </summary>
+        public string TemplateMiddleFilesPath { get; set; }
+
+        /// <summary>
         /// 报告模板路径(路径+文件名)
         /// </summary>
         public string TemplateFileFullName { get; set; }
@@ -133,22 +178,46 @@ namespace EmcReportWebApi.ReportComponent
             }
         }
 
-        private string CreateTemplateMiddle(string dir, string template, string filePath)
+        private string CreateTemplateMiddle()
         {
             string dateStr = Guid.NewGuid().ToString();
-            string fileName = template + dateStr + ".docx";
-            DirectoryInfo di = new DirectoryInfo(dir);
+            TemplateMiddleFilesPath = $@"{EmcConfig.ReportTemplateMiddlewareFilePath}\{Guid.NewGuid()}\";
+            string fileName = dateStr + ".docx";
+            DirectoryInfo di = new DirectoryInfo(TemplateMiddleFilesPath);
             if (!di.Exists) { di.Create(); }
 
-            string fileFullName = $"{dir}{fileName}";
-            FileInfo file = new FileInfo(filePath);
-            if (File.Exists(filePath))
+            string fileFullName = $"{TemplateMiddleFilesPath}{fileName}";
+            FileInfo file = new FileInfo(EmcConfig.ReportTemplateFileFullName);
+            if (File.Exists(EmcConfig.ReportTemplateFileFullName))
             {
                 file.CopyTo(fileFullName);
                 return fileFullName;
             }
 
             throw new Exception("模板不存在");
+        }
+
+        /// <summary>
+        /// 删除模板中间件
+        /// </summary>
+        public void DeleteDir(string srcPath)
+        {
+            DirectoryInfo dir = new DirectoryInfo(srcPath);
+            FileSystemInfo[] fileInfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
+            foreach (FileSystemInfo i in fileInfo)
+            {
+                if (i is DirectoryInfo)            //判断是否文件夹
+                {
+                    DirectoryInfo subdir = new DirectoryInfo(i.FullName);
+                    subdir.Delete(true);          //删除子目录和文件
+                }
+                else
+                {
+                    //如果 使用了 streamreader 在删除前 必须先关闭流 ，否则无法删除 sr.close();
+                    File.Delete(i.FullName);      //删除指定文件
+                }
+            }
+            Directory.Delete(srcPath);
         }
     }
 }

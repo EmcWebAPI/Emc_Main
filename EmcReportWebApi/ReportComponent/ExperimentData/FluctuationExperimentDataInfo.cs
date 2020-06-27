@@ -57,7 +57,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                 {
                     var rtfObj = (JObject)rtf;
                     //需要画表格和插入rtf内容
-                    wordUtil.CopyOtherFileTableForColByTableIndex(_experimentInfo.ExperimentDataTemplateFileFullname,
+                    wordUtil.CopyFluctuationFileTableForColByTableIndex(_experimentInfo.ExperimentDataTemplateFileFullname,
                         _reportInfo.ReportFilesPath + "\\" + rtfObj["name"].ToString(), _experimentInfo.RtfTableInfo.StartIndex,
                         _experimentInfo.RtfTableInfo.EndIndex,
                         _experimentInfo.RtfTableInfo.ColumnInfoDic,

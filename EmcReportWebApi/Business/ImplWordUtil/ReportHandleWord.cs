@@ -1055,6 +1055,137 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             return "创建成功";
         }
+
+
+        /// <summary>
+        /// 从电压波动文件取内容到word
+        /// </summary>
+        public string CopyFluctuationFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Document templateDoc = OpenWord(templateFullPath);
+                Document rtfDoc = OpenWord(copyFileFullPath, true);
+                CopyFluctuationFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
+                if (isCloseTemplateFile)
+                    CloseWord(templateDoc, templateFullPath);
+                if (isCloseTheFile)
+                    CloseWord(rtfDoc, copyFileFullPath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                //throw new Exception("rtf文件内容不正确");
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "创建成功";
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private string CopyFluctuationFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
+        {
+            try
+            {
+                int rtfTableCount = rtfDoc.Tables.Count;
+                templateDoc.Content.Select();
+                if (isNeedBreak)
+                {
+                    templateDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                }
+
+                Range wordTable = _wordApp.Selection.Range;
+
+                //判断主表头是否为null
+                string[] mainTitleArray = null;
+                if (!mainTitle.Equals(""))
+                {
+                    mainTitleArray = mainTitle.Split(',');
+                }
+                int m = 0;
+
+                int forCount = copyFileTableEndIndex == 0 ? rtfTableCount : copyFileTableEndIndex;
+
+                List<int> removeCols = new List<int>();
+                for (int i = copyFileTableStartIndex; i <= forCount; i++)
+                {
+                    Table copyTable = rtfDoc.Tables[i];
+
+                    int copyTableColCount = copyTable.Columns.Count;
+
+                    object wdDeleteCellsCol = WdDeleteCells.wdDeleteCellsEntireColumn;
+
+                    for (int j = copyTableColCount; j >= 1; j--)
+                    {
+                        if (!copyTableColDic.ContainsKey(j))
+                        {
+                            copyTable.Cell(titleRow, j).Delete(ref wdDeleteCellsCol);
+                        }
+                        else
+                        {
+                            copyTable.Cell(titleRow, j).Range.Text = copyTableColDic[j];
+                        }
+                    }
+                    if (mainTitleArray != null)
+                    {
+                        copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
+                        m++;
+                    }
+
+                    templateDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                    _wordApp.Selection.TypeParagraph();
+
+                    copyTable.Range.Copy();
+                    _wordApp.Selection.Paste();
+                    wordTable = _wordApp.Selection.Range;
+                    var table1 = wordTable.Tables[1];
+                    //电压波动最后一列变符合
+                    
+                    ClearFormatTable(table1);
+                    for (int j = 2; j <= table1.Rows.Count; j++)
+                    {
+                        switch (j)
+                        {
+                            case 2:
+                                table1.Cell(j, 1).Range.Text = "短时间闪烁指数Pst";
+                                break;
+                            case 3:
+                                table1.Cell(j, 1).Range.Text = "长时间闪烁指数Plt";
+                                break;
+                            case 4:
+                                table1.Cell(j, 1).Range.Text = "相对稳态电压变化dc（%）";
+                                break;
+                            case 5:
+                                table1.Cell(j, 1).Range.Text = "最大相对电压变化dmax（%）";
+                                break;
+                            case 6:
+                                table1.Cell(j, 1).Range.Text = "t（d（t）>3.3%的时间）（s）";
+                                break;
+                        }
+                        wordTable.Tables[1].Cell(j, 4).Range.Text = "符合";
+                    }
+                    table1.Columns[1].SetWidth(149f,WdRulerStyle.wdAdjustSameWidth);
+                    table1.Rows.SetHeight(14f, WdRowHeightRule.wdRowHeightAtLeast);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "创建成功";
+        }
+
+
+
         /// <summary>
         /// 从其他文件取图片到word
         /// </summary>

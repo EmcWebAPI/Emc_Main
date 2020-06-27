@@ -6,8 +6,15 @@ using System.Web.Http.Cors;
 
 namespace EmcReportWebApi
 {
+    /// <summary>
+    /// webapi配置
+    /// </summary>
     public static class WebApiConfig
     {
+        /// <summary>
+        /// 注册信息
+        /// </summary>
+        /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
             //跨域配置

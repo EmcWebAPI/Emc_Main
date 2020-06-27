@@ -31,10 +31,10 @@ namespace EmcReportWebApi.ReportComponent
                 ReportFilesPath = FileUtil.CreateReportFilesDirectory();
                 TemplateFileFullName = CreateTemplateMiddle();
                 ReportJsonObjectForWord = JsonConvert.DeserializeObject<JObject>(this.ReportJsonStrForWord);
-                DecompressionReportFiles();
                 ReportId = string.IsNullOrEmpty(para.ReportId) ? "QW2018-698" : para.ReportId;
                 ReportZipFileFullPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
                 FileName = $"Report{Guid.NewGuid()}.docx";
+                DecompressionReportFiles();
                 OutFileFullName = $"{EmcConfig.ReportOutputPath}{FileName}";
 
                 //首页信息

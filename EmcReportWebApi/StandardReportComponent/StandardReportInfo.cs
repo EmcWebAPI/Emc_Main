@@ -27,11 +27,10 @@ namespace EmcReportWebApi.StandardReportComponent
                 ReportFilesPath = FileUtil.CreateReportFilesDirectory();
                 TemplateFileFullName = CreateTemplateMiddle();
                 ReportJsonObjectForWord = para.JsonObject;
-                DecompressionReportFiles();
                 ReportZipFileFullPath = $@"{ReportFilesPath}\zip{Guid.NewGuid()}.zip";
                 FileName = $"StandardReport{Guid.NewGuid()}.docx";
                 OutFileFullName = $"{EmcConfig.ReportOutputPath}{FileName}";
-
+                DecompressionReportFiles();
                 //首页信息
                 ReportFirstPage = new StandardReportFirstPage(this,this.ReportJsonObjectForWord);
 

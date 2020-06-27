@@ -8,8 +8,14 @@ using EmcReportWebApi.Config;
 
 namespace EmcReportWebApi
 {
+    /// <summary>
+    /// swagger配置
+    /// </summary>
     public class SwaggerConfig
     {
+        /// <summary>
+        /// 初始化信息
+        /// </summary>
         public static void Register()
         {
             var thisAssembly = typeof(SwaggerConfig).Assembly;

@@ -930,7 +930,13 @@ namespace EmcReportWebApi.Utils
             range.Fields.Unlink();
         }
 
-        //全文替换文本 1.文本 2. 页脚 3. 页眉
+        /// <summary>
+        /// 全文替换文本 1.文本 2. 页脚 3. 页眉
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="oldWord"></param>
+        /// <param name="newWord"></param>
+        /// <param name="replaceType"></param>
         protected void Replace(int type, string oldWord, string newWord, int replaceType)
         {
             object wdReplaceAll = WdReplace.wdReplaceAll;//替换所有文字
@@ -1263,12 +1269,18 @@ namespace EmcReportWebApi.Utils
         #endregion
 
         #region 资源回收
+        /// <summary>
+        /// 资源回收
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
+        /// <summary>
+        /// 执行
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)

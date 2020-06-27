@@ -7,6 +7,9 @@ using EmcReportWebApi.ReportComponent;
 
 namespace EmcReportWebApi.Business
 {
+    /// <summary>
+    /// 报告接口
+    /// </summary>
     public interface IReport
     {
         /// <summary>

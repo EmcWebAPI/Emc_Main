@@ -16,8 +16,14 @@ using System.Web.Http;
 
 namespace EmcReportWebApi.App_Start
 {
+    /// <summary>
+    /// autofac 配置信息
+    /// </summary>
     public static class AutoFacConfig
     {
+        /// <summary>
+        /// 初始化
+        /// </summary>
         public static void InitAutoFac() {
             var configuration = GlobalConfiguration.Configuration;
 

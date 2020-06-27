@@ -806,6 +806,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     //}
 
                     ClearFormatTable(wordTable.Tables[1]);
+                    wordTable.Tables[1].Rows.SetHeight(14f,WdRowHeightRule.wdRowHeightAtLeast);
                 }
 
             }
@@ -821,7 +822,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
 
         /// <summary>
-        /// 从其他文件取内容到word
+        /// 从传导发射文件取内容到word
         /// </summary>
         public string CopyReExperimentFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
         {
@@ -925,6 +926,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     wordTable.Paste();
 
                     ClearFormatTable(wordTable.Tables[1]);
+                    wordTable.Tables[1].Rows.SetHeight(14f, WdRowHeightRule.wdRowHeightAtLeast);
                 }
 
             }
@@ -938,6 +940,121 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return "创建成功";
         }
 
+
+        /// <summary>
+        /// 从谐波失真文件取内容到word
+        /// </summary>
+        public string CopyHarmonicOtherFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Document templateDoc = OpenWord(templateFullPath);
+                Document rtfDoc = OpenWord(copyFileFullPath, true);
+                CopyHarmonicOtherFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
+                if (isCloseTemplateFile)
+                    CloseWord(templateDoc, templateFullPath);
+                if (isCloseTheFile)
+                    CloseWord(rtfDoc, copyFileFullPath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                //throw new Exception("rtf文件内容不正确");
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "创建成功";
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private string CopyHarmonicOtherFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
+        {
+            try
+            {
+                int rtfTableCount = rtfDoc.Tables.Count;
+                templateDoc.Content.Select();
+                if (isNeedBreak)
+                {
+                    templateDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                }
+
+                Range wordTable = _wordApp.Selection.Range;
+
+                //判断主表头是否为null
+                string[] mainTitleArray = null;
+                if (!mainTitle.Equals(""))
+                {
+                    mainTitleArray = mainTitle.Split(',');
+                }
+                int m = 0;
+
+                int forCount = copyFileTableEndIndex == 0 ? rtfTableCount : copyFileTableEndIndex;
+
+                List<int> removeCols = new List<int>();
+                for (int i = copyFileTableStartIndex; i <= forCount; i++)
+                {
+                    Table copyTable = rtfDoc.Tables[i];
+
+                    int copyTableColCount = copyTable.Columns.Count;
+
+                    object wdDeleteCellsCol = WdDeleteCells.wdDeleteCellsEntireColumn;
+
+                    for (int j = copyTableColCount; j >= 1; j--)
+                    {
+                        if (!copyTableColDic.ContainsKey(j))
+                        {
+                            copyTable.Cell(titleRow, j).Delete(ref wdDeleteCellsCol);
+                        }
+                        else
+                        {
+                            copyTable.Cell(titleRow, j).Range.Text = copyTableColDic[j];
+                        }
+                    }
+                    if (mainTitleArray != null)
+                    {
+                        copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
+                        m++;
+                    }
+
+                    templateDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                    _wordApp.Selection.TypeParagraph();
+
+                    copyTable.Range.Copy();
+                    _wordApp.Selection.Paste();
+                    wordTable = _wordApp.Selection.Range;
+                    ClearFormatTable(wordTable.Tables[1]);
+                    wordTable.Tables[1].Rows.SetHeight(14f, WdRowHeightRule.wdRowHeightAtLeast);
+
+                    //谐波失真最后一列变符合
+                    for (int j = 3; j <= wordTable.Tables[1].Rows.Count; j++)
+                    {
+                        wordTable.Tables[1].Cell(j, 5).Range.Text = "符合";
+                    }
+
+                    if (i != copyFileTableStartIndex)
+                    {
+                        templateDoc.Content.Select();
+                        _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                        object breakPage = WdBreakType.wdPageBreak;//分页符
+                        _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "创建成功";
+        }
         /// <summary>
         /// 从其他文件取图片到word
         /// </summary>

@@ -1173,9 +1173,14 @@ namespace EmcReportWebApi.Utils
                 _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
                 //table.Range.Application.Selection.Cells.DistributeHeight();
                 //table.Range.Application.Selection.Cells.DistributeWidth();
+                _wordApp.Selection.ParagraphFormat.SpaceBeforeAuto = 0;
+                _wordApp.Selection.ParagraphFormat.SpaceAfterAuto = 0;
+                _wordApp.Selection.ParagraphFormat.AutoAdjustRightIndent = 0;
+                _wordApp.Selection.ParagraphFormat.DisableLineHeightGrid = -1;
+                _wordApp.Selection.ParagraphFormat.WordWrap = -1;
 
                 SetDistributeTable(table);
-                table.Cell(1,1).SetHeight(table.Cell(1, 1).Height,WdRowHeightRule.wdRowHeightAtLeast);
+                //table.Cell(1,1).SetHeight(table.Cell(1, 1).Height,WdRowHeightRule.wdRowHeightAtLeast);
             }
             
 

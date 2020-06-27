@@ -181,6 +181,7 @@
     <Compile Include="ReportComponent\ExperimentData\AcDcExperimentDataInfo.cs" />
     <Compile Include="ReportComponent\ExperimentData\DefaultExperimentDataInfo.cs" />
     <Compile Include="ReportComponent\ExperimentData\ExperimentDataInfoAbstract.cs" />
+    <Compile Include="ReportComponent\ExperimentData\FluctuationExperimentDataInfo.cs" />
     <Compile Include="ReportComponent\ExperimentData\HarmonicExperimentDataInfo.cs" />
     <Compile Include="ReportComponent\ExperimentData\ReExperimentDataInfo.cs" />
     <Compile Include="ReportComponent\Experiment\SagBreakExperimentInfo.cs" />

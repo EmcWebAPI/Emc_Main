@@ -10,7 +10,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
     /// <summary>
     /// 谐波失真 电压波动和闪烁
     /// </summary>
-    public class HarmonicExperimentDataInfo:ExperimentDataInfoAbstract
+    public class FluctuationExperimentDataInfo : ExperimentDataInfoAbstract
     {
         private readonly ReportInfo _reportInfo;
         private readonly ExperimentInfoAbstract _experimentInfo;
@@ -21,7 +21,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
         /// <param name="reportInfo"></param>
         /// <param name="experimentInfo"></param>
         /// <param name="experimentDataJObject"></param>
-        public HarmonicExperimentDataInfo(ReportInfo reportInfo, ExperimentInfoAbstract experimentInfo, JObject experimentDataJObject)
+        public FluctuationExperimentDataInfo(ReportInfo reportInfo, ExperimentInfoAbstract experimentInfo, JObject experimentDataJObject)
         {
             _reportInfo = reportInfo;
             _experimentInfo = experimentInfo;
@@ -57,7 +57,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                 {
                     var rtfObj = (JObject)rtf;
                     //需要画表格和插入rtf内容
-                    wordUtil.CopyHarmonicOtherFileTableForColByTableIndex(_experimentInfo.ExperimentDataTemplateFileFullname,
+                    wordUtil.CopyOtherFileTableForColByTableIndex(_experimentInfo.ExperimentDataTemplateFileFullname,
                         _reportInfo.ReportFilesPath + "\\" + rtfObj["name"].ToString(), _experimentInfo.RtfTableInfo.StartIndex,
                         _experimentInfo.RtfTableInfo.EndIndex,
                         _experimentInfo.RtfTableInfo.ColumnInfoDic,

@@ -182,6 +182,7 @@
     <Compile Include="ReportComponent\ExperimentData\DefaultExperimentDataInfo.cs" />
     <Compile Include="ReportComponent\ExperimentData\ExperimentDataInfoAbstract.cs" />
     <Compile Include="ReportComponent\ExperimentData\HarmonicExperimentDataInfo.cs" />
+    <Compile Include="ReportComponent\ExperimentData\ReExperimentDataInfo.cs" />
     <Compile Include="ReportComponent\Experiment\SagBreakExperimentInfo.cs" />
     <Compile Include="ReportComponent\Experiment\AcDcExperimentInfo.cs" />
     <Compile Include="ReportComponent\Experiment\CeExperimentInfo.cs" />

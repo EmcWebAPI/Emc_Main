@@ -437,7 +437,7 @@ namespace EmcReportWebApi.Utils
                 Range range = GetBookmarkRank(secondFile, bookmark);
                 htmldoc.Content.Copy();
                 range.Select();
-                range.PasteAndFormat(WdRecoveryType.wdPasteDefault);
+                range.PasteAndFormat(WdRecoveryType.wdUseDestinationStylesRecovery);
                 range.Select();
                 int tableCount = _wordApp.Selection.Tables.Count;
                 if (tableCount > 0)

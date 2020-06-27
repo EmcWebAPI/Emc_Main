@@ -37,7 +37,7 @@ namespace EmcReportWebApi.ReportComponent.Experiment
                 foreach (var item in (JArray)experimentJObject["sysj"])
                 {
                     JObject experimentDataJObject = (JObject)item;
-                    this.ExperimentDataInfos.Add(new CeExperimentDataInfo(reportInfo, this, experimentDataJObject));
+                    this.ExperimentDataInfos.Add(new ReExperimentDataInfo(reportInfo, this, experimentDataJObject));
                 }
             }
 

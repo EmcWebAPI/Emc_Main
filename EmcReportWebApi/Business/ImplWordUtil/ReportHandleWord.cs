@@ -382,7 +382,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                     if (!fileName.Equals(""))
                     {
-                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 280);
+                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 260);
                     }
                     //CreateAndGoToNextParagraph(cellRange, true, false);
                     //cellRange.InsertAfter(content);
@@ -735,7 +735,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return "创建成功";
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -820,6 +819,124 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return "创建成功";
         }
 
+
+        /// <summary>
+        /// 从其他文件取内容到word
+        /// </summary>
+        public string CopyReExperimentFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Document templateDoc = OpenWord(templateFullPath);
+                Document rtfDoc = OpenWord(copyFileFullPath, true);
+                CopyReExperimentFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
+                if (isCloseTemplateFile)
+                    CloseWord(templateDoc, templateFullPath);
+                if (isCloseTheFile)
+                    CloseWord(rtfDoc, copyFileFullPath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                //throw new Exception("rtf文件内容不正确");
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "创建成功";
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private string CopyReExperimentFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
+        {
+            try
+            {
+                int rtfTableCount = rtfDoc.Tables.Count;
+                templateDoc.Content.Select();
+                if (isNeedBreak)
+                {
+                    templateDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                }
+
+                Range wordTable = _wordApp.Selection.Range;
+
+                //判断主表头是否为null
+                string[] mainTitleArray = null;
+                if (!mainTitle.Equals(""))
+                {
+                    mainTitleArray = mainTitle.Split(',');
+                }
+                int m = 0;
+
+                int forCount = copyFileTableEndIndex == 0 ? rtfTableCount : copyFileTableEndIndex;
+
+                List<int> removeCols = new List<int>();
+                for (int i = copyFileTableStartIndex; i <= forCount; i++)
+                {
+                    Table copyTable = rtfDoc.Tables[i];
+
+                    int copyTableColCount = copyTable.Columns.Count;
+
+                    object wdDeleteCellsCol = WdDeleteCells.wdDeleteCellsEntireColumn;
+
+                    for (int j = copyTableColCount; j >= 1; j--)
+                    {
+                        if (!copyTableColDic.ContainsKey(j))
+                        {
+                            copyTable.Cell(titleRow, j).Delete(ref wdDeleteCellsCol);
+                        }
+                        else
+                        {
+                            copyTable.Cell(titleRow, j).Range.Text = copyTableColDic[j];
+                        }
+                    }
+                    if (mainTitleArray != null)
+                    {
+                        copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
+                        m++;
+                    }
+                    
+                    //给表格排序
+                    List<Tuple<int,int>> sortColumn = new List<Tuple<int,int>>
+                    {
+                        new Tuple<int, int>(5,3),
+                        new Tuple<int, int>(6,4),
+                        new Tuple<int, int>(7,5),
+                        new Tuple<int, int>(7,6)
+                    };
+                    foreach (var item in sortColumn)
+                    {
+                        copyTable.Select();
+                        var cutColumn = copyTable.Columns[item.Item1];
+                        cutColumn.Select();
+                        _wordApp.Selection.Cut();
+                        var pasteCell = copyTable.Columns[item.Item2];
+                        pasteCell.Select();
+                        _wordApp.Selection.PasteAndFormat(WdRecoveryType.wdFormatOriginalFormatting);
+                    }
+
+                    if (i != copyFileTableStartIndex)
+                        CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//获取下一个range
+                    CreateAndGoToNextParagraph(wordTable, (i != copyFileTableStartIndex) || isNeedBreak, (i != copyFileTableStartIndex) || isNeedBreak);//InsertBR(wordTable, i <= rtfTableCount);//添加回车
+                    copyTable.Range.Copy();
+                    wordTable.Paste();
+
+                    ClearFormatTable(wordTable.Tables[1]);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+
+            return "创建成功";
+        }
 
         /// <summary>
         /// 从其他文件取图片到word

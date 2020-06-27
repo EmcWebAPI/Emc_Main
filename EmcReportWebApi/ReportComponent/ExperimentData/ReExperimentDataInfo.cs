@@ -8,9 +8,9 @@ using Newtonsoft.Json.Linq;
 namespace EmcReportWebApi.ReportComponent.ExperimentData
 {
     /// <summary>
-    /// CE,RE实验数据
+    /// Re实验数据
     /// </summary>
-    public class CeExperimentDataInfo:ExperimentDataInfoAbstract
+    public class ReExperimentDataInfo : ExperimentDataInfoAbstract
     {
         private readonly ReportInfo _reportInfo;
         private readonly ExperimentInfoAbstract _experimentInfo;
@@ -21,7 +21,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
         /// <param name="reportInfo"></param>
         /// <param name="experimentInfo"></param>
         /// <param name="experimentDataJObject"></param>
-        public CeExperimentDataInfo(ReportInfo reportInfo,ExperimentInfoAbstract experimentInfo,JObject experimentDataJObject)
+        public ReExperimentDataInfo(ReportInfo reportInfo, ExperimentInfoAbstract experimentInfo, JObject experimentDataJObject)
         {
             _reportInfo = reportInfo;
             _experimentInfo = experimentInfo;
@@ -30,14 +30,14 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                 ExperimentDataTitleInfos = new List<string>();
             foreach (var title in EmcConfig.ExperimentDataTitleInfo)
             {
-                if (ExperimentDataJObject[title.Key]!=null)
+                if (ExperimentDataJObject[title.Key] != null)
                 {
                     ExperimentDataTitleInfos.Add($"{title.Value}{ExperimentDataJObject[title.Key]}");
                 }
             }
 
             this.ExperimentDataRtfJArray = experimentDataJObject["rtf"] != null
-                ? (JArray) experimentDataJObject["rtf"]
+                ? (JArray)experimentDataJObject["rtf"]
                 : new JArray();
         }
 
@@ -46,7 +46,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
         /// </summary>
         /// <param name="wordUtil"></param>
         /// <param name="isNeedBreak"></param>
-        public override void WriteExperimentDataInfo(ReportHandleWord wordUtil,bool isNeedBreak)
+        public override void WriteExperimentDataInfo(ReportHandleWord wordUtil, bool isNeedBreak)
         {
             wordUtil.CreateTableToWord(_experimentInfo.ExperimentDataTemplateFileFullname, ExperimentDataTitleInfos, "sysj", false, isNeedBreak);
             int j = 0;
@@ -57,7 +57,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                 {
                     var rtfObj = (JObject)rtf;
                     //需要画表格和插入rtf内容
-                    wordUtil.CopyOtherFileTableForColByTableIndex(_experimentInfo.ExperimentDataTemplateFileFullname,
+                    wordUtil.CopyReExperimentFileTableForColByTableIndex(_experimentInfo.ExperimentDataTemplateFileFullname,
                         _reportInfo.ReportFilesPath + "\\" + rtfObj["name"], _experimentInfo.RtfTableInfo.StartIndex,
                         _experimentInfo.RtfTableInfo.EndIndex,
                         _experimentInfo.RtfTableInfo.ColumnInfoDic,
@@ -75,7 +75,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                 {
                     throw new Exception($"实验:{_experimentInfo.ExperimentName}rtf文件内容不正确");
                 }
-               
+
                 j++;
             }
         }

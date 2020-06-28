@@ -32,29 +32,38 @@ namespace EmcReportWebApi.StandardReportComponent
         /// <param name="wordUtil"></param>
         public void WriteFirstPage(ReportStandardHandleWord wordUtil)
         {
-            foreach (var item in FirstPageObject)
+            try
             {
-                string key = item.Key.ToString();
-                string value = item.Value.ToString();
-                if (key.Equals("main_ypmc"))
+                foreach (var item in FirstPageObject)
                 {
-                    string[] values = value.Split('\n');
-                    if (values.Length > 1)
+                    string key = item.Key.ToString();
+                    string value = item.Value.ToString();
+                    if (key.Equals("main_ypmc"))
                     {
-                        value = values[0];
-
-                        for (int i = values.Length - 1; i <= 1; i++)
+                        string[] values = value.Split('\n');
+                        if (values.Length > 1)
                         {
-                            var tempValue = values[i];
-                            wordUtil.TableAddRowForY("main_ypmc", tempValue);
+                            value = values[0];
+
+                            for (int i = values.Length - 1; i <= 1; i++)
+                            {
+                                var tempValue = values[i];
+                                wordUtil.TableAddRowForY("main_ypmc", tempValue);
+                            }
+
                         }
+                        //wordUtil.InsertContentToWordByBookmark(value, key);
 
                     }
-                    //wordUtil.InsertContentToWordByBookmark(value, key);
-
+                    wordUtil.InsertContentToWordByBookmark(value, key);
                 }
-                wordUtil.InsertContentToWordByBookmark(value, key);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw e;
+            }
+            
         }
 
         /// <summary>

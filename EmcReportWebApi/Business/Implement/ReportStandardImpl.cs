@@ -76,58 +76,67 @@ namespace EmcReportWebApi.Business.Implement
         //public StandardReportResult JsonToWordStandard(string reportId, JObject mainObj, string reportFilesPath)
         public StandardReportResult JsonToWordStandard(StandardReportInfo standardReportInfo)
         {
-            var mainObj = standardReportInfo.ReportJsonObjectForWord;
-
-            //生成报告
-            using (ReportStandardHandleWord wordUtil = new ReportStandardHandleWord(standardReportInfo.OutFileFullName, standardReportInfo.TemplateFileFullName))
+            try
             {
-                //写首页内容
-                var firstPageInfo = standardReportInfo.ReportFirstPage;
-                firstPageInfo.WriteFirstPage(wordUtil);
-                //先画附表再画标准内容
-                //附表测试数据
-                if (mainObj["attach"] != null && !mainObj["attach"].ToString().Equals(""))
-                {
-                    JArray attachArray = (JArray)mainObj["attach"];
-                    AddAttachTable(wordUtil, attachArray, "standard");
-                }
+                var mainObj = standardReportInfo.ReportJsonObjectForWord;
 
-                if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
+                //生成报告
+                using (ReportStandardHandleWord wordUtil = new ReportStandardHandleWord(standardReportInfo.OutFileFullName, standardReportInfo.TemplateFileFullName))
                 {
-                    //标准内容
-                    JArray standardArray = (JArray)mainObj["standard"];
-                    wordUtil.TableSplit(standardArray, "standard", firstPageInfo.ContractDataInfo.ColSpan ?? 0);
-                    //添加续
-                    //wordUtil.TableSplit("standard");
-                }
+                    //写首页内容
+                    var firstPageInfo = standardReportInfo.ReportFirstPage;
+                    firstPageInfo.WriteFirstPage(wordUtil);
+                    //先画附表再画标准内容
+                    //附表测试数据
+                    if (mainObj["attach"] != null && !mainObj["attach"].ToString().Equals(""))
+                    {
+                        JArray attachArray = (JArray)mainObj["attach"];
+                        AddAttachTable(wordUtil, attachArray, "standard");
+                    }
 
-                //样品图片
-                if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
-                {
-                    JArray yptp = (JArray)mainObj["yptp"];
-                    if (yptp.Count > 0)
-                        InsertImageToWordYptp(wordUtil, yptp, standardReportInfo.ReportFilesPath);
+                    if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
+                    {
+                        //标准内容
+                        JArray standardArray = (JArray)mainObj["standard"];
+                        wordUtil.TableSplit(standardArray, "standard", firstPageInfo.ContractDataInfo.ColSpan ?? 0);
+                        //添加续
+                        //wordUtil.TableSplit("standard");
+                    }
+
+                    //样品图片
+                    if (mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals(""))
+                    {
+                        JArray yptp = (JArray)mainObj["yptp"];
+                        if (yptp.Count > 0)
+                            InsertImageToWordYptp(wordUtil, yptp, standardReportInfo.ReportFilesPath);
+                        else
+                        {
+                            wordUtil.RemovePhotoTable("photo");
+                        }
+                    }
                     else
                     {
                         wordUtil.RemovePhotoTable("photo");
                     }
+
+                    if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
+                        wordUtil.TableSplit("standard", mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals("") && ((JArray)mainObj["yptp"]).Count > 0);
+
+                    //替换页眉内容
+                    standardReportInfo.HandleReportHeader(wordUtil);
+
                 }
-                else
-                {
-                    wordUtil.RemovePhotoTable("photo");
-                }
+                //删除中间件文件夹
+                standardReportInfo.DeleteTemplateMiddleDirectory();
 
-                if (mainObj["standard"] != null && !mainObj["standard"].ToString().Equals(""))
-                    wordUtil.TableSplit("standard", mainObj["yptp"] != null && !mainObj["yptp"].ToString().Equals("")&& ((JArray)mainObj["yptp"]).Count>0);
-
-                //替换页眉内容
-                standardReportInfo.HandleReportHeader(wordUtil);
-
+                return standardReportInfo.StandardReportResultInfo;
             }
-            //删除中间件文件夹
-            standardReportInfo.DeleteTemplateMiddleDirectory();
-
-            return standardReportInfo.StandardReportResultInfo;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw e;
+            }
+           
         }
 
         private void AddAttachTable(ReportStandardHandleWord wordUtil, JArray array, string bookmark)

@@ -332,8 +332,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             if (jObject["comment"] != null)
                 table.Cell(2, 6).Range.Text = "^^" + jObject["comment"];
             //备注
-            if (jObject["reMark"] != null && !jObject["reMark"].ToString().Equals(""))
-                table.Cell(2, 7).Range.Text = jObject["reMark"].ToString();
+            if (jObject["reMark"] != null)
+                table.Cell(2, 7).Range.Text = jObject["reMark"].ToString().Equals(string.Empty)?"/":jObject["reMark"].ToString();
 
             JArray firstItems = (JArray)jObject["list"];
 
@@ -499,15 +499,15 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             _lowerRightCornerCells.Add(newBookmark, secondItem["rightContent"].ToString());
                         }
 
-                        if (secondItem["reMark"] != null && !secondItem["reMark"].ToString().Equals(""))
+                        if (secondItem["reMark"] != null)
                         {
                             try
                             {
-                                table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItem["reMark"].ToString();
+                                table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItem["reMark"].ToString().Equals(string.Empty) ? "/" : secondItem["reMark"].ToString();
                             }
                             catch (Exception)
                             {
-                                table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItem["reMark"].ToString();
+                                table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItem["reMark"].ToString().Equals(string.Empty) ? "/" : secondItem["reMark"].ToString();
                             }
 
                         }
@@ -532,7 +532,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 {
                                     Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
                                     xuhaoCell.Range.Text = "#" + (k + 1).ToString();
-                                    table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1).Range.Text = resultList[k]["result"].ToString();
+                                    table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1).Range.Text = GetCheckoutResult(resultList[k]["result"].ToString());
                                 }
                                 resultIndex = resultIndex + resultCount - 1;
                             }
@@ -563,7 +563,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                     {
                                         //resultCell.Range.Text = resultList.First["result"].ToString();
                                     }
-                                    resultCell.Range.Text = resultList.First["result"].ToString();
+
+                                    string tempResult = resultList.First["result"].ToString();
+                                    
+                                    
+                                    resultCell.Range.Text = GetCheckoutResult(tempResult);
                                     if (previous != null)
                                     {
                                         string previousText = previous.Range.Text;
@@ -586,6 +590,44 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
 
             return cellCol7Dic;
+        }
+
+        private string GetCheckoutResult(string tempResult)
+        {
+            if (tempResult.Contains("～"))
+            {
+                string[] strArraySplit = tempResult.Split('～');
+                tempResult = "";
+                for (int k = 0; k < strArraySplit.Length; k++)
+                {
+                    if (k == strArraySplit.Length - 1)
+                    {
+                        tempResult += strArraySplit[k];
+                    }
+                    else
+                    {
+                        tempResult += strArraySplit[k] + "～"+"\n";
+                    }
+                }
+            }
+            if (tempResult.Contains("~"))
+            {
+                string[] strArraySplit = tempResult.Split('~');
+                tempResult = "";
+                for (int k = 0; k < strArraySplit.Length; k++)
+                {
+                    if (k == strArraySplit.Length - 1)
+                    {
+                        tempResult += strArraySplit[k];
+                    }
+                    else
+                    {
+                        tempResult += strArraySplit[k] + "~" + "\n";
+                    }
+                }
+            }
+
+            return tempResult;
         }
 
         /// <summary>

@@ -14,6 +14,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
     /// </summary>
     public class ReportStandardHandleWord : WordUtil
     {
+        private int _colSpan = 0;
+
         /// <summary>
         /// 打开现有文件操作
         /// </summary>
@@ -253,6 +255,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                 if (colSpan > 1)
                 {
+                    _colSpan = colSpan;
                     table.Cell(1, 4).SetWidth(table.Cell(1, 4).Width - 28.35f, WdRulerStyle.wdAdjustNone);
                     table.Cell(1, 5).SetWidth(table.Cell(1, 5).Width + 28.35f, WdRulerStyle.wdAdjustNone);
                 }
@@ -532,16 +535,9 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 {
                                     Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
                                     xuhaoCell.Range.Text = "#" + (k + 1).ToString();
+                                    
 
-                                    Cell resultCellItem = table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1);
-                                    resultCellItem.Range.Text = GetCheckoutResult(resultList[k]["result"].ToString());
-                                    if ((resultList[k]["result"].ToString().Contains("～") || resultList[k]["result"].ToString().Contains("~"))
-                                        && System.Text.Encoding.Default.GetBytes(resultList[k]["result"].ToString()).Length>8)
-                                    {
-                                        resultCellItem.Select();
-                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                                    }
-                                    this.FindHtmlLabel(resultCellItem.Range);
+                                    SetResult(table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1), resultList[k]["result"].ToString(),2);
 
                                 }
                                 resultIndex = resultIndex + resultCount - 1;
@@ -573,19 +569,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                     {
                                         //resultCell.Range.Text = resultList.First["result"].ToString();
                                     }
-
-                                    string tempResult = resultList.First["result"].ToString();
                                     
-                                    
-                                    resultCell.Range.Text = GetCheckoutResult(tempResult);
-                                    if ((resultList.First["result"].ToString().Contains("～") || resultList.First["result"].ToString().Contains("~"))
-                                        && System.Text.Encoding.Default.GetBytes(resultList.First["result"].ToString()).Length>8
-                                        )
-                                    {
-                                        resultCell.Select();
-                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                                    }
-                                    this.FindHtmlLabel(resultCell.Range);
+                                    SetResult(resultCell, resultList.First["result"].ToString(),1);
 
                                     if (previous != null)
                                     {
@@ -746,18 +731,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 {
                                     Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
                                     xuhaoCell.Range.Text = "#" + (k + 1).ToString();
-
-                                    Cell resultCellItem = table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1);
-                                    resultCellItem.Range.Text = GetCheckoutResult(resultList[k]["result"].ToString());
-                                    if ((resultList[k]["result"].ToString().Contains("～") || resultList[k]["result"].ToString().Contains("~"))
-                                        && System.Text.Encoding.Default.GetBytes(resultList[k]["result"].ToString()).Length>8
-
-                                    )
-                                    {
-                                        resultCellItem.Select();
-                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                                    }
-                                    this.FindHtmlLabel(resultCellItem.Range);
+                                    
+                                    SetResult(table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1), resultList[k]["result"].ToString(),2);
                                 }
                                 resultIndex = resultIndex + resultCount - 1;
                             }
@@ -789,16 +764,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                     {
                                         //resultCell.Range.Text = resultList.First["result"].ToString();
                                     }
-                                    resultCell.Range.Text = GetCheckoutResult(resultList.First["result"].ToString());
-                                    if ((resultList.First["result"].ToString().Contains("～")|| resultList.First["result"].ToString().Contains("~"))
-                                        && System.Text.Encoding.Default.GetBytes(resultList.First["result"].ToString()).Length>8
-                                        )
-                                    {
-                                        resultCell.Select();
-                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                                    }
-                                    
-                                    this.FindHtmlLabel(resultCell.Range);
+                                    SetResult(resultCell, resultList.First["result"].ToString(),1);
+
                                     if (previous != null)
                                     {
                                         string previousText = previous.Range.Text;
@@ -822,44 +789,53 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             return cellCol7Dic;
         }
-
-        private string GetCheckoutResult(string tempResult)
+        
+        //设置检验结果  1.merge 2.split
+        private void SetResult(Cell tCell,string tString,int resultType)
         {
-            if (tempResult.Contains("～")&& System.Text.Encoding.Default.GetBytes(tempResult).Length>8)
+            if (tString.Contains("～") || tString.Contains("~"))
             {
-                string[] strArraySplit = tempResult.Split('～');
-                tempResult = "";
-                for (int k = 0; k < strArraySplit.Length; k++)
+                if (_colSpan > 1 && resultType == 1 && System.Text.Encoding.Default.GetBytes(tString).Length > 12)
                 {
-                    if (k == strArraySplit.Length - 1)
-                    {
-                        tempResult += strArraySplit[k];
-                    }
-                    else
-                    {
-                        tempResult += strArraySplit[k] + "～" + "\n";
-                    }
+                    SetResult(tCell, tString);
                 }
-            }
-            if (tempResult.Contains("~") && tempResult.Length > 7)
-            {
-                string[] strArraySplit = tempResult.Split('~');
-                tempResult = "";
-                for (int k = 0; k < strArraySplit.Length; k++)
+                else if(System.Text.Encoding.Default.GetBytes(tString).Length > 8)
                 {
-                    if (k == strArraySplit.Length - 1)
-                    {
-                        tempResult += strArraySplit[k];
-                    }
-                    else
-                    {
-                        tempResult += strArraySplit[k] + "~" + "\n";
-                    }
+                    SetResult(tCell, tString);
                 }
             }
 
-            return tempResult;
+            tCell.Range.Text = tString;
+
+            this.FindHtmlLabel(tCell.Range);
         }
+
+        private void SetResult(Cell tCell, string tString)
+        {
+            var indexStr = string.Empty;
+            indexStr = tString.Contains("～") ? "～" : string.Empty;
+            indexStr = tString.Contains("~") ? "~" : string.Empty;
+            if (indexStr.Equals(string.Empty))
+            {
+                return;
+            }
+            string[] strArraySplit = tString.Split(Convert.ToChar(indexStr));
+            tString = "";
+            for (int k = 0; k < strArraySplit.Length; k++)
+            {
+                if (k == strArraySplit.Length - 1)
+                {
+                    tString += strArraySplit[k];
+                }
+                else
+                {
+                    tString += strArraySplit[k] + indexStr + "\n";
+                }
+            }
+            tCell.Select();
+            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+        }
+
 
         /// <summary>
         /// 单元格加段 加内容

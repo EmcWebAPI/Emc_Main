@@ -1260,7 +1260,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         {
             try
             {
-                Range bookmarkPic = GetBookmarkRank(fileDoc, workBookmark);
+                Range bookmarkPic = fileDoc.Content;
                  bookmarkPic.Select();
                 
                 if (isNeedBreak)

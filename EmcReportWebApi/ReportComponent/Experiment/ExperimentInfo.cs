@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using EmcReportWebApi.Business.ImplWordUtil;
 using EmcReportWebApi.Config;
@@ -11,15 +12,18 @@ namespace EmcReportWebApi.ReportComponent.Experiment
     /// </summary>
     public class ExperimentInfo
     {
+        private readonly ReportInfo _reportInfo;
+
         /// <summary>
         /// new
         /// </summary>
         public ExperimentInfo(ReportInfo reportInfo,JObject reportJsonObjectForWord)
         {
-            this.ReportInfo = reportInfo;
+            _reportInfo = reportInfo;
             this.NewBookmark = "experiment";
             this.ExperimentInfosJArray = (JArray)reportJsonObjectForWord["experiment"];
 
+            int index = 0;
             foreach (var item in ExperimentInfosJArray)
             {
                 JObject experimentInfo = (JObject)item;
@@ -59,6 +63,7 @@ namespace EmcReportWebApi.ReportComponent.Experiment
                         ExperimentInfos.Add(new DefaultExperimentInfo(reportInfo, this, experimentName, experimentInfo));
                         break;
                 }
+                index++;
             }
 
         }
@@ -89,13 +94,16 @@ namespace EmcReportWebApi.ReportComponent.Experiment
         public JArray ExperimentInfosJArray { get; set; }
 
         /// <summary>
+        /// 获取模板路径
+        /// </summary>
+        private string GetTemplatePath(string fileName)
+        {
+            return $@"{EmcConfig.ExperimentTemplateFilePath}\{fileName}";
+        }
+
+        /// <summary>
         /// 实验新的bookmark
         /// </summary>
         public string NewBookmark { get; set; }
-
-        /// <summary>
-        /// 报告信息 导航属性
-        /// </summary>
-        public ReportInfo ReportInfo { get; set; }
     }
 }

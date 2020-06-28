@@ -183,7 +183,7 @@ namespace EmcReportWebApi.ReportComponent
         private string CreateTemplateMiddle()
         {
             string dateStr = Guid.NewGuid().ToString();
-            TemplateMiddleFilesPath = $@"{EmcConfig.ReportTemplateMiddlewareFilePath}\{Guid.NewGuid()}\";
+            TemplateMiddleFilesPath = $@"{EmcConfig.ReportTemplateMiddlewareFilePath}{Guid.NewGuid()}\";
             string fileName = dateStr + ".docx";
             DirectoryInfo di = new DirectoryInfo(TemplateMiddleFilesPath);
             if (!di.Exists) { di.Create(); }

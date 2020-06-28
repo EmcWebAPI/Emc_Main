@@ -49,8 +49,6 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
         public override void WriteExperimentDataInfo(ReportHandleWord wordUtil, bool isNeedBreak)
         {
             wordUtil.CreateTableToWord(_experimentInfo.ExperimentDataTemplateFileFullname, ExperimentDataTitleInfos, "sysj", false, isNeedBreak);
-            int j = 0;
-            int rtfCount = ExperimentDataHtmlJArray.Count;
             foreach (var rtf in ExperimentDataHtmlJArray)
             {
                 try
@@ -60,12 +58,10 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                     string htmlFileFullName = this.CreateHtmlFile(htmlStr, _reportInfo.ReportFilesPath);
                     wordUtil.CopyHtmlContentToTemplate(htmlFileFullName, _experimentInfo.ExperimentDataTemplateFileFullname, "sysj", true, true, false);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     throw new Exception($"实验:{_experimentInfo.ExperimentName}html文件内容不正确");
                 }
-
-                j++;
             }
         }
 

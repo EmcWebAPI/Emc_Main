@@ -50,18 +50,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 htmlDoc.Content.Copy();
 
                 Document templateDoc = OpenWord(templateFilePath);
-                templateDoc.Select();
-                Range range = GetBookmarkRank(templateDoc, bookmark);
-                range.Select();
-                int tableCount = range.Tables.Count;
 
-                Range tableRange = range.Tables[tableCount].Range;
-
-                CreateAndGoToNextParagraph(tableRange, true, true);
-                CreateAndGoToNextParagraph(tableRange, true, true);
+                templateDoc.Content.Select();
+                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                _wordApp.Selection.TypeParagraph();
+                Range tableRange = _wordApp.Selection.Range;
                 tableRange.Paste();
 
-                foreach (Table item in range.Tables)
+                foreach (Table item in templateDoc.Content.Tables)
                 {
                     item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
                 }

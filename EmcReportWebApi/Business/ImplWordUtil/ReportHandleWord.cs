@@ -61,12 +61,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 {
                     item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
                 }
-
-                //最后一项换行
-                templateDoc.Content.Select();
-                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
-                object breakPage = WdBreakType.wdPageBreak;//分页符
-                _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
+                
+                //templateDoc.Content.Select();
+                //_wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                //object breakPage = WdBreakType.wdPageBreak;//分页符
+                //_wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
 
                 if (isCloseTemplateFile)
                 {
@@ -551,6 +550,80 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
             return "修改成功";
         }
+
+        /// <summary>
+        /// 复制第二个文件内容到第一个文件
+        /// </summary>
+        /// <returns></returns>
+        public override string CopyOtherFileContentToWord(string firstFilePath, string secondFilePath, string bookmark, bool isCloseTheFile = true)
+        {
+            try
+            {
+                Document htmldoc = OpenWord(firstFilePath);
+                Document secondFile = OpenWord(secondFilePath);
+                Range range = GetBookmarkRank(secondFile, bookmark);
+
+                htmldoc.Content.Select();
+                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                // Selection.Delete Unit:=wdCharacter, Count:=1
+                object breakPage = WdBreakType.wdPageBreak;//分页符
+                _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
+
+                htmldoc.Content.Copy();
+                range.Select();
+                range.PasteAndFormat(WdRecoveryType.wdUseDestinationStylesRecovery);
+
+                Range nextRange;
+                switch (bookmark)
+                {
+                    case "sysj1":
+                        nextRange = GetBookmarkReturnNull(secondFile, "sysj2");
+                        if (nextRange != null)
+                        {
+                            nextRange.Select();
+                            _wordApp.Selection.MoveUp(WdUnits.wdLine, 2, WdMovementType.wdMove);
+                            _wordApp.Selection.TypeBackspace();
+                            _wordApp.Selection.TypeBackspace();
+                        }
+                        break;
+                    case "sysj2":
+                    case "sysj":
+                        nextRange = GetBookmarkReturnNull(secondFile, "syljt");
+                        if (nextRange != null)
+                        {
+                            nextRange.Select();
+                            _wordApp.Selection.MoveUp(WdUnits.wdLine, 3, WdMovementType.wdMove);
+                            _wordApp.Selection.TypeBackspace();
+                            _wordApp.Selection.TypeBackspace();
+                        }
+                        break;
+                }
+
+
+                range.Select();
+                int tableCount = _wordApp.Selection.Tables.Count;
+                if (tableCount > 0)
+                {
+                    foreach (Table table in _wordApp.Selection.Tables)
+                    {
+                        table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
+                    }
+                }
+
+                if (isCloseTheFile)
+                    CloseWord(htmldoc, firstFilePath);
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace},{ex.Message}");
+            }
+
+            return "保存成功";
+        }
+
+
 
         #region rtf操作
 

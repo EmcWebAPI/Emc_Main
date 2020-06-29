@@ -428,20 +428,24 @@ namespace EmcReportWebApi.Utils
         /// 复制第二个文件内容到第一个文件
         /// </summary>
         /// <returns></returns>
-        public string CopyOtherFileContentToWord(string firstFilePath, string secondFilePath, string bookmark, bool isCloseTheFile = true)
+        public virtual string CopyOtherFileContentToWord(string firstFilePath, string secondFilePath, string bookmark, bool isCloseTheFile = true)
         {
             try
             {
                 Document htmldoc = OpenWord(firstFilePath);
                 Document secondFile = OpenWord(secondFilePath);
                 Range range = GetBookmarkRank(secondFile, bookmark);
+
+                htmldoc.Content.Select();
+                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                // Selection.Delete Unit:=wdCharacter, Count:=1
+                object breakPage = WdBreakType.wdPageBreak;//分页符
+                _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
+
                 htmldoc.Content.Copy();
                 range.Select();
                 range.PasteAndFormat(WdRecoveryType.wdUseDestinationStylesRecovery);
-                //_wordApp.Selection.MoveDown(WdUnits.wdLine, 2, _missing);
-                //_wordApp.Selection.TypeBackspace();
-                //_wordApp.Selection.TypeBackspace();
-                //_wordApp.Selection.Bookmarks.Add("bookmark" + DateTime.Now.ToString("HHmmssfff"), _missing);
+                _wordApp.Selection.Bookmarks.Add("bookmark" + DateTime.Now.ToString("HHmmssfff"), _missing);
                 range.Select();
                 int tableCount = _wordApp.Selection.Tables.Count;
                 if (tableCount > 0)

@@ -438,6 +438,10 @@ namespace EmcReportWebApi.Utils
                 htmldoc.Content.Copy();
                 range.Select();
                 range.PasteAndFormat(WdRecoveryType.wdUseDestinationStylesRecovery);
+                //_wordApp.Selection.MoveDown(WdUnits.wdLine, 2, _missing);
+                //_wordApp.Selection.TypeBackspace();
+                //_wordApp.Selection.TypeBackspace();
+                //_wordApp.Selection.Bookmarks.Add("bookmark" + DateTime.Now.ToString("HHmmssfff"), _missing);
                 range.Select();
                 int tableCount = _wordApp.Selection.Tables.Count;
                 if (tableCount > 0)
@@ -455,7 +459,7 @@ namespace EmcReportWebApi.Utils
             {
                 _needWrite = false;
                 Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw new Exception($"错误信息:{ex.StackTrace},{ex.Message}");
             }
 
             return "保存成功";

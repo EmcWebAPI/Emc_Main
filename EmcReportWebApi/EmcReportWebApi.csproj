@@ -158,6 +158,7 @@
     <Content Include="Files\ReportFiles\Test\re2.jpg" />
     <Content Include="Files\ReportFiles\Test\reljt.jpg" />
     <Content Include="Global.asax" />
+    <Content Include="Properties\PublishProfiles\FolderProfile.pubxml.user" />
     <Content Include="RtfConfig.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -277,6 +278,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

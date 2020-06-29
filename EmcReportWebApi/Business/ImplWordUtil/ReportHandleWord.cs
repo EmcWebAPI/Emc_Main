@@ -61,6 +61,13 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 {
                     item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
                 }
+
+                //最后一项换行
+                templateDoc.Content.Select();
+                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                object breakPage = WdBreakType.wdPageBreak;//分页符
+                _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
+
                 if (isCloseTemplateFile)
                 {
                     CloseWord(templateDoc, templateFilePath);
@@ -73,7 +80,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                 _needWrite = false;
                 Dispose();
-                throw new Exception(string.Format("错误信息:{0}.{1}", ex.StackTrace.ToString(), ex.Message));
+                throw new Exception(message: $"错误信息:{ex.StackTrace}.{ex.Message}");
             }
 
             return "创建成功";

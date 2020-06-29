@@ -61,11 +61,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 {
                     item.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitWindow);
                 }
-                
-                //templateDoc.Content.Select();
-                //_wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
-                //object breakPage = WdBreakType.wdPageBreak;//分页符
-                //_wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
+
+                templateDoc.Content.Select();
+                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                object breakPage = WdBreakType.wdPageBreak;//分页符
+                _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
 
                 if (isCloseTemplateFile)
                 {
@@ -562,12 +562,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 Document htmldoc = OpenWord(firstFilePath);
                 Document secondFile = OpenWord(secondFilePath);
                 Range range = GetBookmarkRank(secondFile, bookmark);
-
-                htmldoc.Content.Select();
-                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
-                // Selection.Delete Unit:=wdCharacter, Count:=1
-                object breakPage = WdBreakType.wdPageBreak;//分页符
-                _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
 
                 htmldoc.Content.Copy();
                 range.Select();

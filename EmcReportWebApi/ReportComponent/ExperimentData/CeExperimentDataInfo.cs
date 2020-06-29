@@ -69,7 +69,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                         _reportInfo.ReportFilesPath + "\\" + rtfObj["name"],
                         _experimentInfo.RtfPictureInfo.StartIndex,
                         _experimentInfo.RtfPictureInfo.Bookmark, false, true,
-                        j == rtfCount - 1);
+                        true);
                 }
                 catch (Exception)
                 {

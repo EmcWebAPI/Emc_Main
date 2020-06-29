@@ -899,7 +899,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     {
                         if (!item2.Key.Equals("isTitle"))
                         {
-                            table.Cell(rowIndex + 1, cellColumnIndex).Range.Text = item2.Value.ToString();
+                            Cell tempCell = table.Cell(rowIndex + 1, cellColumnIndex);
+                            tempCell.Range.Text = item2.Value.ToString();
+                            if (cellColumnIndex == 3)
+                            {
+                                tempCell.SetWidth(64f,WdRulerStyle.wdAdjustSameWidth);
+                            }else if (cellColumnIndex == 5)
+                            {
+                                tempCell.SetWidth(80f, WdRulerStyle.wdAdjustSameWidth);
+                            }
+
                             cellColumnIndex++;
                         }
                     }

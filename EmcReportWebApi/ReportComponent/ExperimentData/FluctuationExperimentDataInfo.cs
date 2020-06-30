@@ -63,7 +63,7 @@ namespace EmcReportWebApi.ReportComponent.ExperimentData
                         _experimentInfo.RtfTableInfo.ColumnInfoDic,
                         _experimentInfo.RtfTableInfo.Bookmark,
                         _experimentInfo.RtfTableInfo.TitleRow,
-                        _experimentInfo.RtfTableInfo.MainTitle, false, true, j == rtfCount - 1);
+                        _experimentInfo.RtfTableInfo.MainTitle, false, true, j == rtfCount - 1, j == rtfCount - 1);
                 }
                 catch (Exception)
                 {

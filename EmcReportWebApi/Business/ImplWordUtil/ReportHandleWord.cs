@@ -431,7 +431,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                     if (!fileName.Equals(""))
                     {
-                        InlineShape image = AddPicture(fileName, doc, cellRange, tableWidth - 56, tableWidth - 260);
+                        InlineShape image = AddPicture(fileName, doc, cellRange);
                     }
                     //CreateAndGoToNextParagraph(cellRange, true, false);
                     //cellRange.InsertAfter(content);
@@ -1177,13 +1177,24 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 从电压波动文件取内容到word
         /// </summary>
-        public string CopyFluctuationFileTableForColByTableIndex(string templateFullPath, string copyFileFullPath, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isCloseTemplateFile, bool isNeedBreak, bool isCloseTheFile = true)
+        public string CopyFluctuationFileTableForColByTableIndex(string templateFullPath, 
+            string copyFileFullPath, 
+            int copyFileTableStartIndex, 
+            int copyFileTableEndIndex, 
+            Dictionary<int, string> copyTableColDic,
+            string wordBookmark, 
+            int titleRow, 
+            string mainTitle, 
+            bool isCloseTemplateFile, 
+            bool isNeedBreak, 
+            bool isPage,
+            bool isCloseTheFile = true)
         {
             try
             {
                 Document templateDoc = OpenWord(templateFullPath);
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                CopyFluctuationFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak);
+                CopyFluctuationFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak,isPage);
                 if (isCloseTemplateFile)
                     CloseWord(templateDoc, templateFullPath);
                 if (isCloseTheFile)
@@ -1203,7 +1214,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 
         /// </summary>
-        private string CopyFluctuationFileTableForColByTableIndex(Document templateDoc, Document rtfDoc, int copyFileTableStartIndex, int copyFileTableEndIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, int titleRow, string mainTitle, bool isNeedBreak)
+        private string CopyFluctuationFileTableForColByTableIndex(Document templateDoc, 
+            Document rtfDoc, 
+            int copyFileTableStartIndex, 
+            int copyFileTableEndIndex, 
+            Dictionary<int, string> copyTableColDic, 
+            string wordBookmark, 
+            int titleRow, 
+            string mainTitle, 
+            bool isNeedBreak,
+            bool isPage)
         {
             try
             {
@@ -1290,6 +1310,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     table1.Rows.SetHeight(14f, WdRowHeightRule.wdRowHeightAtLeast);
                 }
 
+                if (isPage)
+                {
+                    templateDoc.Content.Select();
+                    _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
+                    object breakPage = WdBreakType.wdPageBreak;//分页符
+                    _wordApp.ActiveWindow.Selection.InsertBreak(breakPage);
+                }
+
             }
             catch (Exception ex)
             {
@@ -1306,12 +1334,12 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 从其他文件取图片到word
         /// </summary>
-        public virtual string CopyOtherFilePictureToWord(string templalteFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
+        public virtual string CopyOtherFilePictureToWord(string templateFileFullName, string copyFileFullPath, int copyFilePictureStartIndex, string workBookmark, bool isCloseTemplateFile, bool isNeedBreak, bool isPage, bool isCloseTheFile = true)
         {
             string result;
             try
             {
-                Document templateDoc = OpenWord(templalteFileFullName);
+                Document templateDoc = OpenWord(templateFileFullName);
                 Document copyFileDoc = OpenWord(copyFileFullPath, true);
                 result = CopyOtherFilePictureToWord(templateDoc,
                     copyFileDoc,
@@ -1321,7 +1349,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     isPage);
                 if (isCloseTemplateFile)
                 {
-                    CloseWord(templateDoc, templalteFileFullName);
+                    CloseWord(templateDoc, templateFileFullName);
                 }
                 if (isCloseTheFile)
                     CloseWord(copyFileDoc, copyFileFullPath);

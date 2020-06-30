@@ -36,28 +36,28 @@ namespace EmcReportWebApi.ReportComponent.Experiment
                     ExperimentInfos = new List<ExperimentInfoAbstract>();
                 switch (experimentName)
                 {
-                    case "传导发射":
-                        ExperimentInfos.Add(new CeExperimentInfo(reportInfo, this, experimentName, experimentInfo));
-                        break;
-                    case "辐射发射":
-                        ExperimentInfos.Add(new ReExperimentInfo(reportInfo, this, experimentName, experimentInfo));
-                        break;
-                    case "谐波失真":
-                        ExperimentInfos.Add(new HarmonicExperimentInfo(reportInfo, this, experimentName, experimentInfo));
-                        break;
+                    //case "传导发射":
+                    //    ExperimentInfos.Add(new CeExperimentInfo(reportInfo, this, experimentName, experimentInfo));
+                    //    break;
+                    //case "辐射发射":
+                    //    ExperimentInfos.Add(new ReExperimentInfo(reportInfo, this, experimentName, experimentInfo));
+                    //    break;
+                    //case "谐波失真":
+                    //    ExperimentInfos.Add(new HarmonicExperimentInfo(reportInfo, this, experimentName, experimentInfo));
+                    //    break;
                     case "电压波动和闪烁":
                         ExperimentInfos.Add(new FluctuationExperimentInfo(reportInfo, this, experimentName, experimentInfo));
                         break;
-                    case "电快速瞬变脉冲群":
-                        ExperimentInfos.Add(new AcDcExperimentInfo(reportInfo, this, experimentName, experimentInfo));
-                        break;
-                    case "电压暂降/短时中断":
-                    case "电压暂降和短时中断":
-                        ExperimentInfos.Add(new SagBreakExperimentInfo(reportInfo, this, "电压暂降和短时中断", experimentInfo));
-                        break;
-                    default:
-                        ExperimentInfos.Add(new DefaultExperimentInfo(reportInfo, this, experimentName, experimentInfo));
-                        break;
+                    //case "电快速瞬变脉冲群":
+                    //    ExperimentInfos.Add(new AcDcExperimentInfo(reportInfo, this, experimentName, experimentInfo));
+                    //    break;
+                    //case "电压暂降/短时中断":
+                    //case "电压暂降和短时中断":
+                    //    ExperimentInfos.Add(new SagBreakExperimentInfo(reportInfo, this, "电压暂降和短时中断", experimentInfo));
+                    //    break;
+                    //default:
+                    //    ExperimentInfos.Add(new DefaultExperimentInfo(reportInfo, this, experimentName, experimentInfo));
+                    //    break;
                 }
             }
 

@@ -2,6 +2,7 @@
 using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using EmcReportWebApi.ReportComponent.Experiment;
 using EmcReportWebApi.ReportComponent.Image;
@@ -331,7 +332,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                     if (!fileName.Equals(""))
                     {
-                        AddPicture(fileName, _currentWord, cellRange, tableWidth - 56, tableWidth - 280);
+                        AddSamplePicture(fileName, _currentWord, cellRange, tableWidth - 40, tableWidth - 240);
                     }
                     string templateStr = frontStr + (i + 1).ToString();
                     CreateAndGoToNextParagraph(cellRange, true, false);
@@ -352,6 +353,52 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
 
             return "创建成功";
+        }
+
+        private void AddSamplePicture(string picFileName, Document doc, Range range, float width = 0,
+            float height = 0)
+        {
+            float imageWidth;
+            float imageHeight;
+            using (FileStream fs = new FileStream(picFileName, FileMode.Open, FileAccess.Read))
+            {
+                System.Drawing.Image sourceImage = System.Drawing.Image.FromStream(fs);
+                imageWidth = float.Parse(sourceImage.Width.ToString());
+                imageHeight = float.Parse(sourceImage.Height.ToString());
+            }
+
+            InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
+
+            if (imageWidth > width && imageWidth > imageHeight)
+            {
+
+                if (imageHeight * (width / imageWidth) > height)
+                {
+                    image.Height = height;
+                    image.Width = imageWidth * (height / imageHeight);
+                }
+                else
+                {
+                    image.Width = width;
+                    image.Height = imageHeight * (width / imageWidth);
+                }
+
+            }
+
+            else if (imageHeight > height && imageHeight >= imageWidth)
+            {
+                if (imageWidth * (height / imageHeight) > width)
+                {
+                    image.Width = width;
+                    image.Height = imageHeight * (width / imageWidth);
+                }
+                else
+                {
+                    image.Height = height;
+                    image.Width = imageWidth * (height / imageHeight);
+                }
+
+            }
         }
 
         /// <summary>

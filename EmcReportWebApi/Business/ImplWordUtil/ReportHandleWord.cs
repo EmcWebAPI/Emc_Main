@@ -911,19 +911,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     copyTable.Range.Copy();
                     wordTable.Paste();
 
-                    //检索table的最后一列 耗时间 找更好的办法
-                    //Table table1 = wordTable.Tables[1];
-                    //table1.Select();
-                    //Cells cells = _wordApp.Selection.Cells;
-                    //foreach (Cell item in cells)
-                    //{
-                    //    if (item.Range.Text.Contains("PASS")) {
-                    //        item.Range.Text = "符合";
-                    //    }
-                    //}
-
                     ClearFormatTable(wordTable.Tables[1]);
-                    wordTable.Tables[1].Rows.SetHeight(14f,WdRowHeightRule.wdRowHeightAtLeast);
+                    wordTable.Tables[1].Rows.SetHeight(16f,WdRowHeightRule.wdRowHeightAtLeast);
+                    wordTable.Tables[1].Select();
+                    _wordApp.Selection.Cells.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
+                    _wordApp.Selection.Cells.PreferredWidth = 20f;
                 }
 
             }
@@ -1428,6 +1420,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             shape.Select(); //选定当前图片
                             shape.Range.Copy();
                             bookmarkPic.Paste();
+                            bookmarkPic.Select();
+                            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
                             CreateAndGoToNextParagraph(bookmarkPic, true, true);
                         }
                         i++;

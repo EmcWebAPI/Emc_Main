@@ -758,6 +758,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         {
             Range table = GetBookmarkRank(doc, bookmark);
             table.Select();
+            
             if (isNeedBreak)
             {
                  doc.Content.Select();
@@ -767,6 +768,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             int numRows = 1;
             int numColumns = 2;
+
             switch (contentList.Count)
             {
                 case 3:
@@ -783,6 +785,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
             table.Select();
             _wordApp.Selection.Tables.Add(table, numRows, numColumns, ref _missing, ref _missing);
+            _wordApp.Selection.Tables[1].Select();
+            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
             //设置表格格式
             Table table1 = table.Tables[1];
             SetTabelFormat(table1);
@@ -1420,8 +1424,12 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             shape.Select(); //选定当前图片
                             shape.Range.Copy();
                             bookmarkPic.Paste();
-                            bookmarkPic.Select();
-                            _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                            foreach (InlineShape inlineShape in bookmarkPic.InlineShapes)
+                            {
+                                inlineShape.Select();
+                                _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                            }
+                            
                             CreateAndGoToNextParagraph(bookmarkPic, true, true);
                         }
                         i++;

@@ -758,17 +758,20 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         {
             Range table = GetBookmarkRank(doc, bookmark);
             table.Select();
-            
             if (isNeedBreak)
             {
-                 doc.Content.Select();
-                _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
-                table = _wordApp.Selection.Range;
-            }
+                //InsertBreakPage(true);
+                object unite = WdUnits.wdStory;
+                _wordApp.Selection.EndKey(ref unite, ref _missing);
+                object breakPage = WdBreakType.wdSectionBreakNextPage;//分页符
+                _wordApp.Selection.InsertBreak(breakPage);
 
+                table = _wordApp.Selection.Range.Sections.Last.Range;
+                //CreateAndGoToNextParagraph(table, true, true);
+                //CreateAndGoToNextParagraph(table, true, true);
+            }
             int numRows = 1;
             int numColumns = 2;
-
             switch (contentList.Count)
             {
                 case 3:

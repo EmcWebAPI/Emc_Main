@@ -3,7 +3,6 @@ using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using EmcReportWebApi.ReportComponent.Experiment;
 using EmcReportWebApi.ReportComponent.Image;
 using Newtonsoft.Json.Linq;
@@ -266,39 +265,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         }
 
         /// <summary>
-        /// 样品连接图
-        /// </summary>
-        /// <returns></returns>
-        public string InsertImageToWord(List<string> list, string bookmark)
-        {
-            try
-            {
-                //获取bookmark位置的table
-                Range range = GetBookmarkRank(_currentWord, bookmark);
-                range.Select();
-                foreach (var item in list)
-                {
-                    string[] arrStr = item.Split(',');
-                    string content = arrStr[0];
-                    string fileName = arrStr[1];
-                    CreateAndGoToNextParagraph(range, true, true);
-                    range.InsertAfter(content);
-                    CreateAndGoToNextParagraph(range, true, true);
-                    AddPicture(fileName, range.Application.ActiveDocument, range);
-                }
-            }
-            catch (Exception ex)
-            {
-                _needWrite = false;
-                Dispose();
-                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
-            }
-
-            return "创建成功";
-        }
-
-        /// <summary>
-        /// 样品图片用到的
+        /// 样品图片
         /// </summary>
         /// <param name="list"></param>
         /// <param name="bookmark"></param>
@@ -664,8 +631,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return "保存成功";
         }
 
-
-
         #region rtf操作
 
         /// <summary>
@@ -677,7 +642,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <param name="wordBookmark">需要插入内容的书签</param>
         /// <param name="isCloseTheFile">是否关闭新打开的文件</param>
         /// <returns></returns>
-        public virtual string CopyOtherFileTableForCol(string copyFileFullPath, int copyFileTableIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTheFile)
+        public string CopyOtherFileTableForCol(string copyFileFullPath, int copyFileTableIndex, Dictionary<int, string> copyTableColDic, string wordBookmark, bool isCloseTheFile)
         {
             try
             {
@@ -728,7 +693,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <param name="bookmark"></param>
         /// <param name="isNeedBreak"></param>
         /// <returns></returns>
-        public virtual string CreateTableToWord(List<string> contentList, string bookmark, bool isNeedBreak)
+        public string CreateTableToCurrentWord(List<string> contentList, string bookmark, bool isNeedBreak)
         {
             return CreateTableToWord(_currentWord, contentList, bookmark, isNeedBreak);
         }
@@ -831,7 +796,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             return result;
         }
-
 
         /// <summary>
         /// 从其他文件取内容到word
@@ -1056,7 +1020,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return "创建成功";
         }
 
-
         /// <summary>
         /// 从谐波失真文件取内容到word
         /// </summary>
@@ -1234,8 +1197,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
                 }
 
-                Range wordTable = _wordApp.Selection.Range;
-
                 //判断主表头是否为null
                 string[] mainTitleArray = null;
                 if (!mainTitle.Equals(""))
@@ -1246,7 +1207,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                 int forCount = copyFileTableEndIndex == 0 ? rtfTableCount : copyFileTableEndIndex;
 
-                List<int> removeCols = new List<int>();
                 for (int i = copyFileTableStartIndex; i <= forCount; i++)
                 {
                     Table copyTable = rtfDoc.Tables[i];
@@ -1278,7 +1238,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                     copyTable.Range.Copy();
                     _wordApp.Selection.Paste();
-                    wordTable = _wordApp.Selection.Range;
+                    var wordTable = _wordApp.Selection.Range;
                     var table1 = wordTable.Tables[1];
                     //电压波动最后一列变符合
                     

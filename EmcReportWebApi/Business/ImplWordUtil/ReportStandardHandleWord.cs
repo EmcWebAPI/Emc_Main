@@ -14,7 +14,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
     /// </summary>
     public class ReportStandardHandleWord : WordUtil
     {
-        private int _colSpan = 0;
+        private int _colSpan;
 
         /// <summary>
         /// 打开现有文件操作

@@ -106,48 +106,58 @@ namespace EmcReportWebApi.Utils
         /// <param name="range"></param>
         protected void FindHtmlLabel(Range range)
         {
-            range.Select();
-            string rangeText = range.Text;
-            string pattern = @"<(\S*?)[^>]*>.*?<\/\1>";
-            var regexMatch = Regex.Matches(rangeText, pattern);
-            if (regexMatch.Count == 0)
+            try
             {
-                return;
-            }
-
-            foreach (Match m in regexMatch)
-            {
-                string formulaType = "";
-                
-                
-                var firstOrDefault = EmcConfig.FormulaType.FirstOrDefault(x => m.Value.Trim().Contains(x));
-                if (firstOrDefault != null)
-                    formulaType = firstOrDefault;
-                if(formulaType.Equals(""))
-                    continue;
                 range.Select();
-                string forceValue = "";
-                if (formulaType.Equals("<下标>") || formulaType.Equals("<上标>") || formulaType.Equals("<上下标>"))
+                string rangeText = range.Text;
+                string pattern = @"<(\S*?)[^>]*>.*?<\/\1>";
+                var regexMatch = Regex.Matches(rangeText, pattern);
+                if (regexMatch.Count == 0)
                 {
-                    if (m.Index - 1<0)
-                    {
-                        continue;
-                    }
-
-                    if (formulaType.Equals("<上下标>") && m.Value.Split('|').Length < 2)
-                    {
-                        continue;
-                    }
-
-                    forceValue = rangeText.Substring(m.Index - 1, 1);
-                    this.Replace(1, (forceValue + m.Value), @"", 1);
+                    return;
                 }
 
-                
-                else
-                    this.Replace(1, m.Value, @"", 1);
-                this.AddOperationFormula(_wordApp.Selection.Range, formulaType, forceValue,m.Value);
+                foreach (Match m in regexMatch)
+                {
+                    string formulaType = "";
+
+
+                    var firstOrDefault = EmcConfig.FormulaType.FirstOrDefault(x => m.Value.Trim().Contains(x));
+                    if (firstOrDefault != null)
+                        formulaType = firstOrDefault;
+                    if (formulaType.Equals(""))
+                        continue;
+                    range.Select();
+                    string forceValue = "";
+                    if (formulaType.Equals("<下标>") || formulaType.Equals("<上标>") || formulaType.Equals("<上下标>"))
+                    {
+                        if (m.Index - 1 < 0)
+                        {
+                            continue;
+                        }
+
+                        if (formulaType.Equals("<上下标>") && m.Value.Split('|').Length < 2)
+                        {
+                            continue;
+                        }
+
+                        forceValue = rangeText.Substring(m.Index - 1, 1);
+                        this.Replace(1, (forceValue + m.Value), @"", 1);
+                    }
+
+
+                    else
+                        this.Replace(1, m.Value, @"", 1);
+                    this.AddOperationFormula(_wordApp.Selection.Range, formulaType, forceValue, m.Value);
+                }
             }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+          
         }
         
         /// <summary>
@@ -155,113 +165,123 @@ namespace EmcReportWebApi.Utils
         /// </summary>
         protected void AddOperationFormula(Range range,string formulaType,string forceValue, string matchValue)
         {
-            range.Select();
-            Range om = _wordApp.Selection.OMaths.Add(range);
-            _wordApp.Selection.OMaths.BuildUp();
-            switch (formulaType)
+            try
             {
-                case "avg": 
-                    _wordApp.Selection.OMaths[1].Functions.Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionAcc).Acc.Char = 773;
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
-                    break;
+                range.Select();
+                Range om = _wordApp.Selection.OMaths.Add(range);
+                _wordApp.Selection.OMaths.BuildUp();
+                switch (formulaType)
+                {
+                    case "avg":
+                        _wordApp.Selection.OMaths[1].Functions.Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionAcc).Acc.Char = 773;
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
+                        break;
 
-                case "absFv":
-                    var omatchFv = _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionDelim, 1);
-                    omatchFv.Delim.BegChar = 124;
-                    omatchFv.Delim.SepChar = 0;
-                    omatchFv.Delim.EndChar = 124;
-                    omatchFv.Delim.Grow = true;
-                    omatchFv.Delim.Shape = WdOMathShapeType.wdOMathShapeCentered;
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertSymbol(8242, "Cambria Math", true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.InsertAfter("v");
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter("F");
-                    break;
-                case "absFc":
-                    var omatchFc = _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionDelim, 1);
-                    omatchFc.Delim.BegChar = 124;
-                    omatchFc.Delim.SepChar = 0;
-                    omatchFc.Delim.EndChar = 124;
-                    omatchFc.Delim.Grow = true;
-                    omatchFc.Delim.Shape = WdOMathShapeType.wdOMathShapeCentered;
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertSymbol(8242, "Cambria Math", true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.InsertAfter("c");
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter("F");
-                    break;
+                    case "absFv":
+                        var omatchFv = _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionDelim, 1);
+                        omatchFv.Delim.BegChar = 124;
+                        omatchFv.Delim.SepChar = 0;
+                        omatchFv.Delim.EndChar = 124;
+                        omatchFv.Delim.Grow = true;
+                        omatchFv.Delim.Shape = WdOMathShapeType.wdOMathShapeCentered;
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertSymbol(8242, "Cambria Math", true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.InsertAfter("v");
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertAfter("F");
+                        break;
+                    case "absFc":
+                        var omatchFc = _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionDelim, 1);
+                        omatchFc.Delim.BegChar = 124;
+                        omatchFc.Delim.SepChar = 0;
+                        omatchFc.Delim.EndChar = 124;
+                        omatchFc.Delim.Grow = true;
+                        omatchFc.Delim.Shape = WdOMathShapeType.wdOMathShapeCentered;
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertSymbol(8242, "Cambria Math", true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.InsertAfter("c");
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertAfter("F");
+                        break;
 
-                case "uva":
-                    _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter("UVA");
-                    break;
-                case "uvb":
-                    _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter("UVB");
-                    break;
-                case "lamv":
-                    _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.InsertSymbol(-8442, null, true, WdFontBias.wdFontBiasDefault);
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.InsertAfter("V");
-                    break;
-                case "<下标>":
-                    _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.Range.InsertAfter(forceValue);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
-                    _wordApp.Selection.Range.Font.Italic = 0;
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<下标>","").Replace("</下标>",""));
-                    break;
-                case "<上标>":
-                    _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSup);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
-                    _wordApp.Selection.Range.InsertAfter(forceValue);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
-                    _wordApp.Selection.Range.Font.Italic = 0;
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上标>", "").Replace("</上标>", ""));
-                    break;
-                case "<上下标>":
-                    string[] splitValue = matchValue.Trim().Replace("<上下标>", "").Replace("</上下标>", "").Split('|');
-                    _wordApp.Selection.OMaths[1].Functions
-                        .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSubSup);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 3, WdMovementType.wdMove);
-                    _wordApp.Selection.Range.InsertAfter(forceValue);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
-                    _wordApp.Selection.Range.Font.Italic = 0;
-                    _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.Range.InsertAfter(splitValue[0]);
-                    _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
-                    _wordApp.Selection.Range.InsertAfter(splitValue[1]);
-                    //_wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上下标>", "").Replace("</上下标>", ""));
-                    break;
+                    case "uva":
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertAfter("UVA");
+                        break;
+                    case "uvb":
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.InsertSymbol(-8433, null, true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertAfter("UVB");
+                        break;
+                    case "lamv":
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertSymbol(-10187, null, true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.InsertSymbol(-8442, null, true, WdFontBias.wdFontBiasDefault);
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.InsertAfter("V");
+                        break;
+                    case "<下标>":
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(forceValue);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
+                        _wordApp.Selection.Range.Font.Italic = 0;
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<下标>", "").Replace("</下标>", ""));
+                        break;
+                    case "<上标>":
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSup);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(forceValue);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
+                        _wordApp.Selection.Range.Font.Italic = 0;
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上标>", "").Replace("</上标>", ""));
+                        break;
+                    case "<上下标>":
+                        string[] splitValue = matchValue.Trim().Replace("<上下标>", "").Replace("</上下标>", "").Split('|');
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSubSup);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 3, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(forceValue);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
+                        _wordApp.Selection.Range.Font.Italic = 0;
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(splitValue[0]);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(splitValue[1]);
+                        //_wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上下标>", "").Replace("</上下标>", ""));
+                        break;
 
+                }
             }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
+            }
+           
         }
 
 
@@ -687,43 +707,53 @@ namespace EmcReportWebApi.Utils
         /// <returns></returns>
         protected Document OpenWord(string fileFullPath, bool isOtherFormat = false)
         {
-            if (_wordApp == null)
-                NewApp();
-            Document openWord = null;
-
-            //判断文件是否打开
-            if (_fileDic != null && _fileDic.ContainsKey(fileFullPath))
-                openWord = _fileDic[fileFullPath];
-            else
+            try
             {
-                if (_fileDic == null)
+                if (_wordApp == null)
+                    NewApp();
+                Document openWord = null;
+
+                //判断文件是否打开
+                if (_fileDic != null && _fileDic.ContainsKey(fileFullPath))
+                    openWord = _fileDic[fileFullPath];
+                else
                 {
-                    _fileDic = new Dictionary<string, Document>();
+                    if (_fileDic == null)
+                    {
+                        _fileDic = new Dictionary<string, Document>();
+                    }
+                    object otherFormat = isOtherFormat ? true : false;//其他格式文件用word打开
+                    object obj = fileFullPath;
+                    openWord = _wordApp.Documents.Open(ref obj,
+                        ref _missing,//文档名（可包含路径）
+                        ref _missing,//True 显示 转换文件对话框中，如果该文件不是 Microsoft Word 格式
+                        ref _missing,// 如果该属性值为 True , 则以只读方式打开文档
+                        ref _missing,//true 要将文件名添加到列表中最近使用的文件在文件菜单的底部
+                        ref _missing,//打开文档时所需的密码
+                        ref _missing,//打开模板时所需的密码
+                        ref _missing,//为 False，则激活打开的文档
+                        ref _missing,
+                        ref _missing,
+                        ref _missing,
+                        ref _objFalse, //在可见窗口中打开文档。 默认值为 True
+                        ref _missing,
+                        ref _missing,
+                        ref _missing,
+                        ref _missing);
+
+                    _fileDic.Add(fileFullPath, openWord);
                 }
-                object otherFormat = isOtherFormat ? true : false;//其他格式文件用word打开
-                object obj = fileFullPath;
-                openWord = _wordApp.Documents.Open(ref obj,
-                ref _missing,//文档名（可包含路径）
-                ref _missing,//True 显示 转换文件对话框中，如果该文件不是 Microsoft Word 格式
-                ref _missing,// 如果该属性值为 True , 则以只读方式打开文档
-                ref _missing,//true 要将文件名添加到列表中最近使用的文件在文件菜单的底部
-                ref _missing,//打开文档时所需的密码
-                ref _missing,//打开模板时所需的密码
-                ref _missing,//为 False，则激活打开的文档
-                ref _missing,
-                ref _missing,
-                ref _missing,
-                ref _objFalse, //在可见窗口中打开文档。 默认值为 True
-                ref _missing,
-                ref _missing,
-                ref _missing,
-                ref _missing);
 
-                _fileDic.Add(fileFullPath, openWord);
+
+                return openWord;
             }
-
-
-            return openWord;
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace.ToString()}.{ex.Message}");
+            }
+           
         }
 
         /// <summary>

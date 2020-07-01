@@ -236,7 +236,8 @@ namespace EmcReportWebApi.Config
             {"cs","次数（次）："},
             {"sycfcs","试验重复次数（次）："},
             {"sysjjg","试验时间间隔（s）："},
-            {"sypl","试验频率（Hz）："}
+            {"sypl","试验频率（Hz）："},
+            {"gczqsj","观察周期/时间："}
         };
 
         #endregion

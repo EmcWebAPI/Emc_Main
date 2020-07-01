@@ -14,8 +14,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
     /// </summary>
     public class ReportStandardHandleWord : WordUtil
     {
-        private int _colSpan;
-
         /// <summary>
         /// 打开现有文件操作
         /// </summary>
@@ -41,11 +39,12 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// 单元格右下添加内容的集合
         /// </summary>
         private readonly Dictionary<string, string> _lowerRightCornerCells = new Dictionary<string, string>();
+        private int _colSpan;
 
         /// <summary>
         /// 表格拆分合并 添加"续"
         /// </summary>
-        public virtual int TableSplit(string bookmark,bool hasPhoto)
+        public virtual int TableSplit(string bookmark, bool hasPhoto)
         {
             try
             {
@@ -126,12 +125,12 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 {
                     lastCellOrDefault.Select();
                     int currentPageNumber =
-                        (int) lastCellOrDefault.Range.Information[WdInformation.wdActiveEndPageNumber];
+                        (int)lastCellOrDefault.Range.Information[WdInformation.wdActiveEndPageNumber];
                     float cellPositionTop =
-                        (float) lastCellOrDefault.Range.Information[WdInformation.wdVerticalPositionRelativeToPage];
+                        (float)lastCellOrDefault.Range.Information[WdInformation.wdVerticalPositionRelativeToPage];
                     float pageHeight = lastCellOrDefault.Range.PageSetup.PageHeight;
                     //页眉高度大约62.37
-                    float cellToPageBottom = pageHeight - cellPositionTop- lastCellOrDefault.Height;
+                    float cellToPageBottom = pageHeight - cellPositionTop - lastCellOrDefault.Height;
                     bool result = cellToPageBottom > 200;
                     if (result)
                     {
@@ -245,7 +244,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <param name="bookmark">书签</param>
         /// <param name="colSpan">检验结果是否有加列</param>
         /// <returns></returns>
-        public virtual int TableSplit(JArray array, string bookmark,int colSpan)
+        public virtual int TableSplit(JArray array, string bookmark, int colSpan)
         {
             try
             {
@@ -288,7 +287,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
             }
         }
-        
+
         private void ClearTableFormat(Table table)
         {
             table.Select();
@@ -336,7 +335,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 table.Cell(2, 6).Range.Text = "^^" + jObject["comment"];
             //备注
             if (jObject["reMark"] != null)
-                table.Cell(2, 7).Range.Text = jObject["reMark"].ToString().Equals(string.Empty)?"/":jObject["reMark"].ToString();
+                table.Cell(2, 7).Range.Text = jObject["reMark"].ToString().Equals(string.Empty) ? "/" : jObject["reMark"].ToString();
 
             JArray firstItems = (JArray)jObject["list"];
 
@@ -406,12 +405,12 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return 1;
         }
 
-      
+
         /// <summary>
         /// 遍历节点拆分单元格
         /// </summary>
         /// <returns></returns>
-        private Dictionary<string,JObject > AddCellAndSplit(Table table, Dictionary<string, JObject> cellCol6Dic)
+        private Dictionary<string, JObject> AddCellAndSplit(Table table, Dictionary<string, JObject> cellCol6Dic)
         {
             Dictionary<string, JObject> cellCol7Dic = new Dictionary<string, JObject>();
             int incr = 0;
@@ -495,7 +494,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
 
                         tempCell.Range.Text = itemContent;
-                        
+
 
                         this.FindHtmlLabel(tempCell.Range);
 
@@ -541,8 +540,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 {
                                     Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
                                     xuhaoCell.Range.Text = "#" + (k + 1).ToString();
-                                    
-                                    SetResult(table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1), resultList[k]["result"].ToString(),2);
+
+                                    SetResult(table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1), resultList[k]["result"].ToString(), 2);
                                 }
                                 resultIndex = resultIndex + resultCount - 1;
                             }
@@ -574,15 +573,15 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                     {
                                         //resultCell.Range.Text = resultList.First["result"].ToString();
                                     }
-                                    SetResult(resultCell, resultList.First["result"].ToString(),1);
+                                    SetResult(resultCell, resultList.First["result"].ToString(), 1);
 
                                     if (previous != null)
                                     {
                                         string previousText = previous.Range.Text;
-                                        if (previousText.Replace("\r\a","").Equals("$",StringComparison.OrdinalIgnoreCase))
+                                        if (previousText.Replace("\r\a", "").Equals("$", StringComparison.OrdinalIgnoreCase))
                                         {
                                             previous.Range.Text = "";
-                                            
+
                                             previous.Select();
                                             previous.Merge(resultCell);
                                         }
@@ -790,7 +789,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return cellCol7Dic;
         }
         //设置检验结果  1.merge 2.split
-        private void SetResult(Cell tCell,string tString,int resultType)
+        private void SetResult(Cell tCell, string tString, int resultType)
         {
             if (tString.Contains("～") || tString.Contains("~"))
             {
@@ -798,7 +797,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 {
                     SetResult(tCell, tString);
                 }
-                else if(System.Text.Encoding.Default.GetBytes(tString).Length > 8)
+                else if (System.Text.Encoding.Default.GetBytes(tString).Length > 8)
                 {
                     SetResult(tCell, tString);
                 }
@@ -902,8 +901,9 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             tempCell.Range.Text = item2.Value.ToString();
                             if (cellColumnIndex == 3)
                             {
-                                tempCell.SetWidth(64f,WdRulerStyle.wdAdjustSameWidth);
-                            }else if (cellColumnIndex == 5)
+                                tempCell.SetWidth(64f, WdRulerStyle.wdAdjustSameWidth);
+                            }
+                            else if (cellColumnIndex == 5)
                             {
                                 tempCell.SetWidth(80f, WdRulerStyle.wdAdjustSameWidth);
                             }
@@ -1048,13 +1048,13 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
             return "成功";
         }
-        
+
         /// <summary>
         /// 样品名称添加一行
         /// </summary>
-        public void TableAddRowForY(string bookmark,string value)
+        public void TableAddRowForY(string bookmark, string value)
         {
-            Range range = GetBookmarkRank(_currentWord,bookmark);
+            Range range = GetBookmarkRank(_currentWord, bookmark);
             Cell cell = range.Cells[1];
             cell.Select();
             _wordApp.Selection.InsertRowsBelow(1);

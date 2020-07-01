@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Root>
   <TempType Type="CE">
-    <Table StartIndex="1" EndIndex="0" Bookmark="sysj" TitleRow ="1" MainTitle="">
+    <Table StartIndex="2" EndIndex="0" Bookmark="sysj" TitleRow ="1" MainTitle="">
       <Column>
         <Title>频率
 （MHz）</Title>
@@ -14,17 +14,17 @@
       </Column>
       <Column>
         <Title>电源端口</Title>
-        <ColumnIndex>6</ColumnIndex>
+        <ColumnIndex>3</ColumnIndex>
       </Column>
       <Column>
         <Title>裕量
 （dB）</Title>
-        <ColumnIndex>8</ColumnIndex>
+        <ColumnIndex>5</ColumnIndex>
       </Column>
       <Column>
         <Title>限值
 （dBμV）</Title>
-        <ColumnIndex>9</ColumnIndex>
+        <ColumnIndex>6</ColumnIndex>
       </Column>
     </Table>
     <Picture StartIndex="1" Bookmark="sysj">

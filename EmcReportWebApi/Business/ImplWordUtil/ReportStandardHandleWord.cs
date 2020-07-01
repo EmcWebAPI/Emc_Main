@@ -384,7 +384,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     bool whileBool = true;
                     while (whileBool)
                     {
-                        //cellCol4Dic = AddCellAndSplit2(table, cellCol4Dic, fist);
+                        //cellCol4Dic = AddCellAndSplitNoStdName(table, cellCol4Dic, fist);
                         stdNameDictionary = AddCellAndSplit(table, stdNameDictionary);
                         whileBool = (stdNameDictionary.Count != 0);
                     }
@@ -396,7 +396,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     bool fist = true;
                     while (whileBool)
                     {
-                        noStdNameDictionary = AddCellAndSplit2(table, noStdNameDictionary, fist);
+                        noStdNameDictionary = AddCellAndSplitNoStdName(table, noStdNameDictionary, fist);
                         whileBool = (noStdNameDictionary.Count != 0);
                         fist = false;
                     }
@@ -406,197 +406,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return 1;
         }
 
-        /// <summary>
-        /// 遍历节点拆分单元格
-        /// </summary>
-        /// <returns></returns>
-        private Dictionary<string, JObject> AddCellAndSplit2(Table table, Dictionary<string, JObject> cellCol6Dic,bool first)
-        {
-            Dictionary<string, JObject> cellCol7Dic = new Dictionary<string, JObject>();
-            int incr = 0;
-            foreach (var item in cellCol6Dic)
-            {
-                string c = item.Key;
-                JObject j = item.Value;
-                int cRow = int.Parse(c.Split(',')[0]) + incr;
-                int cCol = int.Parse(c.Split(',')[1]);
-                if (j["list"] == null)
-                    continue;
-                JArray secondItems = (JArray)j["list"];
-                int secondItemsCount = secondItems.Count;
-                if (secondItemsCount > 0)
-                {
-
-                    if (secondItemsCount != 1)
-                    {
-                        //检验结果列拆分
-                        for (int i = 0; i < secondItemsCount - 1; i++)
-                        {
-                            table.Cell(cRow, cCol + 1).Select();
-                            table.Cell(cRow, cCol + 1).Split(2, 1);
-                        }
-                        //备注列拆分
-                        table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
-                    }
-
-
-                    table.Cell(cRow, cCol).Select();
-                    var splitCellText = table.Cell(cRow, cCol).Range.Text;
-                    table.Cell(cRow, cCol).Split(secondItemsCount,  (cCol==4&& first) ? 1:2);
-
-                    table.Cell(cRow, cCol).Range.Select();
-                    if (_wordApp.Selection.OMaths.Count <= 0)
-                    {
-                        //拆分之后重新赋值
-                        int splitCellLength = splitCellText.Length;
-                        if (!splitCellText.Equals("\r\a") && !splitCellText.Equals(""))
-                        {
-                            try
-                            {
-                                table.Cell(cRow, cCol).Range.Text = splitCellText.Substring(splitCellLength - 2, 2).Equals("\r\a") ?
-                                    splitCellText.Substring(0, splitCellLength - 2) : splitCellText;
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                            }
-                        }
-                    }
-
-                    if (cCol!= 4||!first)
-                    {
-                        for (int i = 0; i < secondItemsCount; i++)
-                        {
-                            table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
-                        }
-                    }
-                    if (secondItemsCount != 1&&(cCol!=4||!first))
-                        table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
-
-                    //结果有拆分的
-                    int resultIndex = 0;
-
-                    if (cCol == 4&&first)
-                    {
-                        cCol = 3;
-                    }
-
-                    for (int i = 0; i < secondItemsCount; i++)
-                    {
-                        Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
-                        JObject secondItem = (JObject)secondItems[i];
-                        string itemContent = secondItem["stdItmNo"] != null
-                            ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
-                            : secondItem["itemContent"].ToString();
-                        
-                        tempCell.Range.Text = itemContent;
-
-                        this.FindHtmlLabel(tempCell.Range);
-
-                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
-                        {
-                            //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
-
-                            string newBookmark = "cellBookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(999);
-                            _wordApp.Selection.Bookmarks.Add(newBookmark, tempCell.Range);
-                            _lowerRightCornerCells.Add(newBookmark, secondItem["rightContent"].ToString());
-                        }
-
-                        if (secondItem["reMark"] != null)
-                        {
-                            try
-                            {
-                                table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItem["reMark"].ToString().Equals(string.Empty) ? "/" : secondItem["reMark"].ToString();
-                            }
-                            catch (Exception)
-                            {
-                                table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItem["reMark"].ToString().Equals(string.Empty) ? "/" : secondItem["reMark"].ToString();
-                            }
-
-                        }
-                        //检验结果
-                        if (secondItem["controls"] != null && !secondItem["controls"].ToString().Equals("") && (secondItem["list"] == null || ((JArray)secondItem["list"]).Count == 0))
-                        {
-                            Cell resultCell = table.Cell(cRow + i + resultIndex, cCol + 2);
-                            JArray resultList = JArray.Parse(secondItem["controls"].ToString());
-                            int resultCount = resultList.Count;
-                            if (resultCount > 1)
-                            {
-                                resultCell.Select();
-                                resultCell.Split(resultCount, 2);
-                                for (int k = 0; k < resultCount; k++)
-                                {
-                                    //序号列的单元格
-                                    Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
-                                    xuhaoCell.SetWidth(26f, WdRulerStyle.wdAdjustFirstColumn);
-
-                                }
-                                for (int k = 0; k < resultCount; k++)
-                                {
-                                    Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
-                                    xuhaoCell.Range.Text = "#" + (k + 1).ToString();
-                                    
-
-                                    SetResult(table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1), resultList[k]["result"].ToString(),2);
-
-                                }
-                                resultIndex = resultIndex + resultCount - 1;
-                            }
-                            else
-                            {
-                                if (resultList.First["result"].ToString().Equals("@", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    var previousCell = table.Cell(cRow + i + resultIndex, cCol + 1);
-                                    var rangText = previousCell.Range.Text;
-                                    var textLength = previousCell.Range.Text.Length;
-                                    resultCell.Select();
-                                    if (textLength > 2&& rangText.Substring(0,textLength-2).Length>10)
-                                    {
-                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                                        _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
-                                    }
-
-                                    resultCell.Merge(previousCell);
-                                }
-                                else
-                                {
-                                    Cell previous = null;
-                                    try
-                                    {
-                                        previous = table.Cell(cRow + i + resultIndex - 1, cCol + 2);
-                                    }
-                                    catch (Exception)
-                                    {
-                                        //resultCell.Range.Text = resultList.First["result"].ToString();
-                                    }
-                                    
-                                    SetResult(resultCell, resultList.First["result"].ToString(),1);
-
-                                    if (previous != null)
-                                    {
-                                        string previousText = previous.Range.Text;
-                                        if (previousText.Replace("\r\a", "").Equals("$", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            previous.Range.Text = "";
-
-                                            previous.Select();
-                                            previous.Merge(resultCell);
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                        cellCol7Dic.Add((cRow + i + resultIndex) + "," + (cCol + 1),secondItem);
-                    }
-                    incr = incr + secondItemsCount + resultIndex - 1;
-                }
-            }
-
-            return cellCol7Dic;
-        }
-        
-
+      
         /// <summary>
         /// 遍历节点拆分单元格
         /// </summary>
@@ -789,7 +599,196 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             return cellCol7Dic;
         }
-        
+
+        /// <summary>
+        /// 遍历无标准内容节点拆分单元格
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, JObject> AddCellAndSplitNoStdName(Table table, Dictionary<string, JObject> cellCol6Dic, bool first)
+        {
+            Dictionary<string, JObject> cellCol7Dic = new Dictionary<string, JObject>();
+            int incr = 0;
+            foreach (var item in cellCol6Dic)
+            {
+                string c = item.Key;
+                JObject j = item.Value;
+                int cRow = int.Parse(c.Split(',')[0]) + incr;
+                int cCol = int.Parse(c.Split(',')[1]);
+                if (j["list"] == null)
+                    continue;
+                JArray secondItems = (JArray)j["list"];
+                int secondItemsCount = secondItems.Count;
+                if (secondItemsCount > 0)
+                {
+
+                    if (secondItemsCount != 1)
+                    {
+                        //检验结果列拆分
+                        for (int i = 0; i < secondItemsCount - 1; i++)
+                        {
+                            table.Cell(cRow, cCol + 1).Select();
+                            table.Cell(cRow, cCol + 1).Split(2, 1);
+                        }
+                        //备注列拆分
+                        table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
+                    }
+
+
+                    table.Cell(cRow, cCol).Select();
+                    var splitCellText = table.Cell(cRow, cCol).Range.Text;
+                    table.Cell(cRow, cCol).Split(secondItemsCount, (cCol == 4 && first) ? 1 : 2);
+
+                    table.Cell(cRow, cCol).Range.Select();
+                    if (_wordApp.Selection.OMaths.Count <= 0)
+                    {
+                        //拆分之后重新赋值
+                        int splitCellLength = splitCellText.Length;
+                        if (!splitCellText.Equals("\r\a") && !splitCellText.Equals(""))
+                        {
+                            try
+                            {
+                                table.Cell(cRow, cCol).Range.Text = splitCellText.Substring(splitCellLength - 2, 2).Equals("\r\a") ?
+                                    splitCellText.Substring(0, splitCellLength - 2) : splitCellText;
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
+                        }
+                    }
+
+                    if (cCol != 4 || !first)
+                    {
+                        for (int i = 0; i < secondItemsCount; i++)
+                        {
+                            table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
+                        }
+                    }
+                    if (secondItemsCount != 1 && (cCol != 4 || !first))
+                        table.Cell(cRow, cCol).Merge(table.Cell(cRow + secondItemsCount - 1, cCol));
+
+                    //结果有拆分的
+                    int resultIndex = 0;
+
+                    if (cCol == 4 && first)
+                    {
+                        cCol = 3;
+                    }
+
+                    for (int i = 0; i < secondItemsCount; i++)
+                    {
+                        Cell tempCell = table.Cell(cRow + i + resultIndex, cCol + 1);
+                        JObject secondItem = (JObject)secondItems[i];
+                        string itemContent = secondItem["stdItmNo"] != null
+                            ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
+                            : secondItem["itemContent"].ToString();
+
+                        tempCell.Range.Text = itemContent;
+
+                        this.FindHtmlLabel(tempCell.Range);
+
+                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
+                        {
+                            //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
+
+                            string newBookmark = "cellBookmark" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + new Random().Next(999);
+                            _wordApp.Selection.Bookmarks.Add(newBookmark, tempCell.Range);
+                            _lowerRightCornerCells.Add(newBookmark, secondItem["rightContent"].ToString());
+                        }
+
+                        if (secondItem["reMark"] != null)
+                        {
+                            try
+                            {
+                                table.Cell(cRow + i + resultIndex, cCol + 4).Range.Text = secondItem["reMark"].ToString().Equals(string.Empty) ? "/" : secondItem["reMark"].ToString();
+                            }
+                            catch (Exception)
+                            {
+                                table.Cell(cRow + i + resultIndex, cCol + 2).Range.Text = secondItem["reMark"].ToString().Equals(string.Empty) ? "/" : secondItem["reMark"].ToString();
+                            }
+
+                        }
+                        //检验结果
+                        if (secondItem["controls"] != null && !secondItem["controls"].ToString().Equals("") && (secondItem["list"] == null || ((JArray)secondItem["list"]).Count == 0))
+                        {
+                            Cell resultCell = table.Cell(cRow + i + resultIndex, cCol + 2);
+                            JArray resultList = JArray.Parse(secondItem["controls"].ToString());
+                            int resultCount = resultList.Count;
+                            if (resultCount > 1)
+                            {
+                                resultCell.Select();
+                                resultCell.Split(resultCount, 2);
+                                for (int k = 0; k < resultCount; k++)
+                                {
+                                    //序号列的单元格
+                                    Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
+                                    xuhaoCell.SetWidth(26f, WdRulerStyle.wdAdjustFirstColumn);
+
+                                }
+                                for (int k = 0; k < resultCount; k++)
+                                {
+                                    Cell xuhaoCell = table.Cell(cRow + i + resultIndex + k, cCol + 2);
+                                    xuhaoCell.Range.Text = "#" + (k + 1).ToString();
+
+
+                                    SetResult(table.Cell(cRow + i + resultIndex + k, cCol + 2 + 1), resultList[k]["result"].ToString(), 2);
+
+                                }
+                                resultIndex = resultIndex + resultCount - 1;
+                            }
+                            else
+                            {
+                                if (resultList.First["result"].ToString().Equals("@", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    var previousCell = table.Cell(cRow + i + resultIndex, cCol + 1);
+                                    var rangText = previousCell.Range.Text;
+                                    var textLength = previousCell.Range.Text.Length;
+                                    resultCell.Select();
+                                    if (textLength > 2 && rangText.Substring(0, textLength - 2).Length > 10)
+                                    {
+                                        _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                                        _wordApp.Selection.Cells.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalTop;
+                                    }
+
+                                    resultCell.Merge(previousCell);
+                                }
+                                else
+                                {
+                                    Cell previous = null;
+                                    try
+                                    {
+                                        previous = table.Cell(cRow + i + resultIndex - 1, cCol + 2);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        //resultCell.Range.Text = resultList.First["result"].ToString();
+                                    }
+
+                                    SetResult(resultCell, resultList.First["result"].ToString(), 1);
+
+                                    if (previous != null)
+                                    {
+                                        string previousText = previous.Range.Text;
+                                        if (previousText.Replace("\r\a", "").Equals("$", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            previous.Range.Text = "";
+
+                                            previous.Select();
+                                            previous.Merge(resultCell);
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        cellCol7Dic.Add((cRow + i + resultIndex) + "," + (cCol + 1), secondItem);
+                    }
+                    incr = incr + secondItemsCount + resultIndex - 1;
+                }
+            }
+
+            return cellCol7Dic;
+        }
         //设置检验结果  1.merge 2.split
         private void SetResult(Cell tCell,string tString,int resultType)
         {

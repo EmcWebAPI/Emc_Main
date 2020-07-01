@@ -732,22 +732,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 _wordApp.Selection.InsertBreak(breakPage);
 
                 table = _wordApp.Selection.Range.Sections.Last.Range;
-                //CreateAndGoToNextParagraph(table, true, true);
-                //CreateAndGoToNextParagraph(table, true, true);
             }
             int numRows = 1;
             int numColumns = 2;
-            switch (contentList.Count)
+            switch (contentList.Count % 2)
             {
-                case 3:
-                case 4:
-                    numRows = 2;
-                    numColumns = 2;
+                case 1:
+                    numRows = contentList.Count / 2 + 1;
                     break;
-                case 5:
-                case 6:
-                    numRows = 3;
-                    numColumns = 2;
+                default:
+                    numRows = contentList.Count / 2==0?1: contentList.Count / 2;
                     break;
 
             }
@@ -838,7 +832,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     _wordApp.Selection.MoveDown(WdUnits.wdLine, _wordApp.Selection.Paragraphs.Count, WdMovementType.wdMove);
                 }
 
-                Range  wordTable = _wordApp.Selection.Range;
+                Range wordTable = _wordApp.Selection.Range;
 
                 //判断主表头是否为null
                 string[] mainTitleArray = null;
@@ -883,7 +877,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     wordTable.Paste();
 
                     ClearFormatTable(wordTable.Tables[1]);
-                    wordTable.Tables[1].Rows.SetHeight(16f,WdRowHeightRule.wdRowHeightAtLeast);
+                    wordTable.Tables[1].Rows.SetHeight(16f, WdRowHeightRule.wdRowHeightAtLeast);
                     wordTable.Tables[1].Select();
                     _wordApp.Selection.Cells.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPercent;
                     _wordApp.Selection.Cells.PreferredWidth = 20f;
@@ -979,9 +973,9 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         copyTable.Cell(1, 1).Range.Text = mainTitleArray[m];
                         m++;
                     }
-                    
+
                     //给表格排序
-                    List<Tuple<int,int>> sortColumn = new List<Tuple<int,int>>
+                    List<Tuple<int, int>> sortColumn = new List<Tuple<int, int>>
                     {
                         new Tuple<int, int>(5,3),
                         new Tuple<int, int>(6,4),
@@ -1139,16 +1133,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 从电压波动文件取内容到word
         /// </summary>
-        public string CopyFluctuationFileTableForColByTableIndex(string templateFullPath, 
-            string copyFileFullPath, 
-            int copyFileTableStartIndex, 
-            int copyFileTableEndIndex, 
+        public string CopyFluctuationFileTableForColByTableIndex(string templateFullPath,
+            string copyFileFullPath,
+            int copyFileTableStartIndex,
+            int copyFileTableEndIndex,
             Dictionary<int, string> copyTableColDic,
-            string wordBookmark, 
-            int titleRow, 
-            string mainTitle, 
-            bool isCloseTemplateFile, 
-            bool isNeedBreak, 
+            string wordBookmark,
+            int titleRow,
+            string mainTitle,
+            bool isCloseTemplateFile,
+            bool isNeedBreak,
             bool isPage,
             bool isCloseTheFile = true)
         {
@@ -1156,7 +1150,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 Document templateDoc = OpenWord(templateFullPath);
                 Document rtfDoc = OpenWord(copyFileFullPath, true);
-                CopyFluctuationFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak,isPage);
+                CopyFluctuationFileTableForColByTableIndex(templateDoc, rtfDoc, copyFileTableStartIndex, copyFileTableEndIndex, copyTableColDic, wordBookmark, titleRow, mainTitle, isNeedBreak, isPage);
                 if (isCloseTemplateFile)
                     CloseWord(templateDoc, templateFullPath);
                 if (isCloseTheFile)
@@ -1176,14 +1170,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         /// <summary>
         /// 
         /// </summary>
-        private string CopyFluctuationFileTableForColByTableIndex(Document templateDoc, 
-            Document rtfDoc, 
-            int copyFileTableStartIndex, 
-            int copyFileTableEndIndex, 
-            Dictionary<int, string> copyTableColDic, 
-            string wordBookmark, 
-            int titleRow, 
-            string mainTitle, 
+        private string CopyFluctuationFileTableForColByTableIndex(Document templateDoc,
+            Document rtfDoc,
+            int copyFileTableStartIndex,
+            int copyFileTableEndIndex,
+            Dictionary<int, string> copyTableColDic,
+            string wordBookmark,
+            int titleRow,
+            string mainTitle,
             bool isNeedBreak,
             bool isPage)
         {
@@ -1241,7 +1235,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     var wordTable = _wordApp.Selection.Range;
                     var table1 = wordTable.Tables[1];
                     //电压波动最后一列变符合
-                    
+
                     ClearFormatTable(table1);
                     for (int j = 2; j <= table1.Rows.Count; j++)
                     {
@@ -1265,7 +1259,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         }
                         wordTable.Tables[1].Cell(j, 4).Range.Text = "符合";
                     }
-                    table1.Columns[1].SetWidth(149f,WdRulerStyle.wdAdjustSameWidth);
+                    table1.Columns[1].SetWidth(149f, WdRulerStyle.wdAdjustSameWidth);
                     table1.Rows.SetHeight(14f, WdRowHeightRule.wdRowHeightAtLeast);
                 }
 
@@ -1365,8 +1359,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             try
             {
                 Range bookmarkPic = fileDoc.Content;
-                 bookmarkPic.Select();
-                
+                bookmarkPic.Select();
+
                 if (isNeedBreak)
                 {
                     fileDoc.Content.Select();
@@ -1392,7 +1386,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 inlineShape.Select();
                                 _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
                             }
-                            
+
                             CreateAndGoToNextParagraph(bookmarkPic, true, true);
                         }
                         i++;

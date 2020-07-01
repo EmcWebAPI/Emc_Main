@@ -15,7 +15,9 @@ namespace EmcReportWebApi.Config
     /// </summary>
     public class HiddenApiFilter : IDocumentFilter
     {
-
+        /// <summary>
+        /// 隐藏api应用
+        /// </summary>
         public void Apply(SwaggerDocument swaggerDoc, SchemaRegistry schemaRegistry, IApiExplorer apiExplorer)
         {
             foreach (ApiDescription apiDescription in apiExplorer.ApiDescriptions)

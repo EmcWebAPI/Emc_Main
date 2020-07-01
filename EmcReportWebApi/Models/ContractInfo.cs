@@ -3,17 +3,30 @@ using System.Linq;
 
 namespace EmcReportWebApi.Models
 {
+    /// <summary>
+    /// 合同信息
+    /// </summary>
     public class ContractInfo
     {
         #region 报告用的
+        /// <summary>
+        /// 
+        /// </summary>
         public ContractData Data { get; set; }
         #endregion
-
+        /// <summary>
+        /// 
+        /// </summary>
         public int Status { get; set; }
-
+        /// <summary>
+        ///
+        /// </summary>
         public string Message { get; set; }
     }
 
+    /// <summary>
+    /// 合同内容
+    /// </summary>
     public class ContractData
     {
 
@@ -74,6 +87,9 @@ namespace EmcReportWebApi.Models
         /// </summary>
         private string sampleNameRPT;
 
+        /// <summary>
+        /// 产品编号/批号
+        /// </summary>
         public string SampleNameRPT
         {
             get
@@ -198,11 +214,14 @@ namespace EmcReportWebApi.Models
         //    set { _sampleProductionDate = value; }
         //}
 
-        ///// <summary>
-        /////  "scrq" 生产日期
-        ///// </summary>
+        /// <summary>
+        ///  "scrq" 生产日期
+        /// </summary>
         public string SampleProductionDate { get; set; }
 
+        /// <summary>
+        /// 样品单位
+        /// </summary>
         public string SampleUnit { get; set; }
 
         private string _sampleQuantity;
@@ -280,6 +299,9 @@ namespace EmcReportWebApi.Models
 
         private string _sampleAcquisitionModeSy;
 
+        /// <summary>
+        /// 送样
+        /// </summary>
         public string SampleAcquisitionModeSy
         {
             get
@@ -332,6 +354,9 @@ namespace EmcReportWebApi.Models
         /// </summary>
         private string sampleModelSpecificationRPT;
 
+        /// <summary>
+        /// 型号规格重写
+        /// </summary>
         public string SampleModelSpecificationRPT
         {
             get
@@ -352,7 +377,9 @@ namespace EmcReportWebApi.Models
         private string _samplingBase;
         private string _samplingNumber;
         
-
+        /// <summary>
+        /// 产品编号/批号
+        /// </summary>
         public string BatchNumberRPT
         {
             get
@@ -363,17 +390,23 @@ namespace EmcReportWebApi.Models
             set { batchNumberRPT = value; }
         }
 
-
+        /// <summary>
+        /// 复检
+        /// </summary>
         public string ReinspectionRPT { get; set; }
 
         private string _sampleReceiptDateRpt;
-
+        /// <summary>
+        /// 实际到样日期
+        /// </summary>
         public string SampleReceiptDateRPT
         {
             get => string.IsNullOrEmpty(_sampleReceiptDateRpt)?this._sampleReceiptDate: _sampleReceiptDateRpt;
             set => _sampleReceiptDateRpt = value;
         }
-
+        /// <summary>
+        /// 检验结果是否有加列
+        /// </summary>
         public int? ColSpan { get; set; } = 0;
 
         #endregion

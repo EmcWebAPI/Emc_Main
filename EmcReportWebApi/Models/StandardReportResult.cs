@@ -5,6 +5,9 @@ using System.Web;
 
 namespace EmcReportWebApi.Models
 {
+    /// <summary>
+    /// 标准报告返回信息
+    /// </summary>
     public class StandardReportResult
     {
         /// <summary>

@@ -6,9 +6,17 @@ using System.Text;
 
 namespace EmcReportWebApi.Utils
 {
+    /// <summary>
+    /// httpClient帮助
+    /// </summary>
     public class SyncHttpHelper
     {
-        //get请求下载文件
+        /// <summary>
+        /// get请求下载文件
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="outFilePath"></param>
+        /// <param name="Timeout"></param>
         public static byte[] GetHttpRespponseForFile(string url, string outFilePath, int Timeout)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

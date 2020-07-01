@@ -6,6 +6,9 @@ using System.Web;
 
 namespace EmcReportWebApi.Models
 {
+    /// <summary>
+    /// 标准报告参数
+    /// </summary>
     public class StandardReportParams
     {
         /// <summary>

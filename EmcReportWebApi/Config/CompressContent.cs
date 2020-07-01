@@ -17,17 +17,33 @@ namespace EmcReportWebApi.Config
     {
         private readonly string _encodingType;
         private readonly HttpContent _originalContent;
+        /// <summary>
+        /// new
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="encodingType"></param>
         public CompressContent(HttpContent content, string encodingType = "gzip")
         {
             _originalContent = content;
             _encodingType = encodingType.ToLowerInvariant();
             Headers.ContentEncoding.Add(encodingType);
         }
+        /// <summary>
+        /// 判断长度
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
         protected override bool TryComputeLength(out long length)
         {
             length = -1;
             return false;
         }
+        /// <summary>
+        /// 序列化内存流
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             Stream compressStream = null;

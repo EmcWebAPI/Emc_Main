@@ -11,6 +11,9 @@ using EmcReportWebApi.Config;
 
 namespace EmcReportWebApi.Utils
 {
+    /// <summary>
+    /// word文件操作
+    /// </summary>
     public class WordUtil : IDisposable
     {
         /// <summary>
@@ -97,7 +100,10 @@ namespace EmcReportWebApi.Utils
         
 
         #region 运算公式
-
+        /// <summary>
+        /// 查找内容是否有html标签
+        /// </summary>
+        /// <param name="range"></param>
         protected void FindHtmlLabel(Range range)
         {
             range.Select();
@@ -640,12 +646,17 @@ namespace EmcReportWebApi.Utils
         #endregion
 
         #region 私有方法
+        /// <summary>
+        /// 创建word应用
+        /// </summary>
         protected void NewApp()
         {
             _wordApp = new Application();
         }
 
-        //关闭application
+        /// <summary>
+        /// 关闭word应用
+        /// </summary>
         protected void CloseApp()
         {
             object wdSaveOptions = WdSaveOptions.wdDoNotSaveChanges;
@@ -657,7 +668,10 @@ namespace EmcReportWebApi.Utils
             _wordApp = null;
         }
 
-        //创建一个新的word
+        /// <summary>
+        /// 创建一个新的word
+        /// </summary>
+        /// <returns></returns>
         protected Document CreatWord()
         {
             if (_wordApp == null)
@@ -665,7 +679,12 @@ namespace EmcReportWebApi.Utils
             return _wordApp.Documents.Add(ref _missing, ref _missing, ref _missing, ref _objFalse);
         }
 
-        //打开word
+        /// <summary>
+        /// 打开word
+        /// </summary>
+        /// <param name="fileFullPath"></param>
+        /// <param name="isOtherFormat"></param>
+        /// <returns></returns>
         protected Document OpenWord(string fileFullPath, bool isOtherFormat = false)
         {
             if (_wordApp == null)
@@ -707,7 +726,11 @@ namespace EmcReportWebApi.Utils
             return openWord;
         }
 
-        //关闭word
+        /// <summary>
+        /// 关闭word
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="fileFulleName"></param>
         protected void CloseWord(Document doc, string fileFulleName = "")
         {
             doc.Close(ref _objFalse, ref _missing, ref _missing);
@@ -715,13 +738,20 @@ namespace EmcReportWebApi.Utils
                 _fileDic.Remove(fileFulleName);
         }
 
-        //保存word
+        /// <summary>
+        /// 保存word
+        /// </summary>
+        /// <param name="doc"></param>
         protected void SaveWord(Document doc)
         {
             doc.Save();
         }
 
-        //另存word
+        /// <summary>
+        /// 另存word
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="outFileFullName"></param>
         protected void SaveAsWord(Document doc, string outFileFullName)
         {
             //筛选保存格式
@@ -788,7 +818,11 @@ namespace EmcReportWebApi.Utils
         }
 
 
-        //在application内插入文件(合并word)
+        /// <summary>
+        /// 在application内插入文件(合并word)
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="ifBreakPage"></param>
         protected void InsertWord(string fileName, bool ifBreakPage = false)
         {
             if (ifBreakPage)

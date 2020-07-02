@@ -318,6 +318,7 @@ namespace EmcReportWebApi.Business.Implement
             }
             catch (Exception ex)
             {
+                EmcConfig.ErrorLog.Error(message, ex);//设置错误信息
                 throw ex;
             }
 

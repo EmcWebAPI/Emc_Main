@@ -492,10 +492,31 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             : secondItem["itemContent"].ToString();
 
 
+                        Cell previousTempCell = null;
+                        try
+                        {
+                            previousTempCell = table.Cell(cRow + i + resultIndex - 1, cCol + 1);
+                        }
+                        catch (Exception)
+                        {
+                            //resultCell.Range.Text = resultList.First["result"].ToString();
+                        }
+
+                        if (previousTempCell != null)
+                        {
+                            string previousText = previousTempCell.Range.Text;
+                            if (previousText.Replace("\r\a", "").Equals("$", StringComparison.OrdinalIgnoreCase))
+                            {
+                                previousTempCell.Range.Text = "";
+
+                                previousTempCell.Select();
+                                previousTempCell.Merge(tempCell);
+
+                                tempCell = previousTempCell;
+                            }
+                        }
 
                         tempCell.Range.Text = itemContent;
-
-
                         this.FindHtmlLabel(tempCell.Range);
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
@@ -682,8 +703,33 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
                             : secondItem["itemContent"].ToString();
 
-                        tempCell.Range.Text = itemContent;
+                       
 
+                        Cell previousTempCell = null;
+                        try
+                        {
+                            previousTempCell = table.Cell(cRow + i + resultIndex - 1, cCol + 1);
+                        }
+                        catch (Exception)
+                        {
+                            //resultCell.Range.Text = resultList.First["result"].ToString();
+                        }
+
+                        if (previousTempCell != null)
+                        {
+                            string previousText = previousTempCell.Range.Text;
+                            if (previousText.Replace("\r\a", "").Equals("$", StringComparison.OrdinalIgnoreCase))
+                            {
+                                previousTempCell.Range.Text = "";
+
+                                previousTempCell.Select();
+                                previousTempCell.Merge(tempCell);
+
+                                tempCell = previousTempCell;
+                            }
+                        }
+
+                        tempCell.Range.Text = itemContent;
                         this.FindHtmlLabel(tempCell.Range);
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
@@ -795,11 +841,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 if (_colSpan > 1 && resultType == 1 && System.Text.Encoding.Default.GetBytes(tString).Length > 12)
                 {
-                    SetResult(tCell, tString);
+                    tString= SetResult(tCell, tString);
                 }
                 else if (System.Text.Encoding.Default.GetBytes(tString).Length > 8)
                 {
-                    SetResult(tCell, tString);
+                    tString= SetResult(tCell, tString);
                 }
             }
 
@@ -808,14 +854,13 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             this.FindHtmlLabel(tCell.Range);
         }
 
-        private void SetResult(Cell tCell, string tString)
+        private string SetResult(Cell tCell, string tString)
         {
             var indexStr = string.Empty;
-            indexStr = tString.Contains("～") ? "～" : string.Empty;
-            indexStr = tString.Contains("~") ? "~" : string.Empty;
+            indexStr = tString.Contains("～") ? "～" : "~";
             if (indexStr.Equals(string.Empty))
             {
-                return;
+                return tString;
             }
             string[] strArraySplit = tString.Split(Convert.ToChar(indexStr));
             tString = "";
@@ -832,6 +877,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
             tCell.Select();
             _wordApp.Selection.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+            return tString;
         }
 
 

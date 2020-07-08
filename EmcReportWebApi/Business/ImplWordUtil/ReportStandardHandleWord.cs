@@ -105,7 +105,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         }
 
                         //处理单项结论
-                        HandleConclusion(cellList, cellNextList);
+                        HandleConclusion(cellList, cellNextList,table);
 
                         _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
                         pageIndex = pageNumber;
@@ -196,8 +196,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             return result;
         }
 
-        private void HandleConclusion(List<CellInfo> cellList, List<Cell> nextCellList)
+        private void HandleConclusion(List<CellInfo> cellList, List<Cell> nextCellList, Table table)
         {
+            Range range = table.Range.GoToNext(WdGoToItem.wdGoToTable);
+            Table tableNext = range.Tables[1];
+            if (!tableNext.Cell(1, 1).Range.Text.Contains("续"))
+            {
+                return;
+            }
 
             //新的单项结论表格(第二个表格倒数第二行)
             if (nextCellList.Count < 2)
@@ -208,9 +214,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
             //找到最后一个带^^的单元格
             CellInfo cellInfo = cellList.LastOrDefault(p => p.CellText.Contains("^^"));
-            if (nextCellInfo.Range.Text.Equals("") || nextCellInfo.Range.Text.Equals("\r\a"))
-                if (cellInfo != null)
-                    nextCellInfo.Range.InsertAfter(cellInfo.CellText.Replace("\r\a", ""));
+            if (cellInfo != null)
+                nextCellInfo.Range.Text=(cellInfo.CellText.Replace("\r\a", ""));
         }
 
         private Cell TableContinueContent(Table table, int column, List<CellInfo> list)
@@ -703,7 +708,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             ? secondItem["stdItmNo"] + secondItem["itemContent"].ToString()
                             : secondItem["itemContent"].ToString();
 
-                       
+
 
                         Cell previousTempCell = null;
                         try
@@ -841,11 +846,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 if (_colSpan > 1 && resultType == 1 && System.Text.Encoding.Default.GetBytes(tString).Length > 12)
                 {
-                    tString= SetResult(tCell, tString);
+                    tString = SetResult(tCell, tString);
                 }
                 else if (System.Text.Encoding.Default.GetBytes(tString).Length > 8)
                 {
-                    tString= SetResult(tCell, tString);
+                    tString = SetResult(tCell, tString);
                 }
             }
 

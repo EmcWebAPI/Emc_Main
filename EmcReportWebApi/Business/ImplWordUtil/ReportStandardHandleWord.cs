@@ -522,6 +522,15 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         }
 
                         tempCell.Range.Text = itemContent;
+
+                        #region 麻醉机
+                        //if (itemContent.Contains("100ml以下潮气量和1 L/min以下分钟通气量") || itemContent.Contains("100ml以下潮气量和1 L/min以下分钟通气量。其要求见6.8.2yy）。"))
+                        //{
+                        //    tempCell.Select();
+                        //    _wordApp.Selection.Range.Cells[1].SetWidth(90f, WdRulerStyle.wdAdjustFirstColumn);
+                        //}
+                        #endregion
+
                         this.FindHtmlLabel(tempCell.Range);
 
                         if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))

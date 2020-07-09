@@ -149,6 +149,7 @@
     <Content Include="Document\测试用例\静电放电\jdfd_link.jpg" />
     <Content Include="Document\QRCode.txt" />
     <Content Include="Document\辐射发射实验rtf表头对应.png" />
+    <Content Include="Document\麻醉机bug.txt" />
     <Content Include="Files\ReportFiles\Test\image1.jpg" />
     <Content Include="Files\ReportFiles\Test\image2.jpg" />
     <Content Include="Files\ReportFiles\Test\index1.html" />
@@ -162,6 +163,7 @@
     <Content Include="RtfConfig.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Document\麻醉机bug.docx" />
     <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Web.config">
       <SubType>Designer</SubType>

@@ -1,0 +1,4100 @@
+OriginalRecord:{"deptName":"健康医学院分部","reportId":"18a36a29cea744e7976781bca331c7cb","contractId":"2c908ab2722c5ae701724a8f4ff00da4","userName":"杨晓庆","userId":"000000006b549107016b54ea08290079"}
+ZipFilesUrl:http://172.16.10.51/cms/download/reportFileForZip?reportNumber=GYJ2020-3033&timestamp=1,594,282,663,213
+CallbackUrl:http://172.16.10.51/management/testReport/callback
+JsonObject:{
+  "standard": [
+    {
+      "itemId": "1270",
+      "idxNo": "1",
+      "itemContent": "控制器和仪表的标记",
+      "itemPath": "1270|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1271",
+          "stdName": "GB 9706.1-2007",
+          "stdItmNo": "6.3",
+          "itemPath": "1270|1271|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1272",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "a）电源开关应能清楚地识别。“通”、“断”位置，应按附录D中相应符号（表D.1的符号15和符号16）来标记，或用一个邻近的指示灯，或其他明显的方法来表示。",
+              "itemPath": "1270|1271|1272|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1273",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "b）设备上控制装置和开关的各档位置，应以数字、文字或其他直观方法表明。",
+              "itemPath": "1270|1271|1273|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1274",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "c）控制装置设定值的方向指示：\n相应的指示装置或功能量值变化方向的指示。",
+              "itemPath": "1270|1271|1274|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1275",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "f）操作者操作的控制器和指示器的功能应能识别。",
+              "itemPath": "1270|1271|1275|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1276",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "g) 参数的数值指示，应采用GB 3100的国际单位制及补充单位来表示。",
+              "itemPath": "1270|1271|1276|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "3SJjEBt8QL",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1270|3SJjEBt8QL|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "nCbQC8hjDd",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1270|3SJjEBt8QL|nCbQC8hjDd|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1277",
+      "idxNo": "2",
+      "itemContent": "气体连接点识别",
+      "itemPath": "1277|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1278",
+          "stdName": "GB 9706.1-2007",
+          "stdItmNo": "6.6 b)",
+          "itemPath": "1277|1278|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1279",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "气瓶的连接点，应在设备上作出识别，以免更换时发生差错。",
+              "itemPath": "1277|1278|1279|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "5RR16lWpkM",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1277|5RR16lWpkM|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "a4r1nQCcbR",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1277|5RR16lWpkM|a4r1nQCcbR|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1280",
+      "idxNo": "3",
+      "itemContent": "指示灯的颜色",
+      "itemPath": "1280|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1281",
+          "stdName": "GB 9706.1-2007",
+          "stdItmNo": "6.7a)",
+          "itemPath": "1280|1281|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1282",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "在设备上红色应仅用于指示危险的警告和（或）要求紧急行动。",
+              "itemPath": "1280|1281|1282|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "BwkNP2Z1FE",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1280|BwkNP2Z1FE|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "yA7te5PN3p",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1280|BwkNP2Z1FE|yA7te5PN3p|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1283",
+      "idxNo": "4",
+      "itemContent": "不带灯按钮的颜色",
+      "itemPath": "1283|",
+      "deepth": 1,
+      "comment": "/",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1284",
+          "stdName": "GB 9706.1-2007",
+          "stdItmNo": "6.7b)",
+          "itemPath": "1283|1284|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1285",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "红色应只用于紧急时中断功能的按钮。",
+              "itemPath": "1283|1284|1285|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "pwRxo5ZD0E",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1283|pwRxo5ZD0E|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "——",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "jPvcpFsAIx",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1283|pwRxo5ZD0E|jPvcpFsAIx|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1286",
+      "idxNo": "5",
+      "itemContent": "输入功率",
+      "itemPath": "1286|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1287",
+          "stdName": "GB 9706.1-2007",
+          "stdItmNo": "7.1",
+          "itemPath": "1286|1287|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1288",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "a）主要由电动机驱动引起的设备：\n额定功率:\n偏差≤额定功率的  15 %",
+              "itemPath": "1286|1287|1288|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                "额定功率:",
+                "功率",
+                "15"
+              ],
+              "stdType": "0",
+              "itemContentTemplate": "a）主要由电动机驱动引起的设备：\n${1}\n偏差≤额定${2}的  ${3} %",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1289",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "b）其他设备：\n额定电流:8A\n偏差≤额定电流的  /  %",
+              "itemPath": "1286|1287|1289|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "7A",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                "额定电流:8A",
+                "电流",
+                "/"
+              ],
+              "stdType": "0",
+              "itemContentTemplate": "b）其他设备：\n${1}\n偏差≤额定${2}的  ${3}  %",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "iWrRvwItTu",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1286|iWrRvwItTu|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "ndKjN0J6Ez",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1286|iWrRvwItTu|ndKjN0J6Ez|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1290",
+      "idxNo": "6",
+      "itemContent": "外壳的封闭性",
+      "itemPath": "1290|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1291",
+          "stdName": "GB 9706.1-2007",
+          "stdItmNo": "16a)",
+          "itemPath": "1290|1291|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1292",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "设备应制造和封闭得能防止与带电部分以及在单一故障状态下可能带电的部分接触。",
+              "itemPath": "1290|1291|1292|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "J8I9WfdyCa",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1290|J8I9WfdyCa|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "wE0nUUkudc",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1290|J8I9WfdyCa|wE0nUUkudc|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1293",
+      "idxNo": "7",
+      "itemContent": "不用工具就可打开的罩和门的安全性",
+      "itemPath": "1293|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1294",
+          "stdName": "GB 9706.1-2007",
+          "stdItmNo": "16a)",
+          "itemPath": "1293|1294|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1295",
+              "stdName": "GB 9706.1-2007",
+              "itemContent": "当设备以正常使用条件运行时，甚至在不用工具或按使用说明书打开盖子和门以及拆卸部件之后，能防止与带电部分接触。",
+              "itemPath": "1293|1294|1295|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "lmJF0XlND0",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1293|lmJF0XlND0|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "cPiPEtFnTI",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1293|lmJF0XlND0|cPiPEtFnTI|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1296",
+      "idxNo": "8",
+      "itemContent": "连续漏电流和患者辅助电流(正常工作温度下)",
+      "itemPath": "1296|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1297",
+          "stdName": "GB 9706.1-2007\n",
+          "stdItmNo": "19",
+          "itemPath": "1296|1297|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1298",
+              "stdName": "GB 9706.1-2007\n",
+              "itemContent": "对地漏电流",
+              "itemPath": "1296|1297|1298|",
+              "deepth": 3,
+              "controls": [
+                "<input type='text' value=''></input>"
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                "0.5"
+              ],
+              "stdType": "0",
+              "list": [
+                {
+                  "itemId": "1299",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "正常状态下≤ 0.5 mA",
+                  "itemPath": "1296|1297|1298|1299|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "0.2",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.5"
+                  ],
+                  "stdType": "0",
+                  "itemContentTemplate": "正常状态下≤ ${1} mA",
+                  "list": [],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1300",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "单一故障状态下≤ 1  mA",
+                  "itemPath": "1296|1297|1298|1300|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "0.5",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "1"
+                  ],
+                  "stdType": "0",
+                  "itemContentTemplate": "单一故障状态下≤ ${1}  mA",
+                  "list": [],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                }
+              ],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1301",
+              "stdName": "GB 9706.1-2007\n",
+              "itemContent": "外壳漏电流",
+              "itemPath": "1296|1297|1301|",
+              "deepth": 3,
+              "controls": [
+                "<input type='text' value=''></input>"
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                "0.1"
+              ],
+              "stdType": "0",
+              "list": [
+                {
+                  "itemId": "1302",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "正常状态下≤ 0.1  mA",
+                  "itemPath": "1296|1297|1301|1302|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "<0.01",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.1"
+                  ],
+                  "stdType": "0",
+                  "itemContentTemplate": "正常状态下≤ ${1}  mA",
+                  "list": [],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1303",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "单一故障状态下≤ 0.5  mA",
+                  "itemPath": "1296|1297|1301|1303|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "<0.01",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.5"
+                  ],
+                  "stdType": "0",
+                  "itemContentTemplate": "单一故障状态下≤ ${1}  mA",
+                  "list": [],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1304",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "信号输入/出部分加压状态≤ 0.5 mA",
+                  "itemPath": "1296|1297|1301|1304|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "——",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.5"
+                  ],
+                  "stdType": "0",
+                  "itemContentTemplate": "信号输入/出部分加压状态≤ ${1} mA",
+                  "list": [],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                }
+              ],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1305",
+              "stdName": "GB 9706.1-2007\n",
+              "itemContent": "患者漏电流",
+              "itemPath": "1296|1297|1305|",
+              "deepth": 3,
+              "controls": [
+                "<input type='text' value=''></input>"
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                "0.01"
+              ],
+              "stdType": "0",
+              "list": [
+                {
+                  "itemId": "1306",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "直流",
+                  "itemPath": "1296|1297|1305|1306|",
+                  "deepth": 4,
+                  "controls": [
+                    "<input type='text' value=''></input>"
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.01"
+                  ],
+                  "stdType": "0",
+                  "list": [
+                    {
+                      "itemId": "1307",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "正常状态下≤0.01 mA",
+                      "itemPath": "1296|1297|1305|1306|1307|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "<0.01",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.01"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "正常状态下≤${1} mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    },
+                    {
+                      "itemId": "1308",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "单一故障状态下≤ 0.05 mA",
+                      "itemPath": "1296|1297|1305|1306|1308|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "<0.01",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.05"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "单一故障状态下≤ ${1} mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    }
+                  ],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1309",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "交流",
+                  "itemPath": "1296|1297|1305|1309|",
+                  "deepth": 4,
+                  "controls": [
+                    "<input type='text' value=''></input>"
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.1"
+                  ],
+                  "stdType": "0",
+                  "list": [
+                    {
+                      "itemId": "1310",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "正常状态下≤ 0.1 mA",
+                      "itemPath": "1296|1297|1305|1309|1310|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "<0.01",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.1"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "正常状态下≤ ${1} mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    },
+                    {
+                      "itemId": "1311",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "单一故障状态下≤ 0.5 mA",
+                      "itemPath": "1296|1297|1305|1309|1311|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "<0.01",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.5"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "单一故障状态下≤ ${1} mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    }
+                  ],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1312",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "应用部分加压状态≤ 5 mA",
+                  "itemPath": "1296|1297|1305|1312|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "<0.01",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "5"
+                  ],
+                  "stdType": "0",
+                  "itemContentTemplate": "应用部分加压状态≤ ${1} mA",
+                  "list": [],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1313",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "信号输入/出部分加压状态≤ 0.5 mA",
+                  "itemPath": "1296|1297|1305|1313|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "——",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.5"
+                  ],
+                  "stdType": "0",
+                  "itemContentTemplate": "信号输入/出部分加压状态≤ ${1} mA",
+                  "list": [],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                }
+              ],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1314",
+              "stdName": "GB 9706.1-2007\n",
+              "itemContent": "患者辅助电流\n单位：mA",
+              "itemPath": "1296|1297|1314|",
+              "deepth": 3,
+              "controls": [
+                "<input type='text' value=''></input>"
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                "0.01"
+              ],
+              "stdType": "0",
+              "list": [
+                {
+                  "itemId": "1315",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "直流",
+                  "itemPath": "1296|1297|1314|1315|",
+                  "deepth": 4,
+                  "controls": [
+                    "<input type='text' value=''></input>"
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.01"
+                  ],
+                  "stdType": "0",
+                  "list": [
+                    {
+                      "itemId": "1316",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "正常状态下≤ 0.01 mA",
+                      "itemPath": "1296|1297|1314|1315|1316|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "——",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.01"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "正常状态下≤ ${1} mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    },
+                    {
+                      "itemId": "1317",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "单一故障状态下≤ 0.05 mA",
+                      "itemPath": "1296|1297|1314|1315|1317|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "——",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.05"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "单一故障状态下≤ ${1} mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    }
+                  ],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1318",
+                  "stdName": "GB 9706.1-2007\n",
+                  "itemContent": "交流",
+                  "itemPath": "1296|1297|1314|1318|",
+                  "deepth": 4,
+                  "controls": [
+                    "<input type='text' value=''></input>"
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    "0.1"
+                  ],
+                  "stdType": "0",
+                  "list": [
+                    {
+                      "itemId": "1319",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "正常状态下≤ 0.1  mA",
+                      "itemPath": "1296|1297|1314|1318|1319|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "——",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.1"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "正常状态下≤ ${1}  mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    },
+                    {
+                      "itemId": "1320",
+                      "stdName": "GB 9706.1-2007\n",
+                      "itemContent": "单一故障状态下≤ 0.5 mA",
+                      "itemPath": "1296|1297|1314|1318|1320|",
+                      "deepth": 5,
+                      "controls": [
+                        {
+                          "result": "——",
+                          "html": "<input type='text' value=''></input>"
+                        }
+                      ],
+                      "controlsTyp": "0",
+                      "reMark": "/",
+                      "defVal": [
+                        "0.5"
+                      ],
+                      "stdType": "0",
+                      "itemContentTemplate": "单一故障状态下≤ ${1} mA",
+                      "list": [],
+                      "rightContent": "",
+                      "rightContentValue": ""
+                    }
+                  ],
+                  "rightContent": "",
+                  "rightContentValue": ""
+                }
+              ],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "QXSCXldnT4",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1296|QXSCXldnT4|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "XfyzMJ0Su2",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1296|QXSCXldnT4|XfyzMJ0Su2|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1321",
+      "idxNo": "9",
+      "itemContent": "正常使用时的稳定性",
+      "itemPath": "1321|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1322",
+          "stdName": "GB 9706.1- 2007",
+          "stdItmNo": "24",
+          "itemPath": "1321|1322|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1323",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "24.1在正常使用时，将设备倾斜10°，应不失衡。",
+              "itemPath": "1321|1322|1323|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1324",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "24.3 除运输外，在正常使用的任何位置倾斜到5°时，设备不应失衡。",
+              "itemPath": "1321|1322|1324|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1325",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "设备应有警告性标志说明宜仅在某一位置时进行搬运，且应在使用说明书中清楚说明或在设备上用图例表示。",
+              "itemPath": "1321|1322|1325|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1326",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "在规定的搬运位置，当设备倾斜到10°时不应失衡。",
+              "itemPath": "1321|1322|1326|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1327",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "24.6 把手或其他提拎装置\na）质量超过20 kg且正常使用时要搬动的设备或设备部件，应备有合适的提拎装置（如把手、起重环等），或在随机文件中应指明设备可安全起吊的位置或安装时宜如何搬运。",
+              "itemPath": "1321|1322|1327|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1328",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "b）质量超过20 kg，且被制造商规定为可携带式设备，应有合理布置的携带用把手，以便设备可能由两人或更多的人携带。",
+              "itemPath": "1321|1322|1328|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "u57v4x7F8T",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1321|u57v4x7F8T|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "sssDAi8DJH",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1321|u57v4x7F8T|sssDAi8DJH|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1329",
+      "idxNo": "10",
+      "itemContent": "自动复位装置的选择",
+      "itemPath": "1329|",
+      "deepth": 1,
+      "comment": "/",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1330",
+          "stdName": "GB 9706.1- 2007",
+          "stdItmNo": "49.1",
+          "itemPath": "1329|1330|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1331",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "如果由于自动复位会造成安全方面危险，则不应使用自动复位热断路器和过电流释放器。",
+              "itemPath": "1329|1330|1331|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "UfnimIO44m",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1329|UfnimIO44m|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "——",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "MVJpL2hEna",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1329|UfnimIO44m|MVJpL2hEna|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1332",
+      "idxNo": "11",
+      "itemContent": "电源中断后的复位",
+      "itemPath": "1332|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1333",
+          "stdName": "GB 9706.1- 2007",
+          "stdItmNo": "49.2",
+          "itemPath": "1332|1333|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1334",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "设备应设计成当电源供电中断后又恢复时，除预定功能中断外，不会发生安全方面危险。",
+              "itemPath": "1332|1333|1334|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "P29yCDrYyS",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1332|P29yCDrYyS|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "wKCvwbkegE",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1332|P29yCDrYyS|wKCvwbkegE|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1335",
+      "idxNo": "12",
+      "itemContent": "指示器",
+      "itemPath": "1335|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1336",
+          "stdName": "GB 9706.1- 2007",
+          "stdItmNo": "56.8",
+          "itemPath": "1335|1336|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1337",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "除非对位于正常操作位置的操作者另有显而易见的指示，否则应安装指示灯，用于：\n——指示设备已通电。",
+              "itemPath": "1335|1336|1337|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1338",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "——设备装有不发光的电热器如会产生安全方面危险时，指示电热器已工作。",
+              "itemPath": "1335|1336|1338|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1339",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "——当输出电路意外的或长时间的工作可能引起安全方面危险时，指示处于输出状态。",
+              "itemPath": "1335|1336|1339|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1340",
+              "stdName": "GB 9706.1- 2007",
+              "itemContent": "——设备中有内部电源充电装置时，充电工作状态应明显地指示给操作者。",
+              "itemPath": "1335|1336|1340|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "F7Z0gl1fZx",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.1",
+          "itemPath": "1335|F7Z0gl1fZx|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "AFcgSOV1gz",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全通用要求应符合GB9706.1-2007《医用电气设备第1部分 安全通用要求》",
+              "itemPath": "1335|F7Z0gl1fZx|AFcgSOV1gz|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1341",
+      "idxNo": "13",
+      "itemContent": "供电电源的中断",
+      "itemPath": "1341|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1342",
+          "stdName": "GB 9706.29- 2006",
+          "stdItmNo": "49",
+          "itemPath": "1341|1342|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1343",
+              "stdName": "GB 9706.29- 2006",
+              "itemContent": "电源供应\n49.101.1 应提供防止意外关闭开关的方法。",
+              "itemPath": "1341|1342|1343|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1344",
+              "stdName": "GB 9706.29- 2006",
+              "itemContent": "49.101.2 麻醉气体输送系统应设计成当一旦发生电源供应故障时，气体供应将不受影响或者提供气体输送的切换方式。 \n一旦电源供应故障（低于制造商规定的最低值），至少为次优先级的报警信号应激活。",
+              "itemPath": "1341|1342|1344|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1345",
+              "stdName": "GB 9706.29- 2006",
+              "itemContent": "49.101.3 当自动转换到备用电源时至少为低优先级的报警信号应激活。",
+              "itemPath": "1341|1342|1345|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1346",
+              "stdName": "GB 9706.29- 2006",
+              "itemContent": "49.101.4 应有测定备用电源状态的方法。",
+              "itemPath": "1341|1342|1346|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1347",
+              "stdName": "GB 9706.29- 2006",
+              "itemContent": "气源供应\n49.102.1 应提供防止意外关闭开关的方法。",
+              "itemPath": "1341|1342|1347|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "j5HDZ3UNry",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1341|j5HDZ3UNry|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "4zAN3ItnNy",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1341|j5HDZ3UNry|4zAN3ItnNy|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1348",
+      "idxNo": "14",
+      "itemContent": "呼出气量监测",
+      "itemPath": "1348|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1349",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "51.101.4",
+          "itemPath": "1348|1349|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1350",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "51.101.4.1 麻醉系统应提供符合51.101.4.2的呼出气量监护仪，",
+              "itemPath": "1348|1349|1350|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1351",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "若否，在随机文件中应声明麻醉系统在使用前将配备符合51.101.4.2的呼出气量监护仪。",
+              "itemPath": "1348|1349|1351|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1352",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "51.101.4.2 对于100ml以上潮气量或1 L/min以上分钟通气量，监护显示值的精度应为实际读数的±20％。",
+              "itemPath": "1348|1349|1352|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "+8%～+11%",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                "±20"
+              ],
+              "stdType": "0",
+              "itemContentTemplate": "51.101.4.2 对于100ml以上潮气量或1 L/min以上分钟通气量，监护显示值的精度应为实际读数的${1}％。",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1353",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "100ml以下潮气量和1 L/min以下分钟通气量。其要求见6.8.2yy）。",
+              "itemPath": "1348|1349|1353|",
+              "deepth": 3,
+              "controls": [
+                "<input type='text' value=''></input>"
+              ],
+              "controlsTyp": "0",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [
+                {
+                  "itemId": "1354",
+                  "stdName": "GB 9706.29 -2006",
+                  "itemContent": "潮气量",
+                  "itemPath": "1348|1349|1353|1354|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "+6",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "/",
+                  "defVal": [
+                    ""
+                  ],
+                  "stdType": "0",
+                  "list": [],
+                  "rightContent": "单位：ml",
+                  "rightContentValue": ""
+                },
+                {
+                  "itemId": "1355",
+                  "stdName": "GB 9706.29 -2006",
+                  "itemContent": "分钟通气量",
+                  "itemPath": "1348|1349|1353|1355|",
+                  "deepth": 4,
+                  "controls": [
+                    {
+                      "result": "/",
+                      "html": "<input type='text' value=''></input>"
+                    }
+                  ],
+                  "controlsTyp": "0",
+                  "reMark": "",
+                  "defVal": [
+                    ""
+                  ],
+                  "stdType": "0",
+                  "list": [],
+                  "rightContent": "单位：L/min",
+                  "rightContentValue": ""
+                }
+              ],
+              "rightContent": "单位：ml",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1356",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "51.101.4.3 当患者呼出的气量下降到低于操作者可调的最低值时，一个至少为次优先级的报警应被激活。",
+              "itemPath": "1348|1349|1356|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1357",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "如果次优先级的信号是可延迟的，那么延迟时间不得超过90 s。\n此延迟时间可以是由操作者可调的。",
+              "itemPath": "1348|1349|1357|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "/",
+              "defVal": [
+                "90"
+              ],
+              "stdType": "0",
+              "itemContentTemplate": "如果次优先级的信号是可延迟的，那么延迟时间不得超过${1} s。\n此延迟时间可以是由操作者可调的。",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "66429ta4Wu",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1348|66429ta4Wu|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "h3pWLV4OPo",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1348|66429ta4Wu|h3pWLV4OPo|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1358",
+      "idxNo": "15",
+      "itemContent": "通气系统完整性报警",
+      "itemPath": "1358|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1359",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "51.101.5",
+          "itemPath": "1358|1359|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1360",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "麻醉系统应提供有符合51.101.5.1报警信号的通气系统，",
+              "itemPath": "1358|1359|1360|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1361",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "若否，随机文件中应声明在使用之前麻醉系统将配备带有符合51.101.5.1报警信号的通气系统。",
+              "itemPath": "1358|1359|1361|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "JCD2e7s0BQ",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1358|JCD2e7s0BQ|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "zTbaviRT15",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1358|JCD2e7s0BQ|zTbaviRT15|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1362",
+      "idxNo": "16",
+      "itemContent": "麻醉气体输送系统",
+      "itemPath": "1362|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1363",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "51.102",
+          "itemPath": "1362|1363|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1364",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "51.102.1 供氧故障报警系统\n麻醉气体输送系统应有供氧故障报警系统，当来自管道或气瓶的氧气供应低于制造商的要求时作用。",
+              "itemPath": "1362|1363|1364|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1365",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "如果报警信号是由电子学方法产生的，它应是高优先级。",
+              "itemPath": "1362|1363|1365|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1366",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "如果是气动产生的，则听觉报警信号至少要持续7s，在距系统1m处，用声级计“A”频率计权网络测试，报警声压级应不小于60dB。",
+              "itemPath": "1362|1363|1366|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1367",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "气动产生报警信号的能量应该是来自氧气供应源。",
+              "itemPath": "1362|1363|1367|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1368",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "51.102.2 供氧故障保护 \n麻醉气体输送系统应设计成任何时候在供氧降低到制造商规定的最低值且氧气连续从共同气体出口流出时，在共同气体出口处输送的氧气浓度不应低于19％。",
+              "itemPath": "1362|1363|1368|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1369",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "在这些条件下的麻醉气体输送系统的性能应在随机文件中声明。",
+              "itemPath": "1362|1363|1369|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1370",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "51.102.3 防止选择的氧浓度低于大气氧浓度\n麻醉气体输送系统中应有一个装置，以防止无意识地选择氧气和氧化亚氮混合气体中的氧气浓度低于大气氧浓度。如果此装置是操作者选择的人控机械结构，它的激活应该被清楚地指示。",
+              "itemPath": "1362|1363|1370|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "SD6bFwxrd0",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1362|SD6bFwxrd0|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "ru1nPadP5U",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1362|SD6bFwxrd0|ru1nPadP5U|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1371",
+      "idxNo": "17",
+      "itemContent": "设定值的意外改变",
+      "itemPath": "1371|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1372",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "54.3",
+          "itemPath": "1371|1372|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1373",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "所有手动操作的控制器(机械的，气动的或电子的)，应设计使得其意外改变设定位置的可能性降低至最低。",
+              "itemPath": "1371|1372|1373|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "J1aS89qDK5",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1371|J1aS89qDK5|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "C5lfy8OnDO",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1371|J1aS89qDK5|C5lfy8OnDO|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1374",
+      "idxNo": "18",
+      "itemContent": "电源软电线",
+      "itemPath": "1374|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1375",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "57.3",
+          "itemPath": "1374|1375|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1376",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "a) 应用 \n——电动的麻醉系统和/或它的单独装置的电源软电线应是不可拆卸的软电线或应防止意外断开。",
+              "itemPath": "1374|1375|1376|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "N3WWqIScVi",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1374|N3WWqIScVi|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "5iQjkbFKgk",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1374|N3WWqIScVi|5iQjkbFKgk|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1377",
+      "idxNo": "19",
+      "itemContent": "医用供气",
+      "itemPath": "1377|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1378",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "101.1",
+          "itemPath": "1377|1378|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1379",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "麻醉气体输送系统应有连接备用供氧的方法。",
+              "itemPath": "1377|1378|1379|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "4ymBhED11e",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1377|4ymBhED11e|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "60poGJDjSJ",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1377|4ymBhED11e|60poGJDjSJ|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1380",
+      "idxNo": "20",
+      "itemContent": "医用气体供应压力监护",
+      "itemPath": "1380|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1381",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "103",
+          "itemPath": "1380|1381|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1382",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "103.1麻醉气体输送系统应有监测以气瓶压力供气的每种气体的压力或容量的装置。麻醉气体输送系统应可以连续显示压力或气瓶容量。此显示在麻醉气体输送系统的前方应是可见的。",
+              "itemPath": "1380|1381|1382|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1383",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "103.2麻醉气体输送系统应有连续监测由医用气体管道系统供应的每种气体压力的装置。\n麻醉气体输送系统应可以连续显示压力状态。该显示在麻醉气体输送系统的前方应是可见的。",
+              "itemPath": "1380|1381|1383|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1384",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "103.3压力监测装置的最大误差不得超过±（满刻度读数的4％＋实际读数的8％）。",
+              "itemPath": "1380|1381|1384|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "+0%～+2%",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "defVal": [
+                "4",
+                "8"
+              ],
+              "stdType": "0",
+              "itemContentTemplate": "103.3压力监测装置的最大误差不得超过±（满刻度读数的${1}％＋实际读数的${2}％）。",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "e4Pf8i2fPN",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1380|e4Pf8i2fPN|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "Ury9Sn4Te1",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1380|e4Pf8i2fPN|Ury9Sn4Te1|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1385",
+      "idxNo": "21",
+      "itemContent": "快速供氧",
+      "itemPath": "1385|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1386",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "108",
+          "itemPath": "1385|1386|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1387",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "108.1麻醉气体输送系统应有一装置，允许操作者直接把浓度为100％稳定流量在25 L/min和75L/min之间的氧气送至新鲜气体出口或麻醉通气系统的入口。 \n单位：L/min",
+              "itemPath": "1385|1386|1387|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "50～52",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1388",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "108.2装置不应直接提供除氧气以外的其它气体到新鲜气体出口或麻醉通气系统入口处。",
+              "itemPath": "1385|1386|1388|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1389",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "108.3快速供氧应该仅有一个关闭状态。 \n注：快速供氧的设计和位置应能使设备或人员对其误操作的可能性降到最低。",
+              "itemPath": "1385|1386|1389|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1390",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "108.4快速供气应该是用单手操作，并会自动关闭的。",
+              "itemPath": "1385|1386|1390|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "WDjDak0OZg",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1385|WDjDak0OZg|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "vRL2JAyzsW",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1385|WDjDak0OZg|vRL2JAyzsW|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1391",
+      "idxNo": "22",
+      "itemContent": "新鲜气体出口",
+      "itemPath": "1391|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1392",
+          "stdName": "GB 9706.29 -2006",
+          "stdItmNo": "109",
+          "itemPath": "1391|1392|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1393",
+              "stdName": "GB 9706.29 -2006",
+              "itemContent": "如果是操作者可触及的新鲜气体出口，应不多于一个，在操作者的位置它应是可见的，并且应是符合YY 1040.1-2003或ISO 5356-2：1987的同轴22mm/15mm的圆锥接头。 \n注：操作者可触及的新鲜气体出口应有防止与麻醉通气系统意外断开的措施。",
+              "itemPath": "1391|1392|1393|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "sgtG48enCH",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.23.2",
+          "itemPath": "1391|sgtG48enCH|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "bMXaYg8scR",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "安全专用要求应符合GB9706.29-2006《医用电气设备第2部分：麻醉系统的安全和基本性能专用要求》",
+              "itemPath": "1391|sgtG48enCH|bMXaYg8scR|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1394",
+      "idxNo": "23",
+      "itemContent": "储气囊/麻醉呼吸机选择开关",
+      "itemPath": "1394|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1395",
+          "stdName": "YY 0635.1-2013",
+          "stdItmNo": "6",
+          "itemPath": "1394|1395|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1396",
+              "stdName": "YY 0635.1-2013",
+              "itemContent": "如果提供一个开关，可以从储气囊切换到麻醉呼吸机，或反之，它必须是双稳态的。",
+              "itemPath": "1394|1395|1396|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "jYWYp21wbT",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.12",
+          "itemPath": "1394|jYWYp21wbT|",
+          "deepth": 2,
+          "controls": [
+            {
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "9aZKLd8dWa",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "呼吸循环回路\n应符合YY0635.1-2013的要求。",
+              "itemPath": "1394|jYWYp21wbT|9aZKLd8dWa|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1397",
+      "idxNo": "24",
+      "itemContent": "压力监测",
+      "itemPath": "1397|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1398",
+          "stdName": "YY 0635.1-2013",
+          "stdItmNo": "10.1",
+          "itemPath": "1397|1398|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1399",
+              "stdName": "YY 0635.1-2013",
+              "itemContent": "10.1.1 麻醉呼吸系统应有一个压力测量仪，或有一个可连接一个压力测量仪的方法。",
+              "itemPath": "1397|1398|1399|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1400",
+              "stdName": "YY 0635.1-2013",
+              "itemContent": "10.1.2 若提供压力测量仪，仪器的计量单位应以kPa标记。",
+              "itemPath": "1397|1398|1400|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1401",
+              "stdName": "YY 0635.1-2013",
+              "itemContent": "压力测试仪的最小测量范围应是-1 kPa（-10 cmH2O）～ +6 kPa（+60 cmH2O）。",
+              "itemPath": "1397|1398|1401|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1402",
+              "stdName": "YY 0635.1-2013",
+              "itemContent": "在动态测试的条件下，读数的误差应该是±（满刻度读数的4％＋实际读数的4％）。",
+              "itemPath": "1397|1398|1402|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "-(满刻度读数的4%+实际读数的2%)～+(满刻度读数的4%+实际读数的2%)",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1403",
+              "stdName": "YY 0635.1-2013",
+              "itemContent": "10.1.3压力测量仪应是可分离的或其本身可以被清洁和消毒或灭菌，以确保麻醉呼吸系统部件的清洁和消毒或灭菌。",
+              "itemPath": "1397|1398|1403|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "dEb0iSsdbL",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.12",
+          "itemPath": "1397|dEb0iSsdbL|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "msyndYpnya",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "呼吸循环回路\n应符合YY0635.1-2013的要求。",
+              "itemPath": "1397|dEb0iSsdbL|msyndYpnya|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1404",
+      "idxNo": "25",
+      "itemContent": "控制器件和仪表的标记",
+      "itemPath": "1404|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1405",
+          "stdName": "YY 0635.3-2009",
+          "stdItmNo": "6.3",
+          "itemPath": "1404|1405|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1406",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "aa) 麻醉气体输出的控制应该有如何增加麻醉气体输出的指示标记（见101.3 旋转控制器）。",
+              "itemPath": "1404|1405|1406|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1407",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "bb) 在液位指示器处应该标记最大和最小灌充位置，或显示实际使用容积。",
+              "itemPath": "1404|1405|1407|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1408",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "cc）灌充口应该标记麻醉剂的通用名称。专用麻醉剂传输的调节装置应该使用如下的麻醉剂通用名称的全拼写法或缩写：",
+              "itemPath": "1404|1405|1408|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1409",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "—地氟醚（Desflurane）：“DES”",
+              "itemPath": "1404|1405|1409|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1410",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "—安氟醚 （Enflurane）：“ENF”",
+              "itemPath": "1404|1405|1410|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1411",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "—氟烷 （Halothane）：“HAL”",
+              "itemPath": "1404|1405|1411|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1412",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "—异氟醚 （Isoflurane）：“ISO”",
+              "itemPath": "1404|1405|1412|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1413",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "—七氟醚（Sevoflurane）：“SEV”",
+              "itemPath": "1404|1405|1413|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "——",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1414",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "如果使用彩色编码，应参照附录BB的规定；",
+              "itemPath": "1404|1405|1414|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1415",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "dd) 麻醉气体输送装置（AVDD）控制器的刻度单位应有指示；",
+              "itemPath": "1404|1405|1415|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1416",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "ee) 控制器的刻度应标记“0”或“off”（“关”），如果“0”的位置不在“off”（“关”）的位置上则两者都要进行标记，如果不提供“off”（“关”）则可用“standby”（“待机”）标记。",
+              "itemPath": "1404|1405|1416|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "3ulaZBZOQX",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.13",
+          "itemPath": "1404|3ulaZBZOQX|",
+          "deepth": 2,
+          "controls": [
+            {
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "MJfWXqCSLA",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "蒸发器（安氟醚、异氟醚、七氟醚）\n应符合YY0635.3-2009的要求。",
+              "itemPath": "1404|3ulaZBZOQX|MJfWXqCSLA|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1417",
+      "idxNo": "26",
+      "itemContent": "传输气体浓度的准确性",
+      "itemPath": "1417|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1418",
+          "stdName": "YY 0635.3-2009",
+          "stdItmNo": "51.101",
+          "itemPath": "1417|1418|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1419",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "当麻醉气体输送装置（AVDD）按照生产商所推荐的载气和分析技术并按51.102 提供的方法测试时[见6.8.2bb）6] ，需要满足下列要求：\na) 除了在“off”（“关”）位置、“standby” （“待机”）位置或“0”位置（如果它是 “off”（“关”） 位置的话），麻醉气体输送装置（AVDD）的输出浓度与浓度设定值的偏差范围为从-20%到+30%之间，",
+              "itemPath": "1417|1418|1419|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "+0%～+21%",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "1.25＞ Vol.%",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1420",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "或者不能超过最大刻度值的-5%到+7.5%之间，两者取最大值。",
+              "itemPath": "1417|1418|1420|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "-1.4%～+6.8%",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "1.25≤ Vol.%",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1421",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "b) 当麻醉气体输送装置（AVDD）控制盘位于“off”（“关”） 位置、“standby”（“待机”）位置或是:“0”位置（如果它是“off”（“关”）位置的话）时，其输出浓度不能超过0.05% (体积百分比)。",
+              "itemPath": "1417|1418|1421|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "0.00%",
+                  "html": "<input type='text' value=''></input>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "Kw5teaSWx9",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.13",
+          "itemPath": "1417|Kw5teaSWx9|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "ZCv1GNGn7g",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "蒸发器（安氟醚、异氟醚、七氟醚）\n应符合YY0635.3-2009的要求。",
+              "itemPath": "1417|Kw5teaSWx9|ZCv1GNGn7g|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1422",
+      "idxNo": "27",
+      "itemContent": "控制器",
+      "itemPath": "1422|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1423",
+          "stdName": "YY 0635.3-2009",
+          "stdItmNo": "101.2",
+          "itemPath": "1422|1423|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1424",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "麻醉气体输送装置（AVDD）应该具有用于调节蒸气浓度的控制器以及用于标定其浓度输出范围的刻度或指示器。控制器的浓度调节范围不应超出其所标定的浓度范围。",
+              "itemPath": "1422|1423|1424|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            },
+            {
+              "itemId": "1425",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "另外麻醉气体输送装置（AVDD）也应具有可防止控制器被无意识操作的功能 [见6.3 aa）] 。",
+              "itemPath": "1422|1423|1425|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "2QFgASeaUj",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.13",
+          "itemPath": "1422|2QFgASeaUj|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "DNK6D2GbrO",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "蒸发器（安氟醚、异氟醚、七氟醚）\n应符合YY0635.3-2009的要求。",
+              "itemPath": "1422|2QFgASeaUj|DNK6D2GbrO|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "itemId": "1426",
+      "idxNo": "28",
+      "itemContent": "旋转控制器",
+      "itemPath": "1426|",
+      "deepth": 1,
+      "comment": "符合",
+      "stdType": "0",
+      "list": [
+        {
+          "itemId": "1427",
+          "stdName": "YY 0635.3-2009",
+          "stdItmNo": "101.3",
+          "itemPath": "1426|1427|",
+          "deepth": 2,
+          "stdType": "0",
+          "list": [
+            {
+              "itemId": "1428",
+              "stdName": "YY 0635.3-2009",
+              "itemContent": "如果提供旋转式控制器，那么逆时针旋转控制器时，麻醉气体的浓度应该是增加的。",
+              "itemPath": "1426|1427|1428|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<select><option value=''>请选择</option><option value='符合要求'>符合要求</option><option value='不符合要求'>不符合要求</option><option value='——'>——</option><option value='/'>/</option></select>"
+                }
+              ],
+              "controlsTyp": "1",
+              "reMark": "",
+              "defVal": [
+                ""
+              ],
+              "stdType": "0",
+              "list": [],
+              "rightContent": "",
+              "rightContentValue": ""
+            }
+          ]
+        },
+        {
+          "itemId": "vSFPaB0b1w",
+          "stdName": "产品技术要求",
+          "stdItmNo": "2.13",
+          "itemPath": "1426|vSFPaB0b1w|",
+          "deepth": 2,
+          "controls": [
+            {
+              "result": "符合要求",
+              "html": "<input type='text' value=''/>"
+            }
+          ],
+          "controlsTyp": "0",
+          "reMark": "",
+          "stdType": "1",
+          "list": [
+            {
+              "itemId": "fph0pCnhHO",
+              "stdName": "",
+              "stdItmNo": "",
+              "itemContent": "蒸发器（安氟醚、异氟醚、七氟醚）\n应符合YY0635.3-2009的要求。",
+              "itemPath": "1426|vSFPaB0b1w|fph0pCnhHO|",
+              "deepth": 3,
+              "controls": [
+                {
+                  "result": "符合要求",
+                  "html": "<input type='text' value=''/>"
+                }
+              ],
+              "controlsTyp": "0",
+              "reMark": "",
+              "stdType": "1",
+              "list": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "firstPage": {
+    "inside": 0,
+    "customsClean": 0,
+    "contractId": "2c908ab2722c5ae701724a8f4ff00da4",
+    "contractNumber": "2020-12962",
+    "contractType": null,
+    "subcontract": 0,
+    "contractClient": "国家药品监督管理局",
+    "addressOrIdCard": "北京市西城区展览路北露园1号",
+    "detectCompany": "北京谊安医疗系统股份有限公司",
+    "detectCompanyAddress": "北京市丰台区外环西路26号院9号楼-1至4层901内4层405",
+    "manufactureCompany": "北京谊安医疗系统股份有限公司",
+    "manufactureCompanyAddress": "北京市丰台区外环西路26号院9号楼-1至4层901内4层405",
+    "detectType": "GYJ",
+    "detectTypeNumber": null,
+    "productType1": 1,
+    "productType2": 0,
+    "productType3": 2,
+    "registrationType": -1,
+    "relatedContractId": null,
+    "executeDays": 30,
+    "reportConclusions": 0,
+    "samplingNumber": "1120303301738",
+    "samplingAddress": "成品库",
+    "samplingCompany": "北京市药品监督管理局",
+    "samplingDate": "2020-05-14",
+    "samplingBase": "1",
+    "registrationNumber": "国械注准20193081664",
+    "contactNumber": "",
+    "inspectionNumber": "",
+    "sampleReceiptDate": "2020-05-25",
+    "customerId": "2c908df76b637435016b63744d5a000e",
+    "contractStatus": 4,
+    "mainInspectionDepartment": "40289ea16cbde4ba016ccc3a98ff0000",
+    "mainInspectionDepartmentOut": null,
+    "chiefInspection": "杨晓庆",
+    "effectiveTime": "2020-05-26",
+    "contractTheoreticalTime": "2020-07-08",
+    "startTestDate": "2020-06-05",
+    "reportId": null,
+    "reportNumber": "GYJ2020-3033",
+    "reportGetBackRemark": "",
+    "reportGetBack": -1,
+    "contacter": "刘晓",
+    "contactId": null,
+    "contactPhone": "010-83979620",
+    "contactMobile": "",
+    "contactEmail": "",
+    "contactPostalCode": "100053",
+    "contactFax": "010-83560832",
+    "contactAddress": "北京市西城区枣林前街70号",
+    "sample": 1,
+    "sampleId": "2c908ab3720d5fb601724a90a7e105d6",
+    "sampleNumber": "GYJ2020-3033",
+    "associatedSampleNumber": null,
+    "associatedSampleId": "",
+    "sampleName": "麻醉机",
+    "sampleQuantity": 1,
+    "sampleUnit": "台",
+    "sampleModelSpecification": "Aeon8700A/Aeon8700A(C)YKZS111",
+    "sampleProductionDate": "201910",
+    "sampleTrademark": "/",
+    "sampleList": "",
+    "sampleAcquisitionMode": 2,
+    "sampleGetBack": null,
+    "stockControl": "1",
+    "sampleStorageCondition": "",
+    "afterSaveDays": null,
+    "content": "药监综械管〔2020〕46号文附件1《2020年国家医疗器械抽检（中央补助地方项目）产品检验方案》中“30330.麻醉机（麻醉系统）”的检验项目",
+    "afterTreatmentMethod": null,
+    "sampleTestBasis": "药监综械管〔2020〕46号文附件1《2020年国家医疗器械抽检（中央补助地方项目）产品检验方案》中“30330.麻醉机（麻醉系统）”的检验依据",
+    "sampleTestMethod": 0,
+    "customernIformation": "",
+    "toFactoryAddress": "",
+    "sampleRemark": "",
+    "sampleMailAddress": null,
+    "paymentMethod": 0,
+    "advanceReceiptAmount": 0,
+    "amountOfFee": null,
+    "documentId1": null,
+    "documentId2": null,
+    "documentId3": null,
+    "str1": null,
+    "str2": null,
+    "str3": null,
+    "str4": null,
+    "str5": null,
+    "str6": null,
+    "str7": null,
+    "str8": null,
+    "int01": -1,
+    "int02": null,
+    "int03": null,
+    "int04": null,
+    "createTime": "2020-05-25 14:40:05",
+    "updateTime": "2020-07-09 15:59:18",
+    "createUserId": "000000006b549107016b54bc7fdb0021",
+    "startDate": null,
+    "remark": null,
+    "needCmtc": null,
+    "sampleStatusDescription": null,
+    "finaceStatus": 3,
+    "sampleStatus": 1,
+    "reportStatus": null,
+    "children": [],
+    "parent": null,
+    "contractEndDate": null,
+    "relatedContract": [],
+    "processId": "691297",
+    "stars": null,
+    "contractOutsourcingDetil": [],
+    "sampleKeepQuantity": null,
+    "contractSampleId": "2c908ab3720d5fb601724a90a7e605d8",
+    "executingTaskId": "723521",
+    "distributeStopped": false,
+    "testRemark": "",
+    "contractReviewId": "",
+    "reportApproverTime": null,
+    "contractLifeDetails": [
+      {
+        "createTime": "2020-06-05 17:18",
+        "createUserId": "000000006b549107016b54ec3ccd007e",
+        "updateTime": null,
+        "updateUserId": null,
+        "version": 0,
+        "contractlifeDetailId": "2c908ab2726f2d82017283c6648d1015",
+        "nodeType": 3,
+        "opinion": 0,
+        "remarks": "",
+        "receiverId": "000000006b549107016b54ea08290079",
+        "valid": true
+      },
+      {
+        "createTime": "2020-05-26 09:01",
+        "createUserId": "000000006b549107016b54bce7b10022",
+        "updateTime": null,
+        "updateUserId": null,
+        "version": 0,
+        "contractlifeDetailId": "2c908ab2722c5ae701724e7fc6c40f2a",
+        "nodeType": 2,
+        "opinion": 0,
+        "remarks": "",
+        "receiverId": "",
+        "valid": true
+      },
+      {
+        "createTime": "2020-05-25 14:41",
+        "createUserId": "000000006b549107016b54bc7fdb0021",
+        "updateTime": null,
+        "updateUserId": null,
+        "version": 0,
+        "contractlifeDetailId": "2c908ab2722c5ae701724a90a7bf0dac",
+        "nodeType": 1,
+        "opinion": null,
+        "remarks": null,
+        "receiverId": null,
+        "valid": true
+      },
+      {
+        "createTime": "2020-05-25 14:40",
+        "createUserId": "000000006b549107016b54bc7fdb0021",
+        "updateTime": null,
+        "updateUserId": null,
+        "version": 0,
+        "contractlifeDetailId": "2c908ab2722c5ae701724a8f51650da9",
+        "nodeType": 0,
+        "opinion": null,
+        "remarks": null,
+        "receiverId": null,
+        "valid": true
+      }
+    ],
+    "returnBack": false,
+    "inspectionApplicationNumber": null,
+    "extendedData": {},
+    "ReportCode": "国医检（设）字GYJ2020第3033号",
+    "conclusion": "合格",
+    "sampleDescription": "1、被检样品封样完好。\n2、蒸发器型号：VP300,产品编号：VP300I1YKYZ0437,制造商：河北谊安奥美医疗设备有限公司。\n",
+    "otherDescription": "1、本次检验，产品技术要求为：国械注准20193081664\n2、本次检验，序号14中51.101.4.条款1 L/min以下分钟通气量。其要求见6.8.2yy)。由于要求未在说明书中给出故未检。\n\n",
+    "inspectionDate": "2020年6月5日～2020年7月9日",
+    "sampleModelSpecificationRPT": "Aeon8700A",
+    "batchNumberRPT": "Aeon8700A(C)YKZS111",
+    "sampleNameRPT": "麻醉机",
+    "reinspectionRPT": "",
+    "sampleReceiptDateRPT": "2020年5月25日",
+    "colspan": "1"
+  },
+  "attach": [],
+  "yptp": [
+    {
+      "fileName": "d148bd8b-97e4-4c5c-8041-e922c2136897.JPG",
+      "content": "正面照"
+    },
+    {
+      "fileName": "1ef0b408-cea8-4da2-bf25-075630187323.JPG",
+      "content": "左面照"
+    },
+    {
+      "fileName": "d753151b-d5d4-4970-940a-e956c9b20650.JPG",
+      "content": "背面照"
+    },
+    {
+      "fileName": "92b08d28-8fd0-4732-8c0d-eccb957fc503.JPG",
+      "content": "右面照"
+    },
+    {
+      "fileName": "38beca24-cfe6-4132-92ce-eebd95257a2e.JPG",
+      "content": "辅助网电源插座"
+    },
+    {
+      "fileName": "cce8a9a1-4138-4b9f-bdcb-a6f47478e6ce.JPG",
+      "content": "进气口"
+    },
+    {
+      "fileName": "1e4ced09-d907-4cf6-ad71-1b760becfaeb.JPG",
+      "content": "蒸发罐"
+    },
+    {
+      "fileName": "67c4441b-73ff-4495-971a-3a0ff6c1aad1.JPG",
+      "content": "蒸发罐铭牌"
+    },
+    {
+      "fileName": "7d1e057e-8249-4abb-b357-e1170d620baf.JPG",
+      "content": "主机铭牌"
+    }
+  ]
+}

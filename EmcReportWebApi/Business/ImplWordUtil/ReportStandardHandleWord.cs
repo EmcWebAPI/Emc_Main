@@ -105,7 +105,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         }
 
                         //处理单项结论
-                        HandleConclusion(cellList, cellNextList,table);
+                        HandleConclusion(cellList, cellNextList, table);
 
                         _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
                         pageIndex = pageNumber;
@@ -215,7 +215,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             //找到最后一个带^^的单元格
             CellInfo cellInfo = cellList.LastOrDefault(p => p.CellText.Contains("^^"));
             if (cellInfo != null)
-                nextCellInfo.Range.Text=(cellInfo.CellText.Replace("\r\a", ""));
+                nextCellInfo.Range.Text = (cellInfo.CellText.Replace("\r\a", ""));
         }
 
         private Cell TableContinueContent(Table table, int column, List<CellInfo> list)
@@ -474,10 +474,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                     for (int i = 0; i < secondItemsCount; i++)
                     {
-                        table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
-
-                        //table.Cell(cRow+i, cCol).PreferredWidthType = WdPreferredWidthType.wdPreferredWidthPoints;
-                        //table.Cell(cRow+i, cCol).PreferredWidth = 40f;
+                        if (splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量") ||
+                            splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量。其要求见6.8.2yy）。"))
+                            table.Cell(cRow + i, cCol).SetWidth(100, WdRulerStyle.wdAdjustFirstColumn);
+                        else
+                            table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
                     }
 
                     if (secondItemsCount != 1)
@@ -695,7 +696,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     {
                         for (int i = 0; i < secondItemsCount; i++)
                         {
-                            table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
+                            if (splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量") ||
+                                splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量。其要求见6.8.2yy）。"))
+                                table.Cell(cRow + i, cCol).SetWidth(100f, WdRulerStyle.wdAdjustFirstColumn);
+                            else
+                                table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
                         }
                     }
                     if (secondItemsCount != 1 && (cCol != 4 || !first))
@@ -870,8 +875,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
         private string SetResult(Cell tCell, string tString)
         {
-            var indexStr = string.Empty;
-            indexStr = tString.Contains("～") ? "～" : "~";
+            var indexStr = tString.Contains("～") ? "～" : "~";
             if (indexStr.Equals(string.Empty))
             {
                 return tString;

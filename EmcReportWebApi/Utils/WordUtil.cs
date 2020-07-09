@@ -96,8 +96,8 @@ namespace EmcReportWebApi.Utils
             _disposed = false;
             _needWrite = true;
         }
-        
-        
+
+
 
         #region 运算公式
         /// <summary>
@@ -157,13 +157,13 @@ namespace EmcReportWebApi.Utils
                 Dispose();
                 throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
             }
-          
+
         }
-        
+
         /// <summary>
         /// 添加公式
         /// </summary>
-        protected void AddOperationFormula(Range range,string formulaType,string forceValue, string matchValue)
+        protected void AddOperationFormula(Range range, string formulaType, string forceValue, string matchValue)
         {
             try
             {
@@ -281,7 +281,7 @@ namespace EmcReportWebApi.Utils
                 Dispose();
                 throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
             }
-           
+
         }
 
 
@@ -753,7 +753,7 @@ namespace EmcReportWebApi.Utils
                 Dispose();
                 throw new Exception($"错误信息:{ex.StackTrace.ToString()}.{ex.Message}");
             }
-           
+
         }
 
         /// <summary>
@@ -787,6 +787,12 @@ namespace EmcReportWebApi.Utils
             //筛选保存格式
             object defFormat = FilterExtendName(outFileFullName);
             object path = outFileFullName;
+            DirectoryInfo di = new DirectoryInfo(Path.GetDirectoryName(outFileFullName) ?? string.Empty);
+            if (!di.Exists)
+            {
+                di.Create();
+            }
+
             doc.SaveAs(
                 ref path,      //FileName
                 ref defFormat,     //FileFormat
@@ -1260,7 +1266,7 @@ namespace EmcReportWebApi.Utils
                 SetDistributeTable(table);
                 //table.Cell(1,1).SetHeight(table.Cell(1, 1).Height,WdRowHeightRule.wdRowHeightAtLeast);
             }
-            
+
 
         }
         /// <summary>
@@ -1337,7 +1343,7 @@ namespace EmcReportWebApi.Utils
                 pro.Kill();
             }
         }
-        
+
         #endregion
 
         #region 资源回收

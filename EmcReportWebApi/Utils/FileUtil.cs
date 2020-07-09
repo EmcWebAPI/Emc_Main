@@ -16,7 +16,7 @@ namespace EmcReportWebApi.Utils
         public static string CreateDirectory(string fileFullName)
         {
             string datetimeStr = Guid.NewGuid().ToString();
-            string outputPath = string.Format("{0}\\{1}", fileFullName, datetimeStr);
+            string outputPath = $"{fileFullName}\\{datetimeStr}";
             if (Directory.Exists(outputPath))
             {
                 throw new Exception("文件夹已经存在");

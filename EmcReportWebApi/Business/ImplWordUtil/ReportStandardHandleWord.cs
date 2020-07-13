@@ -474,9 +474,9 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                     for (int i = 0; i < secondItemsCount; i++)
                     {
-                        if (splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量") ||
-                            splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量。其要求见6.8.2yy）。"))
-                            table.Cell(cRow + i, cCol).SetWidth(100, WdRulerStyle.wdAdjustFirstColumn);
+                        if (splitCellText.Contains("100ml以下潮气量和1L/min以下分钟通气量") ||
+                            splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量"))
+                            table.Cell(cRow + i, cCol).SetWidth(100f, WdRulerStyle.wdAdjustFirstColumn);
                         else
                             table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
                     }
@@ -524,17 +524,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
 
                         tempCell.Range.Text = itemContent;
 
-                        #region 麻醉机
-                        //if (itemContent.Contains("100ml以下潮气量和1 L/min以下分钟通气量") || itemContent.Contains("100ml以下潮气量和1 L/min以下分钟通气量。其要求见6.8.2yy）。"))
-                        //{
-                        //    tempCell.Select();
-                        //    _wordApp.Selection.Range.Cells[1].SetWidth(90f, WdRulerStyle.wdAdjustFirstColumn);
-                        //}
-                        #endregion
-
                         this.FindHtmlLabel(tempCell.Range);
 
-                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
+                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals("")
+                        && (secondItem["list"] == null || ((JArray)secondItem["list"]).Count == 0)
+                        )
                         {
                             //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
 
@@ -696,8 +690,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     {
                         for (int i = 0; i < secondItemsCount; i++)
                         {
-                            if (splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量") ||
-                                splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量。其要求见6.8.2yy）。"))
+                            if (splitCellText.Contains("100ml以下潮气量和1L/min以下分钟通气量") ||
+                                splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量"))
                                 table.Cell(cRow + i, cCol).SetWidth(100f, WdRulerStyle.wdAdjustFirstColumn);
                             else
                                 table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
@@ -751,7 +745,9 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         tempCell.Range.Text = itemContent;
                         this.FindHtmlLabel(tempCell.Range);
 
-                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals(""))
+                        if (secondItem["rightContent"] != null && !secondItem["rightContent"].ToString().Equals("")
+                                                               && (secondItem["list"] == null || ((JArray)secondItem["list"]).Count == 0)
+                        )
                         {
                             //this.AddCellLowerRightCornerContent(tempCell, secondItem["rightContent"].ToString());
 
@@ -1062,19 +1058,41 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             }
 
             InlineShape image = doc.InlineShapes.AddPicture(picFileName, ref _missing, ref _missing, range);
-
+       
+            Shape shape = image.ConvertToShape();
+            float rotation = shape.Rotation;
+            image = shape.ConvertToInlineShape();
+            
             if (imageWidth > width && imageWidth > imageHeight)
             {
 
                 if (imageHeight * (width / imageWidth) > height)
                 {
-                    image.Height = height;
-                    image.Width = imageWidth * (height / imageHeight);
+                    if (rotation == 90f || rotation == 270f)
+                    {
+                        image.Height = imageHeight * (height/imageWidth);
+                        image.Width = height;
+                    }
+                    else
+                    {
+                        image.Height = height;
+                        image.Width = imageWidth * (height / imageHeight);
+                    }
+                    
                 }
                 else
                 {
-                    image.Width = width;
-                    image.Height = imageHeight * (width / imageWidth);
+                    if (rotation == 90f || rotation == 270f)
+                    {
+                        image.Width = imageWidth  * (width / imageHeight);
+                        image.Height = width;
+                    }
+                    else
+                    {
+                        image.Width = width;
+                        image.Height = imageHeight * (width / imageWidth);
+                    }
+                    
                 }
 
             }
@@ -1083,15 +1101,30 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 if (imageWidth * (height / imageHeight) > width)
                 {
-                    image.Width = width;
-                    image.Height = imageHeight * (width / imageWidth);
+                    if (rotation == 90f || rotation == 270f)
+                    {
+                        image.Width = imageWidth * (width / imageHeight);
+                        image.Height = width;
+                    }
+                    else
+                    {
+                        image.Width = width;
+                        image.Height = imageHeight * (width / imageWidth);
+                    }
                 }
                 else
                 {
-                    image.Height = height;
-                    image.Width = imageWidth * (height / imageHeight);
+                    if (rotation == 90f || rotation == 270f)
+                    {
+                        image.Height = imageHeight * (height / imageWidth); 
+                        image.Width = height;
+                    }
+                    else
+                    {
+                        image.Height = height;
+                        image.Width = imageWidth * (height / imageHeight);
+                    }
                 }
-
             }
         }
 

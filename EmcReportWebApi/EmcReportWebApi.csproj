@@ -163,7 +163,6 @@
     <Content Include="RtfConfig.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Document\麻醉机bug.docx" />
     <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Web.config">
       <SubType>Designer</SubType>

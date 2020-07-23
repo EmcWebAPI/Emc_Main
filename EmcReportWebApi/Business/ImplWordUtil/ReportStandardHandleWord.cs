@@ -93,6 +93,16 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 continue;
                             }
                         }
+
+                        if (r.Text.Contains("#") && !r.Text.Contains("#1"))
+                        {
+                            int moveRow = int.Parse(r.Text.Replace("#", "").Replace("\r\a", ""));
+                            var lastCell = table.Cell(rowNumber - (moveRow - 1), columnNumber);
+                            r = lastCell.Range;
+                            pageNumber = (int) r.Information[WdInformation.wdActiveEndPageNumber];
+
+                        }
+
                         r.Select();
                         _wordApp.Selection.SplitTable();
 
@@ -108,7 +118,27 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         HandleConclusion(cellList, cellNextList, table);
 
                         _wordApp.Selection.Delete(WdUnits.wdCharacter, 1);
-                        pageIndex = pageNumber;
+                        if (pageNumber == pageIndex)
+                        {
+                            _wordApp.Selection.InsertRowsAbove(1);
+                            _wordApp.Selection.Cells.Merge();
+                            _wordApp.Selection.Borders[WdBorderType.wdBorderLeft].LineStyle = WdLineStyle.wdLineStyleNone;
+                            _wordApp.Selection.Borders[WdBorderType.wdBorderRight].LineStyle = WdLineStyle.wdLineStyleNone;
+                            _wordApp.Selection.Borders[WdBorderType.wdBorderBottom].LineStyle = WdLineStyle.wdLineStyleNone;
+                            Cell secondLastCell = _wordApp.Selection.Cells[1];
+
+                            while ((int)r.Information[WdInformation.wdActiveEndPageNumber] != pageNumber+1)
+                            {
+                                secondLastCell.SetHeight(secondLastCell.Height + 1, WdRowHeightRule.wdRowHeightAtLeast);
+                            }
+
+                            pageIndex = pageNumber + 1;
+                        }
+                        else
+                        {
+                            pageIndex = pageNumber;
+                        }
+                        
                     }
                 }
                 //替换字符
@@ -475,8 +505,15 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     for (int i = 0; i < secondItemsCount; i++)
                     {
                         if (splitCellText.Contains("100ml以下潮气量和1L/min以下分钟通气量") ||
-                            splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量"))
+                            splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量")
+                            )
+                        
                             table.Cell(cRow + i, cCol).SetWidth(100f, WdRulerStyle.wdAdjustFirstColumn);
+                        else if (System.Text.Encoding.Default.GetBytes(splitCellText).Length > 40 &&
+                                 cCol == 5)
+                        {
+                            table.Cell(cRow + i, cCol).SetWidth(75f, WdRulerStyle.wdAdjustFirstColumn);
+                        }
                         else
                             table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
                     }
@@ -691,8 +728,14 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         for (int i = 0; i < secondItemsCount; i++)
                         {
                             if (splitCellText.Contains("100ml以下潮气量和1L/min以下分钟通气量") ||
-                                splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量"))
+                                splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量")
+                                )
                                 table.Cell(cRow + i, cCol).SetWidth(100f, WdRulerStyle.wdAdjustFirstColumn);
+                            else if (System.Text.Encoding.Default.GetBytes(splitCellText).Length > 40 &&
+                                      cCol == 5)
+                            {
+                                table.Cell(cRow + i, cCol).SetWidth(75f, WdRulerStyle.wdAdjustFirstColumn);
+                            }
                             else
                                 table.Cell(cRow + i, cCol).SetWidth(45f, WdRulerStyle.wdAdjustFirstColumn);
                         }

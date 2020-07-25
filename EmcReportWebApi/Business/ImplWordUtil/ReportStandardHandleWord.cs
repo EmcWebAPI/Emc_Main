@@ -94,15 +94,35 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             }
                         }
 
-                        if (r.Text.Contains("#") && !r.Text.Contains("#1"))
+                        #region 判断#拆分
+                        //if (r.Text.Contains("#") && !r.Text.Contains("#1"))
+                        //{
+                        //    int moveRow = int.Parse(r.Text.Replace("#", "").Replace("\r\a", ""));
+                        //    var lastCell = table.Cell(rowNumber - (moveRow - 1), columnNumber);
+                        //    r = lastCell.Range;
+                        //    pageNumber = (int) r.Information[WdInformation.wdActiveEndPageNumber];
+                        //}
+                        #endregion
+
+                        //大于等于6列的 判断父列是否跨行
+                        if (columnNumber >= 6)
                         {
-                            int moveRow = int.Parse(r.Text.Replace("#", "").Replace("\r\a", ""));
-                            var lastCell = table.Cell(rowNumber - (moveRow - 1), columnNumber);
-                            r = lastCell.Range;
-                            pageNumber = (int) r.Information[WdInformation.wdActiveEndPageNumber];
+                            CellInfo parentCellInfo = cellList.LastOrDefault(p => p.ColumnNumber == columnNumber - 1);
 
+                            var parentCellHeight = 0f;
+                            if (parentCellInfo != null)
+                                parentCellHeight = CellInfoToDownHeight(parentCellInfo.RealCell);
+
+                            if (Math.Abs(parentCellHeight) > 0f && parentCellHeight < 400f)
+                            {
+                                CellInfo previousFirstCell = cellList.FirstOrDefault(p => CellInfoToDownHeight(p.RealCell) == parentCellHeight && p.ColumnNumber == columnNumber);
+                                if (previousFirstCell != null)
+                                {
+                                    r = previousFirstCell.RealCell.Range;
+                                    pageNumber = (int)r.Information[WdInformation.wdActiveEndPageNumber];
+                                }
+                            }
                         }
-
                         r.Select();
                         _wordApp.Selection.SplitTable();
 
@@ -196,6 +216,26 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 throw new Exception($"错误信息:{ex.StackTrace}.{ex.Message}");
             }
 
+        }
+
+        /// <summary>
+        /// 计算单元格距离底部的高度
+        /// </summary>
+        /// <returns></returns>
+        private float CellInfoToDownHeight(Cell cell)
+        {
+            try
+            {
+                float cellPositionTop =
+                    (float)cell.Range.Information[WdInformation.wdVerticalPositionRelativeToPage];
+                float pageHeight = cell.Range.PageSetup.PageHeight;
+                return pageHeight - cellPositionTop;
+            }
+            catch (Exception)
+            {
+                return 0f;
+            }
+           
         }
 
         /// <summary>

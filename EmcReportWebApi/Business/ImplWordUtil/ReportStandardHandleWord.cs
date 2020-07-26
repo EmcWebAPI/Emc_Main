@@ -197,7 +197,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         Cell blankCell = _wordApp.Selection.Cells[1];
                         blankCell.SetHeight(cellToPageBottom - 200, WdRowHeightRule.wdRowHeightAtLeast);
                         blankCell.Range.Text = hasPhoto ? "此处空白" : "以下空白";
-                        while (blankCell.Range.Information[WdInformation.wdActiveEndPageNumber] !=
+                        Range blankRange = hasPhoto?blankCell.Range:GetBookmarkRank(_currentWord,"photo");
+                        while (blankRange.Information[WdInformation.wdActiveEndPageNumber] !=
                                currentPageNumber)
                         {
                             blankCell.SetHeight(blankCell.Height - 1, WdRowHeightRule.wdRowHeightAtLeast);

@@ -389,7 +389,7 @@ namespace EmcReportWebApi.Utils
         /// 根据书签向word中插入内容
         /// </summary>
         /// <returns></returns>
-        public string InsertContentToWordByBookmark(string content, string bookmark, bool isUnderLine = false)
+        public virtual string InsertContentToWordByBookmark(string content, string bookmark, bool isUnderLine = false)
         {
             try
             {

@@ -36,6 +36,39 @@ namespace EmcReportWebApi.Business.ImplWordUtil
         #region 标准报告业务相关
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="bookmark"></param>
+        /// <param name="isUnderLine"></param>
+        /// <returns></returns>
+        public override string InsertContentToWordByBookmark(string content, string bookmark, bool isUnderLine = false)
+        {
+            try
+            {
+                Range range = GetBookmarkReturnNull(_currentWord, bookmark);
+                if (range == null)
+                    return "未找到书签:" + bookmark;
+                range.Select();
+                if (string.IsNullOrEmpty(content))
+                {
+                    content = "/";
+                }
+                range.Text = content;
+                this.FindHtmlLabel(range);
+                if (isUnderLine)
+                    range.Underline = WdUnderline.wdUnderlineSingle;
+            }
+            catch (Exception ex)
+            {
+                _needWrite = false;
+                Dispose();
+                throw new Exception($"错误信息:{ex.StackTrace.ToString()}.{ex.Message}");
+            }
+            return "插入成功";
+        }
+
+        /// <summary>
         /// 单元格右下添加内容的集合
         /// </summary>
         private readonly Dictionary<string, string> _lowerRightCornerCells = new Dictionary<string, string>();

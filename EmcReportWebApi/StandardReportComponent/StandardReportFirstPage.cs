@@ -56,6 +56,7 @@ namespace EmcReportWebApi.StandardReportComponent
 
                     }
                     wordUtil.InsertContentToWordByBookmark(value, key);
+                    
                 }
             }
             catch (Exception e)

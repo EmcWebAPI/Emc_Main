@@ -83,7 +83,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
             {
                 List<CellInfo> cellList = new List<CellInfo>();
 
-                int pageIndex = 0;
+                int pageIndex = 5;
                 Range tableRange = GetBookmarkRank(_currentWord, bookmark);
                 Table table = tableRange.Tables[1];
 

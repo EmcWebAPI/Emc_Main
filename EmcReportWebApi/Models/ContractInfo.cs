@@ -230,7 +230,7 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public string SampleQuantity
         {
-            get => _sampleQuantity==null||_sampleQuantity.Equals("") || SampleUnit.Equals("") ?_sampleQuantity: _sampleQuantity+SampleUnit;
+            get => _sampleQuantity==null||_sampleQuantity.Equals("") || SampleUnit ==null|| SampleUnit.Equals("") ?_sampleQuantity: _sampleQuantity+SampleUnit;
             set => _sampleQuantity = value;
         }
 

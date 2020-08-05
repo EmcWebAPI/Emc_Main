@@ -409,6 +409,17 @@ namespace EmcReportWebApi.Models
         /// </summary>
         public int? ColSpan { get; set; } = 0;
 
+        /// <summary>
+        /// 检验地点 jydd
+        /// </summary>
+        public string TestPoint
+        {
+            get=> string.IsNullOrEmpty(_testPoint) ? "本所实验室" : _testPoint;
+            set => _testPoint = value;
+        }
+
+        private string _testPoint;
+
         #endregion
     }
 }

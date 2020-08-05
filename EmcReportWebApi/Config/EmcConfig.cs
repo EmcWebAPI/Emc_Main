@@ -274,7 +274,7 @@ namespace EmcReportWebApi.Config
             { "scrq","SampleProductionDate"},//生产日期
             { "ypsl","SampleQuantity"},//样品数量
             { "cyjs","SamplingBase"},//抽样基数
-            { "jydd","AfterTreatmentMethod"},//检验地点
+            { "jydd","TestPoint"},//检验地点
             { "jyrq","InspectionDate"},//检验日期
             { "ypms","SampleDescription"},//样品描述
             { "xhgghqtsm","OtherDescription"},//型号规格及其他说明

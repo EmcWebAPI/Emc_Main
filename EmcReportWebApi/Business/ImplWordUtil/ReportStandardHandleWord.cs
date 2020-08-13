@@ -588,7 +588,7 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                             )
                         
                             table.Cell(cRow + i, cCol).SetWidth(100f, WdRulerStyle.wdAdjustFirstColumn);
-                        else if (System.Text.Encoding.Default.GetBytes(splitCellText).Length > 40 &&
+                        else if (System.Text.Encoding.Default.GetBytes(splitCellText).Length > 36 &&
                                  cCol == 5)
                         {
                             table.Cell(cRow + i, cCol).SetWidth(75f, WdRulerStyle.wdAdjustFirstColumn);
@@ -810,8 +810,8 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                                 splitCellText.Contains("100ml以下潮气量和1 L/min以下分钟通气量")
                                 )
                                 table.Cell(cRow + i, cCol).SetWidth(100f, WdRulerStyle.wdAdjustFirstColumn);
-                            else if (System.Text.Encoding.Default.GetBytes(splitCellText).Length > 40 &&
-                                      cCol == 5)
+                            else if (System.Text.Encoding.Default.GetBytes(splitCellText).Length > 36 &&
+                                      (cCol == 4|| cCol == 5))
                             {
                                 table.Cell(cRow + i, cCol).SetWidth(75f, WdRulerStyle.wdAdjustFirstColumn);
                             }

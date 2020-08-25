@@ -296,7 +296,9 @@ namespace EmcReportWebApi.Config
             "lamv",
             "<上标>",
             "<下标>",
-            "<上下标>"
+            "<上下标>",
+            "sub",
+            "sup"
         };
 
         #endregion

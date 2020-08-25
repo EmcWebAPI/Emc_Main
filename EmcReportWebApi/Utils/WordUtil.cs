@@ -129,7 +129,7 @@ namespace EmcReportWebApi.Utils
                         continue;
                     range.Select();
                     string forceValue = "";
-                    if (formulaType.Equals("<下标>") || formulaType.Equals("<上标>") || formulaType.Equals("<上下标>"))
+                    if (formulaType.Equals("<下标>") || formulaType.Equals("<上标>") || formulaType.Equals("<上下标>")|| formulaType.Equals("sub")|| formulaType.Equals("sup"))
                     {
                         if (m.Index - 1 < 0)
                         {
@@ -144,8 +144,6 @@ namespace EmcReportWebApi.Utils
                         forceValue = rangeText.Substring(m.Index - 1, 1);
                         this.Replace(1, (forceValue + m.Value), @"", 1);
                     }
-
-
                     else
                         this.Replace(1, m.Value, @"", 1);
                     this.AddOperationFormula(_wordApp.Selection.Range, formulaType, forceValue, m.Value);
@@ -246,6 +244,17 @@ namespace EmcReportWebApi.Utils
                         _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                         _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<下标>", "").Replace("</下标>", ""));
                         break;
+                    case "sub":
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSub);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(forceValue);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
+                        _wordApp.Selection.Range.Font.Italic = 0;
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<sub>", "").Replace("</sub>", ""));
+                        break;
                     case "<上标>":
                         _wordApp.Selection.OMaths[1].Functions
                             .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSup);
@@ -256,6 +265,17 @@ namespace EmcReportWebApi.Utils
                         _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                         _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
                         _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<上标>", "").Replace("</上标>", ""));
+                        break;
+                    case "sup":
+                        _wordApp.Selection.OMaths[1].Functions
+                            .Add(_wordApp.Selection.Range, WdOMathFunctionType.wdOMathFunctionScrSup);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 2, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(forceValue);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdExtend);
+                        _wordApp.Selection.Range.Font.Italic = 0;
+                        _wordApp.Selection.MoveRight(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.MoveLeft(WdUnits.wdCharacter, 1, WdMovementType.wdMove);
+                        _wordApp.Selection.Range.InsertAfter(matchValue.Trim().Replace("<sup>", "").Replace("</sup>", ""));
                         break;
                     case "<上下标>":
                         string[] splitValue = matchValue.Trim().Replace("<上下标>", "").Replace("</上下标>", "").Split('|');

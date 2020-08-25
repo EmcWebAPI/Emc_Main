@@ -54,11 +54,6 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                 {
                     content = "/";
                 }
-
-                if (bookmark.Equals("jydd") && System.Text.Encoding.Default.GetBytes(content).Length > 17)
-                {
-                    range.Cells[1].Height = 36;
-                }
                 range.Text = content;
                 this.FindHtmlLabel(range);
                 if (isUnderLine)

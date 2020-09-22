@@ -59,6 +59,7 @@ namespace EmcReportWebApi.Models
                     if (stringSplit.Length > 0)
                     {
                         string stringFirst = stringSplit[0];
+
                         _detectType = stringFirst.Substring(stringFirst.Length - 4, 4) + "年国家医疗器械抽检"+ (ReinspectionRPT ?? "");
                     }
                     else
@@ -70,7 +71,12 @@ namespace EmcReportWebApi.Models
                 {
                     _detectType = !_detectType.Contains(ReinspectionRPT)?_detectType + (ReinspectionRPT ?? ""):_detectType;
                 }
-                
+
+                if (!string.IsNullOrEmpty(ReinspectionRPT))
+                {
+                    _detectType = "国家监督抽查检验复验";
+                }
+
                 return _detectType;
             }
             set => _detectType = value;

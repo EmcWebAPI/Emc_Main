@@ -544,12 +544,11 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                     if (secondItemsCount != 1)
                     {
                         //检验结果列拆分
-                        // table.Cell(cRow, cCol + 1).Split(secondItemsCount, 1);
-
                         for (int i = 0; i < secondItemsCount - 1; i++)
                         {
-                            table.Cell(cRow, cCol + 1).Select();
-                            table.Cell(cRow, cCol + 1).Split(2, 1);
+                            var cell5 = table.Cell(cRow, cCol + 1);
+                            cell5.Range.Select();
+                            _wordApp.Selection.Cells.Split(2, 1, false);
                         }
 
 
@@ -771,8 +770,9 @@ namespace EmcReportWebApi.Business.ImplWordUtil
                         //检验结果列拆分
                         for (int i = 0; i < secondItemsCount - 1; i++)
                         {
-                            table.Cell(cRow, cCol + 1).Select();
-                            table.Cell(cRow, cCol + 1).Split(2, 1);
+                            var cell5 = table.Cell(cRow, cCol + 1);
+                            cell5.Range.Select();
+                            _wordApp.Selection.Cells.Split(2, 1, false);
                         }
                         //备注列拆分
                         table.Cell(cRow, cCol + 3).Split(secondItemsCount, 1);
